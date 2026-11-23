@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rifora Studio - Photo Editor v3.0</title>
+<title>Rifora Studio - Photo Editor v3.1</title>
 
 <style>
 *{box-sizing:border-box}
@@ -23,19 +23,17 @@ input[type=file]{display:none}
 .workspace{background:#091a2b;border:1px solid #29445f;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:570px;padding:15px;overflow:auto;min-width:0}
 .canvas-wrap{position:relative;display:inline-block;line-height:0;max-width:100%}
 canvas{display:block;max-width:100%;height:auto;background:white;box-shadow:0 5px 25px #0008;touch-action:none;cursor:crosshair}
-
-#overlay{
- background:transparent;
- box-shadow:none;
-}
-#overlay{position:absolute;left:0;top:0;pointer-events:none}
+#overlay{position:absolute;left:0;top:0;pointer-events:none;background:transparent;box-shadow:none}
 .empty{text-align:center;color:#9fb5ca;line-height:1.8}
 .empty strong{font-size:20px;color:white}
 .control{margin:12px 0}
 .control label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;color:#c8d9e9}
 input[type=range]{width:100%;accent-color:#2196c8;cursor:pointer}
 input[type=color]{width:100%;height:34px;border:0;background:none;cursor:pointer}
-input[type=number],select,input[type=text],input[type=search]{width:100%;padding:8px;background:#071a2c;color:white;border:1px solid #34516d;border-radius:6px}
+input[type=number],select,input[type=text],input[type=search],textarea{
+ width:100%;padding:8px;background:#071a2c;color:white;border:1px solid #34516d;border-radius:6px
+}
+textarea{resize:vertical;min-height:65px;font-family:Arial,sans-serif}
 .action{padding:9px 11px;border:0;border-radius:7px;background:#1769aa;color:white;cursor:pointer;margin:3px;font-size:12px}
 .action.secondary{background:#29445f}
 .action.danger{background:#963d49}
@@ -51,7 +49,7 @@ input[type=number],select,input[type=text],input[type=search]{width:100%;padding
 .small-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
 .small-grid .action{width:100%;margin:0}
 .separator{height:1px;background:#29445f;margin:12px 0}
-footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
+.text-hint{font-size:10px;color:#9fb5ca;line-height:1.6;margin-top:6px}
 @media(max-width:1050px){.layout{grid-template-columns:1fr}.workspace{order:0;min-height:350px}.panel{order:1}}
 </style>
 </head>
@@ -63,7 +61,7 @@ footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
   <h1>Rifora Studio</h1>
   <p>LEARN • CREATE • GROW</p>
  </div>
- <div class="version">PROFESSIONAL PHOTO EDITOR v3.0</div>
+ <div class="version">PROFESSIONAL PHOTO EDITOR v3.1</div>
 </header>
 
 <div class="layout">
@@ -82,7 +80,7 @@ footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
  </div>
 
  <h3>Basic Tools</h3>
- <button class="tool active" data-tool="move">✋ Move Layer</button>
+ <button class="tool active" data-tool="move">✋ Move / Select Layer</button>
  <button class="tool" data-tool="crop">✂ Crop</button>
  <button class="tool" data-tool="brush">🖌 Brush</button>
  <button class="tool" data-tool="eraser">▱ Eraser</button>
@@ -116,12 +114,20 @@ footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
   <button class="action secondary" id="flipV">↕ Flip V</button>
  </div>
 
- <h3>Text Settings</h3>
- <input type="text" id="textInput" placeholder="আপনার লেখা লিখুন">
+ <div class="separator"></div>
+
+ <h3>Advanced Text Editor</h3>
+
  <div class="control">
-  <label>Font Size</label>
+  <label>Text Content</label>
+  <textarea id="textInput" placeholder="আপনার বাংলা বা ইংরেজি লেখা লিখুন"></textarea>
+ </div>
+
+ <div class="control">
+  <label>Font Size (px)</label>
   <input type="number" id="textSize" value="40" min="8" max="300">
  </div>
+
  <div class="control">
   <label>Font Family</label>
   <select id="fontFamily">
@@ -129,14 +135,18 @@ footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
    <option value="Georgia">Georgia</option>
    <option value="Verdana">Verdana</option>
    <option value="Tahoma">Tahoma</option>
+   <option value="Times New Roman">Times New Roman</option>
+   <option value="Courier New">Courier New</option>
    <option value="serif">Serif</option>
    <option value="sans-serif">Sans Serif</option>
   </select>
  </div>
+
  <div class="control">
   <label>Text Color</label>
   <input type="color" id="textColor" value="#ffffff">
  </div>
+
  <div class="control">
   <label>Text Style</label>
   <select id="textStyle">
@@ -146,7 +156,64 @@ footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
    <option value="bold italic">Bold Italic</option>
   </select>
  </div>
- <button class="action" id="addText">Add Text Layer</button>
+
+ <div class="control">
+  <label>Text Alignment</label>
+  <select id="textAlign">
+   <option value="left">Left</option>
+   <option value="center" selected>Center</option>
+   <option value="right">Right</option>
+  </select>
+ </div>
+
+ <div class="control">
+  <label>Letter Spacing (px)</label>
+  <input type="number" id="letterSpacing" value="0" min="0" max="30">
+ </div>
+
+ <div class="control">
+  <label>Text Rotation (Degrees)</label>
+  <input type="number" id="textRotation" value="0" min="-180" max="180">
+ </div>
+
+ <div class="control">
+  <label>Outline Color</label>
+  <input type="color" id="outlineColor" value="#000000">
+ </div>
+
+ <div class="control">
+  <label>Outline Width</label>
+  <input type="number" id="outlineWidth" value="0" min="0" max="20">
+ </div>
+
+ <div class="control">
+  <label>Shadow Color</label>
+  <input type="color" id="shadowColor" value="#000000">
+ </div>
+
+ <div class="control">
+  <label>Shadow Blur</label>
+  <input type="number" id="shadowBlur" value="0" min="0" max="50">
+ </div>
+
+ <div class="control">
+  <label>Text Background</label>
+  <input type="color" id="textBackground" value="#000000">
+ </div>
+
+ <div class="control">
+  <label>Background Opacity (%)</label>
+  <input type="number" id="textBackgroundOpacity" value="0" min="0" max="100">
+ </div>
+
+ <div class="actions">
+  <button class="action" id="addText">+ Add Text Layer</button>
+  <button class="action secondary" id="updateText">Update Selected Text</button>
+ </div>
+
+ <p class="text-hint">
+  Move Tool নির্বাচন করে ক্যানভাসে লেখার ওপর ক্লিক করুন। এরপর লেখাটি সরাতে পারবেন। Text Layer নির্বাচন করে সেটিংস পরিবর্তন করুন।
+ </p>
 
 </aside>
 
@@ -302,7 +369,6 @@ footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
  <p class="note">AI features require a secure AI service connection and will be added in a future update.</p>
 
 </aside>
-
 </div>
 
 <footer>© 2026 Rifora Studio | LEARN • CREATE • GROW</footer>
@@ -335,11 +401,16 @@ var historyIndex=-1;
 var activePointer=null;
 var cloneSource=null;
 var cloneMode=false;
-var settings={};
+var movingText=false;
+var moveOffsetX=0,moveOffsetY=0;
 
 function status(message){$("status").textContent=message}
-function hasImage(){return layers.length>0 && canvas.width>0 && canvas.height>0}
+function hasImage(){return layers.length>0&&canvas.width>0&&canvas.height>0}
 function currentLayer(){return layers[activeLayer]}
+function selectedLayer(){
+ if(activeLayer<0||!layers[activeLayer])return null;
+ return layers[activeLayer];
+}
 
 function makeCanvas(w,h){
  var c=document.createElement("canvas");
@@ -350,6 +421,7 @@ function makeCanvas(w,h){
 function createLayer(name,w,h){
  return {
   name:name,
+  type:"raster",
   canvas:makeCanvas(w,h),
   visible:true,
   locked:false,
@@ -359,17 +431,258 @@ function createLayer(name,w,h){
 
 function layerContext(layer){return layer.canvas.getContext("2d")}
 
-function resizeAll(w,h){
- layers.forEach(function(layer){
-  var old=layer.canvas;
-  var temp=makeCanvas(w,h);
-  temp.getContext("2d").drawImage(old,0,0);
-  layer.canvas=temp;
- });
- canvas.width=w;canvas.height=h;
- overlay.width=w;overlay.height=h;
- render();
+function ensureEditable(){
+ var layer=selectedLayer();
+ if(!layer)return false;
+ if(layer.locked){alert("This layer is locked. Unlock it first.");return false}
+ return true;
 }
+
+/* TEXT LAYER SYSTEM */
+
+function readTextSettings(){
+ return {
+  text:$("textInput").value,
+  fontSize:Math.max(8,Math.min(300,Number($("textSize").value)||40)),
+  fontFamily:$("fontFamily").value,
+  color:$("textColor").value,
+  style:$("textStyle").value,
+  align:$("textAlign").value,
+  letterSpacing:Math.max(0,Math.min(30,Number($("letterSpacing").value)||0)),
+  rotation:Math.max(-180,Math.min(180,Number($("textRotation").value)||0)),
+  outlineColor:$("outlineColor").value,
+  outlineWidth:Math.max(0,Math.min(20,Number($("outlineWidth").value)||0)),
+  shadowColor:$("shadowColor").value,
+  shadowBlur:Math.max(0,Math.min(50,Number($("shadowBlur").value)||0)),
+  backgroundColor:$("textBackground").value,
+  backgroundOpacity:Math.max(0,Math.min(100,Number($("textBackgroundOpacity").value)||0))
+ };
+}
+
+function textFont(data){
+ var style=data.style||"normal";
+ return style+" "+data.fontSize+"px "+JSON.stringify(data.fontFamily||"Arial");
+}
+
+function drawLetterSpacedText(c,line,x,y,data){
+ var spacing=Number(data.letterSpacing)||0;
+ if(spacing<=0){
+  c.fillText(line,x,y);
+  if(data.outlineWidth>0)c.strokeText(line,x,y);
+  return;
+ }
+
+ var chars=Array.from(line);
+ var widths=chars.map(function(ch){return c.measureText(ch).width});
+ var total=widths.reduce(function(a,b){return a+b},0)+spacing*Math.max(0,chars.length-1);
+ var start=x;
+ if(data.align==="center")start=x-total/2;
+ if(data.align==="right")start=x-total;
+
+ chars.forEach(function(ch,i){
+  if(data.outlineWidth>0)c.strokeText(ch,start,y);
+  c.fillText(ch,start,y);
+  start+=widths[i]+spacing;
+ });
+}
+
+function measureTextData(data){
+ var temp=makeCanvas(10,10);
+ var c=temp.getContext("2d");
+ c.font=textFont(data);
+ var lines=(data.text||"").split("\n");
+ var spacing=Number(data.letterSpacing)||0;
+ var width=1;
+ lines.forEach(function(line){
+  var chars=Array.from(line);
+  var w=c.measureText(line).width+Math.max(0,chars.length-1)*spacing;
+  width=Math.max(width,w);
+ });
+ return {
+  width:width+data.outlineWidth*2+data.shadowBlur*2+20,
+  height:Math.max(1,lines.length)*(data.fontSize*1.35)+data.outlineWidth*2+data.shadowBlur*2+20
+ };
+}
+
+function drawTextLayer(target,layer){
+ var data=layer.textData;
+ if(!data)return;
+
+ var c=target;
+ c.save();
+ c.globalAlpha=layer.opacity;
+ c.translate(data.x,data.y);
+ c.rotate((Number(data.rotation)||0)*Math.PI/180);
+
+ c.font=textFont(data);
+ c.textBaseline="top";
+ c.textAlign=data.align||"left";
+ c.lineJoin="round";
+ c.lineCap="round";
+
+ var lines=(data.text||"").split("\n");
+ var metrics=measureTextData(data);
+ var left=data.align==="center"?-metrics.width/2:data.align==="right"?-metrics.width:0;
+
+ if(data.backgroundOpacity>0){
+  c.save();
+  c.globalAlpha=layer.opacity*(data.backgroundOpacity/100);
+  c.fillStyle=data.backgroundColor;
+  c.fillRect(left-5,-5,metrics.width,metrics.height);
+  c.restore();
+ }
+
+ c.fillStyle=data.color;
+ c.strokeStyle=data.outlineColor;
+ c.lineWidth=data.outlineWidth*2;
+ c.shadowColor=data.shadowColor;
+ c.shadowBlur=data.shadowBlur;
+
+ var lineHeight=data.fontSize*1.35;
+ lines.forEach(function(line,i){
+  var y=i*lineHeight;
+  drawLetterSpacedText(c,line,0,y,data);
+
+  if(data.underline){
+   var width=c.measureText(line).width;
+   var spacing=(Array.from(line).length-1)*(Number(data.letterSpacing)||0);
+   if(data.align==="center")width=width+spacing;
+   if(data.align==="right")width=width+spacing;
+   else if(data.align==="left")width=width+spacing;
+
+   var x=data.align==="center"?-width/2:data.align==="right"?-width:0;
+   c.save();
+   c.shadowBlur=0;
+   c.beginPath();
+   c.lineWidth=Math.max(1,data.fontSize/18);
+   c.strokeStyle=data.color;
+   c.moveTo(x,y+data.fontSize*1.12);
+   c.lineTo(x+width,y+data.fontSize*1.12);
+   c.stroke();
+   c.restore();
+  }
+ });
+ c.restore();
+}
+
+function textBounds(layer){
+ var data=layer.textData;
+ if(!data)return null;
+ var m=measureTextData(data);
+ var left=data.align==="center"?-m.width/2:data.align==="right"?-m.width:0;
+ return {x:data.x+left-5,y:data.y-5,w:m.width+10,h:m.height+10};
+}
+
+function hitTextLayer(x,y,index){
+ var layer=layers[index];
+ if(!layer||layer.type!=="text"||!layer.visible)return false;
+ var d=layer.textData;
+ var angle=-(Number(d.rotation)||0)*Math.PI/180;
+ var dx=x-d.x,dy=y-d.y;
+ var localX=dx*Math.cos(angle)-dy*Math.sin(angle);
+ var localY=dx*Math.sin(angle)+dy*Math.cos(angle);
+ var b=textBounds(layer);
+ if(!b)return false;
+ var left=d.align==="center"?-b.w/2:d.align==="right"?-b.w:0;
+ return localX>=left-10&&localX<=left+b.w+10&&localY>=-10&&localY<=b.h+10;
+}
+
+function selectTextAt(x,y){
+ for(var i=layers.length-1;i>=0;i--){
+  if(hitTextLayer(x,y,i)){
+   activeLayer=i;
+   loadTextSettings(layers[i]);
+   updateLayers();
+   return i;
+  }
+ }
+ return -1;
+}
+
+function loadTextSettings(layer){
+ if(!layer||layer.type!=="text"||!layer.textData)return;
+ var d=layer.textData;
+ $("textInput").value=d.text||"";
+ $("textSize").value=d.fontSize||40;
+ $("fontFamily").value=d.fontFamily||"Arial";
+ $("textColor").value=d.color||"#ffffff";
+ $("textStyle").value=d.style||"normal";
+ $("textAlign").value=d.align||"center";
+ $("letterSpacing").value=d.letterSpacing||0;
+ $("textRotation").value=d.rotation||0;
+ $("outlineColor").value=d.outlineColor||"#000000";
+ $("outlineWidth").value=d.outlineWidth||0;
+ $("shadowColor").value=d.shadowColor||"#000000";
+ $("shadowBlur").value=d.shadowBlur||0;
+ $("textBackground").value=d.backgroundColor||"#000000";
+ $("textBackgroundOpacity").value=d.backgroundOpacity||0;
+}
+
+function updateSelectedText(){
+ var layer=selectedLayer();
+ if(!layer||layer.type!=="text"){
+  status("Please select a Text Layer first");
+  return;
+ }
+ if(layer.locked){alert("This text layer is locked. Unlock it first.");return}
+
+ var old=layer.textData;
+ var d=readTextSettings();
+ d.x=old.x;
+ d.y=old.y;
+ d.underline=old.underline||false;
+ layer.textData=d;
+ layer.name="Text: "+d.text.substring(0,18);
+ render();updateLayers();saveHistory();
+ status("Text layer updated");
+}
+
+$("addText").onclick=function(){
+ if(!hasImage()){alert("Upload an image first.");return}
+ var d=readTextSettings();
+ if(!d.text.trim()){alert("Write some text first.");return}
+ d.x=canvas.width/2;
+ d.y=canvas.height/2;
+ d.underline=false;
+
+ var layer=createLayer("Text: "+d.text.substring(0,18),canvas.width,canvas.height);
+ layer.type="text";
+ layer.textData=d;
+ layers.push(layer);
+ activeLayer=layers.length-1;
+ render();updateLayers();saveHistory();
+ loadTextSettings(layer);
+ setTool("move");
+ status("Editable Text Layer added. Select Move Tool to reposition.");
+};
+
+$("updateText").onclick=updateSelectedText;
+
+/* TEXT CONTROLS: QUICK UPDATE */
+
+["textSize","fontFamily","textColor","textStyle","textAlign","letterSpacing",
+ "textRotation","outlineColor","outlineWidth","shadowColor","shadowBlur",
+ "textBackground","textBackgroundOpacity"].forEach(function(id){
+ $(id).addEventListener("change",function(){
+  var layer=selectedLayer();
+  if(layer&&layer.type==="text"&&!layer.locked){
+   var old=layer.textData;
+   var d=readTextSettings();
+   d.x=old.x;d.y=old.y;d.underline=old.underline||false;
+   layer.textData=d;
+   layer.name="Text: "+d.text.substring(0,18);
+   render();updateLayers();saveHistory();
+   status("Text style updated");
+  }
+ });
+});
+
+$("textInput").addEventListener("change",function(){
+ var layer=selectedLayer();
+ if(layer&&layer.type==="text"&&!layer.locked)updateSelectedText();
+});
+
+/* RENDERING */
 
 function render(){
  if(!hasImage())return;
@@ -378,19 +691,40 @@ function render(){
  layers.forEach(function(layer){
   if(!layer.visible)return;
   ctx.save();
-  ctx.globalAlpha=layer.opacity;
-  ctx.drawImage(layer.canvas,0,0);
+  if(layer.type==="text"){
+   drawTextLayer(ctx,layer);
+  }else{
+   ctx.globalAlpha=layer.opacity;
+   ctx.drawImage(layer.canvas,0,0);
+  }
   ctx.restore();
  });
-
  applyPreview();
+ drawActiveTextOutline();
+}
+
+function drawActiveTextOutline(){
+ octx.clearRect(0,0,overlay.width,overlay.height);
+ var layer=selectedLayer();
+ if(!layer||layer.type!=="text"||!layer.visible)return;
+ var b=textBounds(layer);
+ var d=layer.textData;
+
+ octx.save();
+ octx.translate(d.x,d.y);
+ octx.rotate((Number(d.rotation)||0)*Math.PI/180);
+ octx.strokeStyle="#00c8ff";
+ octx.lineWidth=Math.max(1,canvas.width/700);
+ octx.setLineDash([7,4]);
+ var left=d.align==="center"?-b.w/2:d.align==="right"?-b.w:0;
+ octx.strokeRect(left-5,-5,b.w+10,b.h+10);
+ octx.restore();
 }
 
 function applyPreview(){
  if(!hasImage())return;
  var exposure=Number($("exposure").value);
  var brightness=Number($("brightness").value)+exposure;
- var temperature=Number($("temperature").value);
  var contrast=Number($("contrast").value);
  var saturation=Number($("saturation").value);
  var blur=Number($("blur").value);
@@ -431,6 +765,8 @@ function getPoint(event){
  };
 }
 
+/* LAYERS */
+
 function updateLayers(){
  var list=$("layerList");
  list.innerHTML="";
@@ -443,20 +779,29 @@ function updateLayers(){
    visibility.textContent=layer.visible?"◉":"○";
    visibility.title="Show/Hide";
    visibility.onclick=function(e){
-    e.stopPropagation();layer.visible=!layer.visible;render();updateLayers();saveHistory();
+    e.stopPropagation();
+    layer.visible=!layer.visible;
+    render();updateLayers();saveHistory();
    };
    var lock=document.createElement("button");
    lock.textContent=layer.locked?"🔒":"🔓";
    lock.title="Lock/Unlock";
    lock.onclick=function(e){
-    e.stopPropagation();layer.locked=!layer.locked;updateLayers();
+    e.stopPropagation();
+    layer.locked=!layer.locked;
+    updateLayers();
    };
    var label=document.createElement("span");
-   label.textContent=layer.name;
+   label.textContent=(layer.type==="text"?"T ":"")+layer.name;
    item.appendChild(visibility);
    item.appendChild(label);
    item.appendChild(lock);
-   item.onclick=function(){activeLayer=index;updateLayers();status("Selected: "+layer.name)};
+   item.onclick=function(){
+    activeLayer=index;
+    if(layer.type==="text")loadTextSettings(layer);
+    updateLayers();render();
+    status("Selected: "+layer.name);
+   };
    list.appendChild(item);
   })(i);
  }
@@ -471,15 +816,20 @@ function addLayer(name){
  status("New layer added");
 }
 
+/* HISTORY AND PROJECT DATA */
+
 function snapshot(){
  if(!hasImage())return null;
  return {
+  version:"3.1",
   width:canvas.width,
   height:canvas.height,
   layers:layers.map(function(layer){
    return {
     name:layer.name,
+    type:layer.type||"raster",
     data:layer.canvas.toDataURL("image/png"),
+    textData:layer.textData?JSON.parse(JSON.stringify(layer.textData)):null,
     visible:layer.visible,
     locked:layer.locked,
     opacity:layer.opacity
@@ -521,49 +871,75 @@ function updateHistoryButtons(){
  $("redo").disabled=historyIndex>=history.length-1;
 }
 
-function restoreSnapshot(state){
- if(!state)return;
- var loaded=[];
+function restoreSnapshot(state,callback){
+ if(!state||!state.layers)return;
+ var loaded=new Array(state.layers.length);
  var remaining=state.layers.length;
  if(!remaining)return;
 
- state.layers.forEach(function(item){
+ state.layers.forEach(function(item,index){
   var img=new Image();
   img.onload=function(){
    var layer=createLayer(item.name,state.width,state.height);
    layerContext(layer).drawImage(img,0,0);
-   layer.visible=item.visible;
-   layer.locked=item.locked;
-   layer.opacity=item.opacity;
-   loaded.push({index:state.layers.indexOf(item),layer:layer});
+   layer.type=item.type||"raster";
+   layer.textData=item.textData||null;
+   layer.visible=item.visible!==false;
+   layer.locked=!!item.locked;
+   layer.opacity=typeof item.opacity==="number"?item.opacity:1;
+   loaded[index]=layer;
    remaining--;
-   if(remaining===0){
-    loaded.sort(function(a,b){return a.index-b.index});
-    layers=loaded.map(function(x){return x.layer});
-    activeLayer=Math.min(state.active,layers.length-1);
-    canvas.width=state.width;canvas.height=state.height;
-    overlay.width=state.width;overlay.height=state.height;
-    setSettings(state.settings);
-    render();updateLayers();updateHistoryButtons();
-    status("History restored");
-   }
+   finish();
   };
-  img.onerror=function(){remaining--;};
+  img.onerror=function(){
+   remaining--;
+   finish();
+  };
   img.src=item.data;
  });
+
+ function finish(){
+  if(remaining!==0)return;
+  if(loaded.some(function(x){return !x})){
+   status("Some project layers could not be loaded");
+   return;
+  }
+  layers=loaded;
+  activeLayer=Math.max(0,Math.min(state.active,layers.length-1));
+  canvas.width=state.width;
+  canvas.height=state.height;
+  overlay.width=state.width;
+  overlay.height=state.height;
+  setSettings(state.settings);
+  render();updateLayers();updateHistoryButtons();
+  var active=selectedLayer();
+  if(active&&active.type==="text")loadTextSettings(active);
+  status("Project restored successfully");
+  if(callback)callback();
+ }
 }
 
 function undo(){
- if(historyIndex>0){historyIndex--;restoreSnapshot(history[historyIndex]);}
+ if(historyIndex>0){
+  historyIndex--;
+  restoreSnapshot(history[historyIndex]);
+ }
 }
 function redo(){
- if(historyIndex<history.length-1){historyIndex++;restoreSnapshot(history[historyIndex]);}
+ if(historyIndex<history.length-1){
+  historyIndex++;
+  restoreSnapshot(history[historyIndex]);
+ }
 }
 $("undo").onclick=undo;
 $("redo").onclick=redo;
 
+/* LABELS AND ADJUSTMENTS */
+
 function updateLabels(){
- ["brightness","contrast","saturation"].forEach(function(id){$(id+"Value").textContent=$(id).value+"%"});
+ ["brightness","contrast","saturation"].forEach(function(id){
+  $(id+"Value").textContent=$(id).value+"%"
+ });
  $("blurValue").textContent=$("blur").value+"px";
  $("exposureValue").textContent=$("exposure").value;
  $("temperatureValue").textContent=$("temperature").value;
@@ -579,9 +955,13 @@ function adjustmentChanged(){
 
 ["brightness","contrast","saturation","blur","exposure","temperature","sharpen","noise"].forEach(function(id){
  $(id).addEventListener("input",adjustmentChanged);
- $(id).addEventListener("change",function(){adjustmentChanged();saveHistory()});
+ $(id).addEventListener("change",function(){
+  adjustmentChanged();saveHistory();
+ });
 });
-$("filter").addEventListener("change",function(){adjustmentChanged();saveHistory()});
+$("filter").addEventListener("change",function(){
+ adjustmentChanged();saveHistory();
+});
 $("quality").addEventListener("input",updateLabels);
 $("brushSize").addEventListener("input",updateLabels);
 
@@ -592,28 +972,38 @@ $("resetAdjustments").onclick=function(){
  updateLabels();applyPreview();saveHistory();status("Adjustments reset");
 };
 
+/* IMAGE UPLOAD */
+
 upload.addEventListener("change",function(){
  var file=upload.files[0];
  if(!file)return;
  if(!/^image\/(jpeg|png|webp)$/.test(file.type)){
-  alert("Please choose a JPG, PNG or WEBP image.");upload.value="";return;
+  alert("Please choose a JPG, PNG or WEBP image.");
+  upload.value="";
+  return;
  }
  var reader=new FileReader();
  reader.onload=function(event){
   var img=new Image();
   img.onload=function(){
    if(img.naturalWidth>7000||img.naturalHeight>7000){
-    alert("This image is very large. Please choose an image below 7000 pixels per side.");return;
+    alert("This image is very large. Please choose an image below 7000 pixels per side.");
+    return;
    }
-   canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
-   overlay.width=canvas.width;overlay.height=canvas.height;
+   canvas.width=img.naturalWidth;
+   canvas.height=img.naturalHeight;
+   overlay.width=canvas.width;
+   overlay.height=canvas.height;
    layers=[];
    var base=createLayer("Background",canvas.width,canvas.height);
    layerContext(base).drawImage(img,0,0);
    layers.push(base);activeLayer=0;
    originalData=event.target.result;
-   empty.style.display="none";wrap.style.display="inline-block";
-   zoom=1;canvas.style.width="";canvas.style.maxWidth="100%";
+   empty.style.display="none";
+   wrap.style.display="inline-block";
+   zoom=1;
+   canvas.style.width="";
+   canvas.style.maxWidth="100%";
    resetAllAdjustments();
    render();updateLayers();
    history=[];historyIndex=-1;saveHistory();
@@ -633,6 +1023,8 @@ function resetAllAdjustments(){
  updateLabels();
 }
 
+/* TOOL SELECTION */
+
 function setTool(name){
  tool=name;
  document.querySelectorAll("[data-tool]").forEach(function(button){
@@ -645,34 +1037,27 @@ function setTool(name){
 
 document.querySelectorAll("[data-tool]").forEach(function(button){
  button.onclick=function(){
-  if(!hasImage()){alert("Please upload an image first.");return;}
+  if(!hasImage()){alert("Please upload an image first.");return}
   setTool(button.dataset.tool);
  };
 });
 
-function selectedLayer(){
- if(activeLayer<0||!layers[activeLayer])return null;
- return layers[activeLayer];
-}
-
-function ensureEditable(){
- var layer=selectedLayer();
- if(!layer)return false;
- if(layer.locked){alert("This layer is locked. Unlock it first.");return false;}
- return true;
-}
+/* DRAWING */
 
 function drawShape(name,x1,y1,x2,y2){
  var layer=selectedLayer();if(!layer)return;
  var c=layerContext(layer);
  var color=$("drawColor").value;
  var size=Number($("brushSize").value);
- c.save();c.strokeStyle=color;c.fillStyle=color;c.lineWidth=size;
+ c.save();
+ c.strokeStyle=color;c.fillStyle=color;c.lineWidth=size;
  c.lineCap="round";c.lineJoin="round";
 
  if(name==="rectangle")c.strokeRect(x1,y1,x2-x1,y2-y1);
  if(name==="circle"){
-  c.beginPath();c.ellipse((x1+x2)/2,(y1+y2)/2,Math.abs(x2-x1)/2,Math.abs(y2-y1)/2,0,0,Math.PI*2);c.stroke();
+  c.beginPath();
+  c.ellipse((x1+x2)/2,(y1+y2)/2,Math.abs(x2-x1)/2,Math.abs(y2-y1)/2,0,0,Math.PI*2);
+  c.stroke();
  }
  if(name==="line"){
   c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();
@@ -681,16 +1066,20 @@ function drawShape(name,x1,y1,x2,y2){
   var angle=Math.atan2(y2-y1,x2-x1),head=size*4;
   c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);
   c.lineTo(x2-head*Math.cos(angle-Math.PI/6),y2-head*Math.sin(angle-Math.PI/6));
-  c.moveTo(x2,y2);c.lineTo(x2-head*Math.cos(angle+Math.PI/6),y2-head*Math.sin(angle+Math.PI/6));c.stroke();
+  c.moveTo(x2,y2);
+  c.lineTo(x2-head*Math.cos(angle+Math.PI/6),y2-head*Math.sin(angle+Math.PI/6));
+  c.stroke();
  }
  if(name==="star"||name==="polygon"){
-  var cx=(x1+x2)/2,cy=(y1+y2)/2,rx=Math.abs(x2-x1)/2,ry=Math.abs(y2-y1)/2;
+  var cx=(x1+x2)/2,cy=(y1+y2)/2;
+  var rx=Math.abs(x2-x1)/2,ry=Math.abs(y2-y1)/2;
   var points=name==="star"?10:6;
   c.beginPath();
   for(var i=0;i<points;i++){
    var radius=name==="star"?(i%2===0?1:.45):1;
    var a=-Math.PI/2+i*Math.PI*2/points;
-   var px=cx+Math.cos(a)*rx*radius,py=cy+Math.sin(a)*ry*radius;
+   var px=cx+Math.cos(a)*rx*radius;
+   var py=cy+Math.sin(a)*ry*radius;
    if(i===0)c.moveTo(px,py);else c.lineTo(px,py);
   }
   c.closePath();c.stroke();
@@ -740,37 +1129,79 @@ function drawClone(x,y){
 }
 
 function drawHealing(x,y){
- /* Basic local soft retouch approximation, not AI healing. */
  var layer=selectedLayer();if(!layer)return;
  var c=layerContext(layer),size=Number($("brushSize").value);
  var temp=makeCanvas(canvas.width,canvas.height);
  var tc=temp.getContext("2d");
  tc.filter="blur(2px)";tc.drawImage(layer.canvas,0,0);
- c.save();c.globalAlpha=.65;c.beginPath();c.arc(x,y,size,0,Math.PI*2);c.clip();
+ c.save();c.globalAlpha=.65;
+ c.beginPath();c.arc(x,y,size,0,Math.PI*2);c.clip();
  c.drawImage(temp,0,0);c.restore();
 }
 
+/* POINTER EVENTS */
+
 function startDraw(event){
- if(!hasImage()||tool==="move")return;
+ if(!hasImage())return;
  if(drawing)return;
  if(event.cancelable)event.preventDefault();
- if(!ensureEditable() && ["brush","eraser","rectangle","circle","line","arrow","star","polygon","gradient","clone","healing","blurBrush","text"].indexOf(tool)>=0)return;
 
- var p=getPoint(event);startX=p.x;startY=p.y;lastX=p.x;lastY=p.y;
+ var p=getPoint(event);
+
+ /* MOVE TOOL: SELECT AND MOVE TEXT LAYERS */
+ if(tool==="move"){
+  var found=selectTextAt(p.x,p.y);
+  if(found>=0){
+   var textLayer=layers[found];
+   if(!textLayer.locked){
+    movingText=true;
+    drawing=true;
+    activePointer=event.pointerId;
+    moveOffsetX=p.x-textLayer.textData.x;
+    moveOffsetY=p.y-textLayer.textData.y;
+    try{canvas.setPointerCapture(event.pointerId)}catch(e){}
+    status("Moving text: "+textLayer.name);
+   }
+  }else{
+   activeLayer=0;
+   updateLayers();
+   render();
+   status("No text found at this position");
+  }
+  return;
+ }
+
+ if(!ensureEditable()&&["brush","eraser","rectangle","circle","line","arrow","star","polygon","gradient","clone","healing","blurBrush"].indexOf(tool)>=0)return;
+
+ startX=p.x;startY=p.y;lastX=p.x;lastY=p.y;
  drawing=true;activePointer=event.pointerId;
  try{canvas.setPointerCapture(event.pointerId)}catch(e){}
 
  if(tool==="eyedropper"){
   var pixel=ctx.getImageData(Math.floor(p.x),Math.floor(p.y),1,1).data;
-  var hex="#"+[pixel[0],pixel[1],pixel[2]].map(function(v){return v.toString(16).padStart(2,"0")}).join("");
-  $("drawColor").value=hex;drawing=false;status("Color sampled: "+hex);return;
+  var hex="#"+[pixel[0],pixel[1],pixel[2]].map(function(v){
+   return v.toString(16).padStart(2,"0");
+  }).join("");
+  $("drawColor").value=hex;
+  drawing=false;
+  status("Color sampled: "+hex);
+  return;
  }
+
  if(tool==="clone"){
-  if(!cloneMode){cloneSource={x:p.x,y:p.y};cloneMode=true;drawing=false;status("Clone source selected. Now paint on the destination.");return;}
+  if(!cloneMode){
+   cloneSource={x:p.x,y:p.y};
+   cloneMode=true;
+   drawing=false;
+   status("Clone source selected. Now paint on the destination.");
+   return;
+  }
  }
  if(tool==="crop"||tool==="selectRect"||tool==="selectEllipse"||tool==="lasso"){
   cropBox={x:p.x,y:p.y,w:0,h:0,type:tool==="selectEllipse"?"ellipse":"rect"};
-  lassoPoints=[p];drawOverlay(cropBox);return;
+  lassoPoints=[p];
+  drawOverlay(cropBox);
+  return;
  }
  if(tool==="gradient")return;
  if(tool==="brush")drawBrush(p.x,p.y,p.x+.1,p.y+.1);
@@ -786,8 +1217,24 @@ function moveDraw(event){
  if(event.cancelable)event.preventDefault();
  var p=getPoint(event);
 
+ if(movingText){
+  var layer=selectedLayer();
+  if(layer&&layer.type==="text"){
+   layer.textData.x=p.x-moveOffsetX;
+   layer.textData.y=p.y-moveOffsetY;
+   render();
+  }
+  return;
+ }
+
  if(tool==="crop"||tool==="selectRect"||tool==="selectEllipse"){
-  cropBox={x:Math.min(startX,p.x),y:Math.min(startY,p.y),w:Math.abs(p.x-startX),h:Math.abs(p.y-startY),type:tool==="selectEllipse"?"ellipse":"rect"};
+  cropBox={
+   x:Math.min(startX,p.x),
+   y:Math.min(startY,p.y),
+   w:Math.abs(p.x-startX),
+   h:Math.abs(p.y-startY),
+   type:tool==="selectEllipse"?"ellipse":"rect"
+  };
   drawOverlay(cropBox);return;
  }
  if(tool==="lasso"){
@@ -809,10 +1256,20 @@ function stopDraw(event){
  if(!drawing)return;
  if(activePointer!==null&&event.pointerId!==undefined&&event.pointerId!==activePointer)return;
  drawing=false;activePointer=null;
+
+ if(movingText){
+  movingText=false;
+  saveHistory();
+  render();
+  status("Text position updated");
+  return;
+ }
+
  var p=getPoint(event);
 
- if(tool==="rectangle"||tool==="circle"||tool==="line"||tool==="arrow"||tool==="star"||tool==="polygon"){
-  drawShape(tool,startX,startY,p.x,p.y);saveHistory();render();status("Shape added");
+ if(["rectangle","circle","line","arrow","star","polygon"].indexOf(tool)>=0){
+  drawShape(tool,startX,startY,p.x,p.y);
+  saveHistory();render();status("Shape added");
  }
  if(["brush","eraser","clone","healing","blurBrush"].indexOf(tool)>=0){
   saveHistory();render();status("Drawing completed");
@@ -831,7 +1288,13 @@ function stopDraw(event){
   saveHistory();render();status("Gradient applied");
  }
  if(tool==="crop"||tool==="selectRect"||tool==="selectEllipse"){
-  cropBox={x:Math.min(startX,p.x),y:Math.min(startY,p.y),w:Math.abs(p.x-startX),h:Math.abs(p.y-startY),type:tool==="selectEllipse"?"ellipse":"rect"};
+  cropBox={
+   x:Math.min(startX,p.x),
+   y:Math.min(startY,p.y),
+   w:Math.abs(p.x-startX),
+   h:Math.abs(p.y-startY),
+   type:tool==="selectEllipse"?"ellipse":"rect"
+  };
   drawOverlay(cropBox);
  }
  if(tool==="lasso"){
@@ -847,51 +1310,64 @@ canvas.addEventListener("pointermove",moveDraw);
 canvas.addEventListener("pointerup",stopDraw);
 canvas.addEventListener("pointercancel",stopDraw);
 
+/* CROP */
+
 $("applyCrop").onclick=function(){
  if(tool!=="crop"||!cropBox||cropBox.w<5||cropBox.h<5){
-  alert("Select an area with the Crop Tool first.");return;
+  alert("Select an area with the Crop Tool first.");
+  return;
  }
- var x=Math.max(0,Math.floor(cropBox.x)),y=Math.max(0,Math.floor(cropBox.y));
- var w=Math.min(canvas.width-x,Math.floor(cropBox.w)),h=Math.min(canvas.height-y,Math.floor(cropBox.h));
+ var x=Math.max(0,Math.floor(cropBox.x));
+ var y=Math.max(0,Math.floor(cropBox.y));
+ var w=Math.min(canvas.width-x,Math.floor(cropBox.w));
+ var h=Math.min(canvas.height-y,Math.floor(cropBox.h));
  if(w<1||h<1)return;
+
  layers.forEach(function(layer){
+  if(layer.type==="text"){
+   layer.textData.x-=x;
+   layer.textData.y-=y;
+  }
   var temp=makeCanvas(w,h);
   temp.getContext("2d").drawImage(layer.canvas,x,y,w,h,0,0,w,h);
   layer.canvas=temp;
  });
- canvas.width=w;canvas.height=h;overlay.width=w;overlay.height=h;
- cropBox=null;drawOverlay(null);render();saveHistory();status("Crop applied");
+ canvas.width=w;canvas.height=h;
+ overlay.width=w;overlay.height=h;
+ cropBox=null;drawOverlay(null);
+ render();saveHistory();status("Crop applied");
 };
 
 $("cancelCrop").onclick=function(){
- cropBox=null;selectionBox=null;lassoPoints=[];drawOverlay(null);
+ cropBox=null;selectionBox=null;lassoPoints=[];
+ drawOverlay(null);
  octx.clearRect(0,0,overlay.width,overlay.height);
  status("Selection cleared");
 };
 
-$("addText").onclick=function(){
- if(!hasImage()){alert("Upload an image first.");return}
- if(!ensureEditable())return;
- var text=$("textInput").value;
- if(!text.trim()){alert("Write some text first.");return}
- var layer=createLayer("Text: "+text.substring(0,15),canvas.width,canvas.height);
- var c=layerContext(layer);
- var size=Math.max(8,Math.min(300,Number($("textSize").value)||40));
- c.save();
- c.font=$("textStyle").value+" "+size+"px "+$("fontFamily").value;
- c.fillStyle=$("textColor").value;c.textAlign="center";c.textBaseline="middle";
- c.shadowColor="rgba(0,0,0,.45)";c.shadowBlur=3;
- var lines=text.split("\n");
- lines.forEach(function(line,i){c.fillText(line,canvas.width/2,canvas.height/2+(i-(lines.length-1)/2)*size*1.25)});
- c.restore();
- layers.push(layer);activeLayer=layers.length-1;
- render();updateLayers();saveHistory();status("Text layer added");
-};
+/* TRANSFORM */
 
 function transform(type){
  if(!hasImage()){alert("Upload an image first.");return}
  if(!ensureEditable())return;
+
+ var oldW=canvas.width,oldH=canvas.height;
  layers.forEach(function(layer){
+  if(layer.type==="text"){
+   var d=layer.textData;
+   if(type==="left"){
+    var nx=d.y,ny=oldW-d.x;
+    d.x=nx;d.y=ny;d.rotation-=90;
+   }else if(type==="right"){
+    var nx2=oldH-d.y,ny2=d.x;
+    d.x=nx2;d.y=ny2;d.rotation+=90;
+   }else if(type==="horizontal"){
+    d.x=oldW-d.x;d.rotation=-d.rotation;
+   }else if(type==="vertical"){
+    d.y=oldH-d.y;d.rotation=-d.rotation;
+   }
+  }
+
   var old=layer.canvas,temp;
   if(type==="left"||type==="right"){
    temp=makeCanvas(old.height,old.width);
@@ -908,16 +1384,20 @@ function transform(type){
   }
   layer.canvas=temp;
  });
+
  if(type==="left"||type==="right"){
-  var w=canvas.width;canvas.width=canvas.height;canvas.height=w;
+  canvas.width=oldH;canvas.height=oldW;
   overlay.width=canvas.width;overlay.height=canvas.height;
  }
  render();saveHistory();status("Image transformed");
 }
+
 $("rotateLeft").onclick=function(){transform("left")};
 $("rotateRight").onclick=function(){transform("right")};
 $("flipH").onclick=function(){transform("horizontal")};
 $("flipV").onclick=function(){transform("vertical")};
+
+/* LAYER ACTIONS */
 
 $("newLayer").onclick=function(){addLayer("New Layer "+(layers.length+1))};
 
@@ -925,48 +1405,67 @@ $("duplicateLayer").onclick=function(){
  var layer=selectedLayer();if(!layer)return;
  var copy=createLayer(layer.name+" Copy",canvas.width,canvas.height);
  layerContext(copy).drawImage(layer.canvas,0,0);
- copy.opacity=layer.opacity;layers.push(copy);activeLayer=layers.length-1;
+ copy.type=layer.type||"raster";
+ copy.textData=layer.textData?JSON.parse(JSON.stringify(layer.textData)):null;
+ if(copy.textData){copy.textData.x+=20;copy.textData.y+=20}
+ copy.opacity=layer.opacity;
+ layers.push(copy);activeLayer=layers.length-1;
  render();updateLayers();saveHistory();status("Layer duplicated");
 };
 
 $("deleteLayer").onclick=function(){
  if(layers.length<=1){alert("At least one layer must remain.");return}
  if(activeLayer<0)return;
- layers.splice(activeLayer,1);activeLayer=Math.max(0,activeLayer-1);
+ layers.splice(activeLayer,1);
+ activeLayer=Math.max(0,activeLayer-1);
  render();updateLayers();saveHistory();status("Layer deleted");
 };
 
 $("layerUp").onclick=function(){
  if(activeLayer<0||activeLayer>=layers.length-1)return;
- var a=layers[activeLayer];layers[activeLayer]=layers[activeLayer+1];layers[activeLayer+1]=a;
+ var a=layers[activeLayer];
+ layers[activeLayer]=layers[activeLayer+1];
+ layers[activeLayer+1]=a;
  activeLayer++;render();updateLayers();saveHistory();
 };
 $("layerDown").onclick=function(){
  if(activeLayer<=0)return;
- var a=layers[activeLayer];layers[activeLayer]=layers[activeLayer-1];layers[activeLayer-1]=a;
+ var a=layers[activeLayer];
+ layers[activeLayer]=layers[activeLayer-1];
+ layers[activeLayer-1]=a;
  activeLayer--;render();updateLayers();saveHistory();
 };
 $("layerRename").onclick=function(){
  var layer=selectedLayer();if(!layer)return;
  var name=prompt("Enter new layer name:",layer.name);
- if(name&&name.trim()){layer.name=name.trim();updateLayers();saveHistory()}
+ if(name&&name.trim()){
+  layer.name=name.trim();updateLayers();saveHistory();
+ }
 };
 $("layerOpacity").onclick=function(){
  var layer=selectedLayer();if(!layer)return;
  var value=prompt("Layer opacity (0 to 100):",Math.round(layer.opacity*100));
  if(value===null)return;
  var n=Number(value);
- if(!isFinite(n)||n<0||n>100){alert("Enter a number between 0 and 100.");return}
- layer.opacity=n/100;render();updateLayers();saveHistory();
+ if(!isFinite(n)||n<0||n>100){
+  alert("Enter a number between 0 and 100.");return;
+ }
+ layer.opacity=n/100;
+ render();updateLayers();saveHistory();
 };
 $("layerHide").onclick=function(){
  var layer=selectedLayer();if(!layer)return;
- layer.visible=!layer.visible;render();updateLayers();saveHistory();
+ layer.visible=!layer.visible;
+ render();updateLayers();saveHistory();
 };
 $("layerLock").onclick=function(){
  var layer=selectedLayer();if(!layer)return;
- layer.locked=!layer.locked;updateLayers();status(layer.locked?"Layer locked":"Layer unlocked");
+ layer.locked=!layer.locked;
+ updateLayers();
+ status(layer.locked?"Layer locked":"Layer unlocked");
 };
+
+/* RESET */
 
 $("reset").onclick=function(){
  if(!originalData)return;
@@ -975,7 +1474,8 @@ $("reset").onclick=function(){
  img.onload=function(){
   canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
   overlay.width=canvas.width;overlay.height=canvas.height;
-  layers=[];var base=createLayer("Background",canvas.width,canvas.height);
+  layers=[];
+  var base=createLayer("Background",canvas.width,canvas.height);
   layerContext(base).drawImage(img,0,0);
   layers.push(base);activeLayer=0;
   resetAllAdjustments();render();updateLayers();
@@ -984,6 +1484,8 @@ $("reset").onclick=function(){
  };
  img.src=originalData;
 };
+
+/* ZOOM */
 
 function updateZoom(){
  canvas.style.width=(canvas.width*zoom)+"px";
@@ -994,22 +1496,36 @@ function updateZoom(){
 $("zoomIn").onclick=function(){zoom=Math.min(zoom+.1,3);updateZoom()};
 $("zoomOut").onclick=function(){zoom=Math.max(zoom-.1,.2);updateZoom()};
 $("zoomReset").onclick=function(){
- zoom=1;canvas.style.width="";canvas.style.maxWidth="100%";
- overlay.style.width="";overlay.style.height="";
+ zoom=1;
+ canvas.style.width="";
+ canvas.style.maxWidth="100%";
+ overlay.style.width="";
+ overlay.style.height="";
 };
+
+/* EXPORT */
 
 function exportCanvas(){
  var out=makeCanvas(canvas.width,canvas.height);
  var c=out.getContext("2d");
  var type=$("exportFormat").value;
  if(type==="image/jpeg"){
-  c.fillStyle="#ffffff";c.fillRect(0,0,out.width,out.height);
+  c.fillStyle="#ffffff";
+  c.fillRect(0,0,out.width,out.height);
  }
+
  layers.forEach(function(layer){
   if(!layer.visible)return;
-  c.save();c.globalAlpha=layer.opacity;c.drawImage(layer.canvas,0,0);c.restore();
+  if(layer.type==="text"){
+   drawTextLayer(c,layer);
+  }else{
+   c.save();
+   c.globalAlpha=layer.opacity;
+   c.drawImage(layer.canvas,0,0);
+   c.restore();
+  }
  });
- /* Apply preview adjustments to the exported image. */
+
  var filtered=makeCanvas(out.width,out.height);
  var fc=filtered.getContext("2d");
  var brightness=Number($("brightness").value)+Number($("exposure").value);
@@ -1019,14 +1535,14 @@ function exportCanvas(){
  fc.drawImage(out,0,0);
  fc.filter="none";
 
- /* Temperature tint overlay */
  var temp=Number($("temperature").value);
  if(temp!==0){
-  fc.save();fc.globalAlpha=Math.abs(temp)/300;
+  fc.save();
+  fc.globalAlpha=Math.abs(temp)/300;
   fc.fillStyle=temp>0?"#ff8c42":"#4c9bff";
-  fc.fillRect(0,0,out.width,out.height);fc.restore();
+  fc.fillRect(0,0,out.width,out.height);
+  fc.restore();
  }
-
  return filtered;
 }
 
@@ -1039,10 +1555,16 @@ $("exportImage").onclick=function(){
   var link=document.createElement("a");
   link.download="rifora-edited."+extension;
   link.href=out.toDataURL(type,Number($("quality").value)/100);
-  document.body.appendChild(link);link.click();document.body.removeChild(link);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
   status("Image exported successfully");
- }catch(e){alert("Export failed. Try using a smaller image.")}
+ }catch(e){
+  alert("Export failed. Try using a smaller image.");
+ }
 };
+
+/* SAVE PROJECT */
 
 $("saveProject").onclick=function(){
  if(!hasImage()){alert("Upload an image first.");return}
@@ -1051,14 +1573,20 @@ $("saveProject").onclick=function(){
   var blob=new Blob([JSON.stringify(data)],{type:"application/json"});
   var url=URL.createObjectURL(blob);
   var link=document.createElement("a");
-  link.href=url;link.download="rifora-project.rifora";
-  document.body.appendChild(link);link.click();document.body.removeChild(link);
+  link.href=url;
+  link.download="rifora-project.rifora";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
   setTimeout(function(){URL.revokeObjectURL(url)},1000);
   status("Project saved to your device");
- }catch(e){alert("Could not save project.")}
+ }catch(e){
+  alert("Could not save project.");
+ }
 };
 
 $("openProject").onclick=function(){$("projectFile").click()};
+
 $("projectFile").onchange=function(){
  var file=this.files[0];if(!file)return;
  var reader=new FileReader();
@@ -1066,29 +1594,52 @@ $("projectFile").onchange=function(){
   try{
    var data=JSON.parse(reader.result);
    if(!data.layers||!data.width||!data.height)throw new Error("Invalid project");
-   restoreSnapshot(data);
-   empty.style.display="none";wrap.style.display="inline-block";
-   originalData=null;history=[];historyIndex=-1;
-   setTimeout(function(){saveHistory()},500);
-   status("Project opened");
-  }catch(e){alert("This project file is invalid or damaged.")}
+   if(data.width>7000||data.height>7000)throw new Error("Project too large");
+
+   restoreSnapshot(data,function(){
+    empty.style.display="none";
+    wrap.style.display="inline-block";
+    originalData=null;
+    history=[];historyIndex=-1;
+    saveHistory();
+    status("Project opened successfully");
+   });
+  }catch(e){
+   alert("This project file is invalid or damaged.");
+  }
  };
  reader.readAsText(file);
  this.value="";
 };
 
-/* Keyboard shortcuts */
+/* KEYBOARD SHORTCUTS */
+
 document.addEventListener("keydown",function(e){
  if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"||e.target.tagName==="SELECT")return;
- if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();undo()}
- if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redo()}
+
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){
+  e.preventDefault();undo();
+ }
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){
+  e.preventDefault();redo();
+ }
  if(e.key==="Escape"){
   cropBox=null;selectionBox=null;drawOverlay(null);
   octx.clearRect(0,0,overlay.width,overlay.height);
  }
+ if(e.key==="Delete"){
+  var layer=selectedLayer();
+  if(layer&&layer.type==="text"&&layers.length>1){
+   layers.splice(activeLayer,1);
+   activeLayer=Math.max(0,activeLayer-1);
+   render();updateLayers();saveHistory();
+   status("Text layer deleted");
+  }
+ }
 });
 
-/* Initial state */
+/* INITIAL STATE */
+
 updateLabels();
 updateHistoryButtons();
 updateLayers();
