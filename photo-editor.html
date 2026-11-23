@@ -3,793 +3,799 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Rifora Studio Professional Photo Editor">
-<title>Photo Editor | Rifora Studio</title>
+<title>Rifora Studio - Professional Photo Editor v2.0</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-
-:root{
- --bg:#101525;
- --panel:#192238;
- --panel2:#202d46;
- --accent:#8b6cff;
- --text:#f5f6ff;
- --muted:#aab5ce;
- --border:#34415d;
-}
-
+*{box-sizing:border-box}
 body{
+ margin:0;background:#071525;color:#eaf3ff;
  font-family:Arial,sans-serif;
- background:var(--bg);
- color:var(--text);
- min-height:100vh;
 }
-
-button,input,select{font:inherit}
-
-button{
- cursor:pointer;
- border:0;
- border-radius:7px;
- padding:10px 13px;
- background:var(--panel2);
- color:white;
- transition:.2s;
+header{
+ background:linear-gradient(120deg,#102a43,#1769aa);
+ padding:18px 22px;display:flex;justify-content:space-between;
+ align-items:center;flex-wrap:wrap;gap:12px;
+ border-bottom:1px solid #31516e;
 }
-
-button:hover{background:#394b70}
-button:disabled{opacity:.4;cursor:not-allowed}
-
-.topbar{
- min-height:66px;
- background:#151e32;
- border-bottom:1px solid var(--border);
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:12px 20px;
- gap:12px;
- flex-wrap:wrap;
+header h1{margin:0;font-size:23px}
+header p{margin:5px 0 0;color:#c9e4ff;font-size:12px}
+.version{color:#f0c040;font-size:12px}
+.layout{
+ display:grid;grid-template-columns:220px minmax(0,1fr) 260px;
+ gap:14px;padding:14px;min-height:calc(100vh - 75px);
 }
-
-.brand{
- font-size:22px;
- font-weight:bold;
+.panel{
+ background:#10243a;border:1px solid #29445f;
+ border-radius:12px;padding:14px;
 }
-.brand span{color:#a994ff}
-
-.top-actions{
- display:flex;
- gap:8px;
- flex-wrap:wrap;
+.panel h3{
+ margin:0 0 13px;color:#f0c040;font-size:15px;
 }
-
-.primary{
- background:var(--accent);
- color:white;
-}
-.primary:hover{background:#7252df}
-
-.workspace{
- display:grid;
- grid-template-columns:245px minmax(0,1fr) 270px;
- min-height:calc(100vh - 66px);
-}
-
-.sidebar,.properties{
- background:var(--panel);
- padding:18px;
- overflow:auto;
-}
-
-.sidebar{border-right:1px solid var(--border)}
-.properties{border-left:1px solid var(--border)}
-
-.panel-title{
- font-size:14px;
- color:#c7baff;
- font-weight:bold;
- text-transform:uppercase;
- letter-spacing:1px;
- margin-bottom:17px;
-}
-
-.tool-section{
- margin-bottom:25px;
-}
-
-.tool-section h3{
- font-size:13px;
- color:var(--muted);
- margin-bottom:12px;
-}
-
-.tool-grid{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:9px;
-}
-
 .tool{
- min-height:73px;
- display:flex;
- flex-direction:column;
- align-items:center;
- justify-content:center;
- gap:7px;
- font-size:12px;
- border:1px solid var(--border);
+ display:block;width:100%;padding:11px;margin:7px 0;
+ border:1px solid #34516d;border-radius:7px;
+ background:#17334e;color:#fff;cursor:pointer;text-align:left;
 }
-
-.tool span{font-size:22px}
-
-.tool.active{
- border-color:var(--accent);
- background:#302851;
+.tool:hover,.tool.active{background:#1769aa;border-color:#58b9ff}
+button:disabled{opacity:.4;cursor:not-allowed}
+.workspace{
+ background:#091a2b;border:1px solid #29445f;
+ border-radius:12px;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;min-height:550px;
+ padding:18px;overflow:hidden;
 }
-
-.upload-box{
- border:1px dashed #8070b9;
- background:#25213b;
- border-radius:10px;
- padding:18px 10px;
- text-align:center;
- cursor:pointer;
- color:#ded6ff;
- font-size:13px;
- line-height:1.7;
-}
-
-.upload-box strong{
- display:block;
- font-size:28px;
-}
-
-.upload-box input{display:none}
-
-.canvas-area{
- min-width:0;
- display:flex;
- flex-direction:column;
-}
-
-.canvas-toolbar{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:10px;
- flex-wrap:wrap;
- padding:12px 16px;
- background:#151e32;
- border-bottom:1px solid var(--border);
-}
-
-.canvas-toolbar button{font-size:12px}
-
-.canvas-stage{
- flex:1;
- min-height:480px;
- padding:25px;
- display:flex;
- align-items:center;
- justify-content:center;
- overflow:auto;
- background-color:#101525;
- background-image:
- linear-gradient(45deg,#192238 25%,transparent 25%),
- linear-gradient(-45deg,#192238 25%,transparent 25%),
- linear-gradient(45deg,transparent 75%,#192238 75%),
- linear-gradient(-45deg,transparent 75%,#192238 75%);
- background-size:24px 24px;
- background-position:0 0,0 12px,12px -12px,-12px 0;
-}
-
 .canvas-wrap{
- background:white;
- box-shadow:0 10px 45px rgba(0,0,0,.35);
+ position:relative;display:inline-block;max-width:100%;
  line-height:0;
- max-width:100%;
 }
-
 canvas{
- display:block;
- max-width:100%;
- height:auto;
+ display:block;max-width:100%;height:auto;
+ background:#fff;box-shadow:0 5px 25px #0008;
+ touch-action:none;
 }
-
-.empty-state{
- text-align:center;
- color:#aab5ce;
- line-height:1.8;
- max-width:340px;
+#selection{
+ position:absolute;display:none;border:2px dashed #f0c040;
+ background:#f0c04022;pointer-events:none;
 }
-
-.empty-state .big{font-size:60px}
-
-.field{
- margin-bottom:19px;
+.empty{
+ text-align:center;color:#9fb5ca;line-height:1.8;
 }
-
-.field label{
- display:flex;
- justify-content:space-between;
- font-size:13px;
- margin-bottom:9px;
- color:#e2e6f4;
+.empty strong{font-size:20px;color:#fff}
+.upload-label{
+ display:inline-block;background:#1769aa;color:#fff;
+ padding:12px 20px;border-radius:8px;cursor:pointer;margin-top:15px;
 }
-
-.field input[type=range]{width:100%;accent-color:#a18aff}
-
-.field input[type=text],
-.field input[type=number],
-.field select,
-.field input[type=color]{
- width:100%;
- padding:10px;
- border-radius:7px;
- border:1px solid var(--border);
- background:#101a2d;
- color:white;
+input[type=file]{display:none}
+.control{margin:15px 0}
+.control label{
+ display:flex;justify-content:space-between;
+ font-size:13px;margin-bottom:7px;color:#c8d9e9;
 }
-
-.field input[type=color]{
- height:42px;
- padding:4px;
+input[type=range]{width:100%;accent-color:#2196c8}
+input[type=color]{width:100%;height:38px;border:0;background:none}
+input[type=number],select,input[type=text]{
+ width:100%;padding:9px;background:#071a2c;color:white;
+ border:1px solid #34516d;border-radius:6px;
 }
-
-.field input[type=number]{margin-top:8px}
-
-.property-actions{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:8px;
+.action{
+ padding:10px 12px;border:0;border-radius:7px;
+ background:#1769aa;color:#fff;cursor:pointer;margin:4px 2px;
 }
-
-.property-actions button{font-size:12px}
-
-.divider{
- height:1px;
- background:var(--border);
- margin:20px 0;
-}
-
-.status{
- padding:10px 15px;
- font-size:12px;
- color:var(--muted);
- background:#151e32;
- border-top:1px solid var(--border);
-}
-
-#imageInput{display:none}
-
+.action.secondary{background:#29445f}
+.action.danger{background:#9b3030}
+.actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.note{font-size:11px;color:#9fb5ca;line-height:1.6}
+.tool-section{margin-bottom:18px}
+footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
 @media(max-width:900px){
- .workspace{grid-template-columns:200px minmax(0,1fr)}
- .properties{
-  grid-column:1/-1;
-  border-left:0;
-  border-top:1px solid var(--border);
- }
-}
-
-@media(max-width:600px){
- .workspace{display:flex;flex-direction:column}
- .sidebar,.properties{border:0;border-bottom:1px solid var(--border)}
- .canvas-stage{min-height:350px;padding:12px}
- .topbar{padding:12px}
+ .layout{grid-template-columns:1fr}
+ .workspace{min-height:350px;order:1}
+ .panel{order:2}
 }
 </style>
 </head>
 
 <body>
 
-<header class="topbar">
- <div class="brand">Rifora <span>Studio</span></div>
- <div class="top-actions">
-  <button id="undoBtn" disabled>↶ Undo</button>
-  <button id="redoBtn" disabled>↷ Redo</button>
-  <button id="resetBtn">Reset</button>
-  <button class="primary" id="downloadBtn">Download ⬇</button>
+<header>
+ <div>
+  <h1>Rifora Studio</h1>
+  <p>LEARN • CREATE • GROW</p>
  </div>
+ <div class="version">PROFESSIONAL PHOTO EDITOR v2.0</div>
 </header>
 
-<div class="workspace">
+<div class="layout">
 
-<aside class="sidebar">
- <div class="panel-title">Creative Tools</div>
+<!-- LEFT TOOLS -->
+<aside class="panel">
+ <h3>Editing Tools</h3>
 
- <div class="tool-section">
-  <h3>IMPORT IMAGE</h3>
-  <label class="upload-box" for="imageInput">
-   <strong>＋</strong>
-   Click to upload photo
-   <br>JPG, PNG, WEBP
-  </label>
-  <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp">
+ <input type="file" id="upload" accept="image/png,image/jpeg,image/webp">
+ <label for="upload" class="upload-label" style="display:block;text-align:center">
+  + Upload Image
+ </label>
+
+ <div class="tool-section" style="margin-top:18px">
+  <button class="tool active" data-tool="move">✋ Move / View</button>
+  <button class="tool" data-tool="crop">✂ Crop Tool</button>
+  <button class="tool" data-tool="brush">🖌 Brush Tool</button>
+  <button class="tool" data-tool="rectangle">▭ Rectangle</button>
+  <button class="tool" data-tool="circle">◯ Circle</button>
+  <button class="tool" data-tool="line">／ Line</button>
  </div>
 
  <div class="tool-section">
-  <h3>IMAGE TRANSFORM</h3>
-  <div class="tool-grid">
-   <button class="tool" id="rotateLeft"><span>↶</span>Rotate Left</button>
-   <button class="tool" id="rotateRight"><span>↷</span>Rotate Right</button>
-   <button class="tool" id="flipH"><span>↔</span>Flip Horizontal</button>
-   <button class="tool" id="flipV"><span>↕</span>Flip Vertical</button>
-  </div>
+  <h3>Transform</h3>
+  <button class="tool" id="rotateLeft">↶ Rotate Left</button>
+  <button class="tool" id="rotateRight">↷ Rotate Right</button>
+  <button class="tool" id="flipH">↔ Flip Horizontal</button>
+  <button class="tool" id="flipV">↕ Flip Vertical</button>
  </div>
 
  <div class="tool-section">
-  <h3>PHOTO EFFECTS</h3>
-  <div class="tool-grid">
-   <button class="tool filter-btn" data-filter="normal"><span>◉</span>Normal</button>
-   <button class="tool filter-btn" data-filter="grayscale"><span>◐</span>Grayscale</button>
-   <button class="tool filter-btn" data-filter="sepia"><span>◒</span>Sepia</button>
-   <button class="tool filter-btn" data-filter="vintage"><span>◍</span>Vintage</button>
+  <h3>Text Editor</h3>
+  <input type="text" id="textInput" placeholder="Write your text">
+  <div class="control">
+   <label>Text Size</label>
+   <input type="number" id="textSize" value="40" min="8" max="200">
   </div>
- </div>
-
- <div class="tool-section">
-  <h3>DESIGN TOOLS</h3>
-  <div class="tool-grid">
-   <button class="tool" id="addTextBtn"><span>T</span>Add Text</button>
-   <button class="tool" id="cropHint"><span>▣</span>Crop Guide</button>
+  <div class="control">
+   <label>Text Color</label>
+   <input type="color" id="textColor" value="#ffffff">
   </div>
+  <button class="action" id="addText">Add Text</button>
  </div>
 </aside>
 
-<main class="canvas-area">
- <div class="canvas-toolbar">
-  <strong>Photo Workspace</strong>
-  <div>
-   <button id="zoomOut">−</button>
-   <button id="zoomLabel">100%</button>
-   <button id="zoomIn">＋</button>
-  </div>
+<!-- CENTER WORKSPACE -->
+<main class="workspace">
+ <div class="empty" id="emptyMessage">
+  <strong>Welcome to Rifora Studio</strong><br>
+  Upload an image to start editing.<br>
+  <label for="upload" class="upload-label">Choose Your Image</label>
  </div>
 
- <div class="canvas-stage" id="canvasStage">
-  <div class="empty-state" id="emptyState">
-   <div class="big">🖼️</div>
-   <h2>Your Canvas is Ready</h2>
-   <p>Upload a photo to start editing with Rifora Studio.</p>
-   <br>
-   <button class="primary" id="startUpload">Upload Your Photo</button>
-  </div>
-  <div class="canvas-wrap" id="canvasWrap" style="display:none">
-   <canvas id="editorCanvas" width="900" height="600"></canvas>
-  </div>
+ <div class="canvas-wrap" id="canvasWrap" style="display:none">
+  <canvas id="canvas"></canvas>
+  <div id="selection"></div>
  </div>
 
- <div class="status" id="status">Ready — Upload an image to begin.</div>
+ <div class="actions">
+  <button class="action" id="applyCrop" style="display:none">Apply Crop</button>
+  <button class="action secondary" id="cancelCrop" style="display:none">Cancel Crop</button>
+  <button class="action secondary" id="undo">↶ Undo</button>
+  <button class="action secondary" id="redo">↷ Redo</button>
+  <button class="action secondary" id="reset">Reset Image</button>
+ </div>
 </main>
 
-<aside class="properties">
- <div class="panel-title">Adjustments</div>
+<!-- RIGHT SETTINGS -->
+<aside class="panel">
+ <h3>Adjustments</h3>
 
- <div class="field">
+ <div class="control">
   <label>Brightness <span id="brightnessValue">100%</span></label>
   <input type="range" id="brightness" min="0" max="200" value="100">
  </div>
 
- <div class="field">
+ <div class="control">
   <label>Contrast <span id="contrastValue">100%</span></label>
   <input type="range" id="contrast" min="0" max="200" value="100">
  </div>
 
- <div class="field">
+ <div class="control">
   <label>Saturation <span id="saturationValue">100%</span></label>
   <input type="range" id="saturation" min="0" max="200" value="100">
  </div>
 
- <div class="field">
+ <div class="control">
   <label>Blur <span id="blurValue">0px</span></label>
-  <input type="range" id="blur" min="0" max="15" value="0">
+  <input type="range" id="blur" min="0" max="10" value="0" step=".5">
  </div>
 
- <div class="divider"></div>
+ <h3 style="margin-top:25px">Filters</h3>
+ <select id="filter">
+  <option value="none">Normal</option>
+  <option value="grayscale(100%)">Grayscale</option>
+  <option value="sepia(100%)">Sepia</option>
+  <option value="sepia(45%) contrast(110%)">Vintage</option>
+  <option value="saturate(160%)">Vivid</option>
+  <option value="contrast(125%)">High Contrast</option>
+ </select>
 
- <div class="panel-title">Add Text</div>
+ <h3 style="margin-top:25px">Brush & Shapes</h3>
 
- <div class="field">
-  <label>Text Content</label>
-  <input type="text" id="textInput" placeholder="Type your text here">
+ <div class="control">
+  <label>Brush / Shape Color</label>
+  <input type="color" id="drawColor" value="#ff3333">
  </div>
 
- <div class="field">
-  <label>Font Size</label>
-  <input type="number" id="fontSize" min="10" max="150" value="48">
+ <div class="control">
+  <label>Brush / Shape Size <span id="brushSizeValue">6px</span></label>
+  <input type="range" id="brushSize" min="1" max="60" value="6">
  </div>
 
- <div class="field">
-  <label>Text Color</label>
-  <input type="color" id="textColor" value="#ffffff">
+ <p class="note">
+  Select Brush, Rectangle, Circle or Line from the left panel.
+  Then draw directly on your image.
+ </p>
+
+ <h3 style="margin-top:25px">Zoom</h3>
+ <div class="actions">
+  <button class="action secondary" id="zoomOut">−</button>
+  <button class="action secondary" id="zoomReset">100%</button>
+  <button class="action secondary" id="zoomIn">+</button>
  </div>
 
- <div class="field">
-  <label>Text Position</label>
-  <select id="textPosition">
-   <option value="center">Center</option>
-   <option value="top">Top</option>
-   <option value="bottom">Bottom</option>
-  </select>
- </div>
+ <h3 style="margin-top:25px">Export Image</h3>
+ <button class="action" id="exportPNG" style="width:100%">Download PNG</button>
+ <button class="action" id="exportJPG" style="width:100%">Download JPG</button>
 
- <button class="primary" id="applyText" style="width:100%">
-  Add Text to Photo
- </button>
-
- <div class="divider"></div>
-
- <div class="panel-title">Export Image</div>
-
- <div class="field">
-  <label>File Format</label>
-  <select id="format">
-   <option value="png">PNG</option>
-   <option value="jpeg">JPG</option>
-  </select>
- </div>
-
- <button class="primary" id="exportBtn" style="width:100%">
-  Download Image
- </button>
+ <p class="note">
+  Your image is edited inside your browser. This version does not upload
+  your image to a server.
+ </p>
 </aside>
 
 </div>
 
+<footer>
+© 2026 Rifora Studio | LEARN • CREATE • GROW
+</footer>
+
 <script>
-const canvas = document.getElementById("editorCanvas");
+(function(){
+
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+const upload = document.getElementById("upload");
+const wrap = document.getElementById("canvasWrap");
+const emptyMessage = document.getElementById("emptyMessage");
+const selection = document.getElementById("selection");
 
-const imageInput = document.getElementById("imageInput");
-const emptyState = document.getElementById("emptyState");
-const canvasWrap = document.getElementById("canvasWrap");
-const statusBox = document.getElementById("status");
-
-let photo = new Image();
-let hasPhoto = false;
-
-let settings = {
- brightness:100,
- contrast:100,
- saturation:100,
- blur:0,
- filter:"normal",
- rotation:0,
- flipH:false,
- flipV:false,
- zoom:100,
- texts:[]
-};
-
+let originalImage = null;
+let currentTool = "move";
+let drawing = false;
+let startX = 0;
+let startY = 0;
+let lastX = 0;
+let lastY = 0;
+let cropBox = null;
+let zoom = 1;
 let history = [];
 let historyIndex = -1;
+let drawingSnapshot = null;
 
-function status(message){
- statusBox.textContent = message;
+const $ = id => document.getElementById(id);
+
+function hasImage(){
+ return canvas.width > 0 && canvas.height > 0;
 }
 
 function saveHistory(){
- if(!hasPhoto) return;
+ if(!hasImage()) return;
 
- history = history.slice(0,historyIndex+1);
- history.push(JSON.stringify(settings));
+ const snapshot = {
+  width:canvas.width,
+  height:canvas.height,
+  data:canvas.toDataURL("image/png")
+ };
 
- if(history.length>30) history.shift();
+ history = history.slice(0,historyIndex + 1);
+ history.push(snapshot);
 
- historyIndex=history.length-1;
+ if(history.length > 20) history.shift();
+
+ historyIndex = history.length - 1;
  updateHistoryButtons();
-}
-
-function updateHistoryButtons(){
- document.getElementById("undoBtn").disabled=historyIndex<=0;
- document.getElementById("redoBtn").disabled=historyIndex>=history.length-1;
 }
 
 function restoreHistory(index){
- if(index<0 || index>=history.length) return;
- historyIndex=index;
- settings=JSON.parse(history[index]);
- syncControls();
- render();
- updateHistoryButtons();
+ if(index < 0 || index >= history.length) return;
+
+ const item = history[index];
+ const img = new Image();
+
+ img.onload = function(){
+  canvas.width = item.width;
+  canvas.height = item.height;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(img,0,0);
+  historyIndex = index;
+  updateHistoryButtons();
+  applyDisplayFilters();
+ };
+
+ img.src = item.data;
 }
 
-function syncControls(){
- ["brightness","contrast","saturation","blur"].forEach(id=>{
-  document.getElementById(id).value=settings[id];
-  document.getElementById(id+"Value").textContent=
-   settings[id]+(id==="blur"?"px":"%");
+function updateHistoryButtons(){
+ $("undo").disabled = historyIndex <= 0;
+ $("redo").disabled = historyIndex >= history.length - 1;
+}
+
+function clearHistory(){
+ history = [];
+ historyIndex = -1;
+ saveHistory();
+}
+
+function getFilterString(){
+ return "brightness(" + $("brightness").value + "%) " +
+ "contrast(" + $("contrast").value + "%) " +
+ "saturate(" + $("saturation").value + "%) " +
+ "blur(" + $("blur").value + "px) " +
+ $("filter").value;
+}
+
+function applyDisplayFilters(){
+ canvas.style.filter = getFilterString();
+}
+
+function updateFilterLabels(){
+ ["brightness","contrast","saturation","blur"].forEach(function(id){
+  const value = $(id).value;
+  $(id+"Value").textContent =
+   id === "blur" ? value+"px" : value+"%";
  });
 }
 
-function render(){
- if(!hasPhoto) return;
+function getPoint(event){
+ const rect = canvas.getBoundingClientRect();
 
- const angle=((settings.rotation%360)+360)%360;
- const swap=angle===90 || angle===270;
-
- const width=swap?photo.naturalHeight:photo.naturalWidth;
- const height=swap?photo.naturalWidth:photo.naturalHeight;
-
- canvas.width=width;
- canvas.height=height;
-
- let filters=[];
- filters.push("brightness("+settings.brightness+"%)");
- filters.push("contrast("+settings.contrast+"%)");
- filters.push("saturate("+settings.saturation+"%)");
- filters.push("blur("+settings.blur+"px)");
-
- if(settings.filter==="grayscale") filters.push("grayscale(100%)");
- if(settings.filter==="sepia") filters.push("sepia(100%)");
- if(settings.filter==="vintage")
-  filters.push("sepia(45%) contrast(110%) saturate(80%)");
-
- ctx.clearRect(0,0,width,height);
- ctx.save();
- ctx.translate(width/2,height/2);
- ctx.rotate(settings.rotation*Math.PI/180);
- ctx.scale(settings.flipH?-1:1,settings.flipV?-1:1);
- ctx.filter=filters.join(" ");
-
- ctx.drawImage(
-  photo,
-  -photo.naturalWidth/2,
-  -photo.naturalHeight/2,
-  photo.naturalWidth,
-  photo.naturalHeight
- );
-
- ctx.restore();
- ctx.filter="none";
-
- settings.texts.forEach(item=>{
-  ctx.save();
-  ctx.font="bold "+item.size+"px Arial";
-  ctx.textAlign="center";
-  ctx.textBaseline="middle";
-  ctx.lineWidth=Math.max(2,item.size/14);
-  ctx.strokeStyle="rgba(0,0,0,.65)";
-  ctx.fillStyle=item.color;
-  ctx.strokeText(item.text,item.x,item.y);
-  ctx.fillText(item.text,item.x,item.y);
-  ctx.restore();
- });
-
- canvas.style.width=(width*settings.zoom/100)+"px";
- canvas.style.maxWidth="none";
- canvas.style.height="auto";
-
- status("Editing image — "+width+" × "+height+" pixels");
+ return {
+  x:(event.clientX - rect.left) * canvas.width / rect.width,
+  y:(event.clientY - rect.top) * canvas.height / rect.height,
+  cssX:event.clientX - rect.left,
+  cssY:event.clientY - rect.top
+ };
 }
 
-function uploadPhoto(file){
+function showCropBox(){
+ if(!cropBox) return;
+
+ const rect = canvas.getBoundingClientRect();
+ const scaleX = rect.width / canvas.width;
+ const scaleY = rect.height / canvas.height;
+
+ selection.style.display = "block";
+ selection.style.left = cropBox.x * scaleX + "px";
+ selection.style.top = cropBox.y * scaleY + "px";
+ selection.style.width = cropBox.w * scaleX + "px";
+ selection.style.height = cropBox.h * scaleY + "px";
+}
+
+function hideCropBox(){
+ selection.style.display = "none";
+ cropBox = null;
+ $("applyCrop").style.display = "none";
+ $("cancelCrop").style.display = "none";
+}
+
+function setTool(tool){
+ currentTool = tool;
+
+ document.querySelectorAll("[data-tool]").forEach(function(button){
+  button.classList.toggle("active",button.dataset.tool === tool);
+ });
+
+ if(tool === "crop"){
+  $("applyCrop").style.display = "inline-block";
+  $("cancelCrop").style.display = "inline-block";
+ }else{
+  hideCropBox();
+ }
+
+ canvas.style.cursor =
+  tool === "move" ? "default" :
+  tool === "crop" ? "crosshair" : "crosshair";
+}
+
+document.querySelectorAll("[data-tool]").forEach(function(button){
+ button.addEventListener("click",function(){
+  if(!hasImage()){
+   alert("Please upload an image first.");
+   return;
+  }
+  setTool(button.dataset.tool);
+ });
+});
+
+upload.addEventListener("change",function(event){
+ const file = event.target.files[0];
  if(!file) return;
 
  if(!/^image\/(jpeg|png|webp)$/.test(file.type)){
   alert("Please select a JPG, PNG or WEBP image.");
+  upload.value = "";
   return;
  }
 
- const reader=new FileReader();
+ const reader = new FileReader();
 
- reader.onload=function(event){
-  photo.onload=function(){
-   hasPhoto=true;
+ reader.onload = function(e){
+  const img = new Image();
 
-   settings={
-    brightness:100,
-    contrast:100,
-    saturation:100,
-    blur:0,
-    filter:"normal",
-    rotation:0,
-    flipH:false,
-    flipV:false,
-    zoom:100,
-    texts:[]
-   };
+  img.onload = function(){
+   canvas.width = img.naturalWidth;
+   canvas.height = img.naturalHeight;
+   ctx.clearRect(0,0,canvas.width,canvas.height);
+   ctx.drawImage(img,0,0);
 
-   emptyState.style.display="none";
-   canvasWrap.style.display="block";
+   originalImage = new Image();
+   originalImage.src = e.target.result;
 
-   history=[];
-   historyIndex=-1;
+   emptyMessage.style.display = "none";
+   wrap.style.display = "inline-block";
 
-   render();
-   saveHistory();
-   syncControls();
+   zoom = 1;
+   canvas.style.width = "";
+   canvas.style.maxWidth = "100%";
 
-   status("Photo uploaded successfully.");
+   resetAdjustments();
+   hideCropBox();
+   setTool("move");
+   clearHistory();
   };
 
-  photo.src=event.target.result;
+  img.src = e.target.result;
  };
 
  reader.readAsDataURL(file);
+});
+
+function resetAdjustments(){
+ $("brightness").value = 100;
+ $("contrast").value = 100;
+ $("saturation").value = 100;
+ $("blur").value = 0;
+ $("filter").value = "none";
+ updateFilterLabels();
+ applyDisplayFilters();
 }
 
-imageInput.addEventListener("change",function(){
- if(this.files && this.files[0]) uploadPhoto(this.files[0]);
- this.value="";
-});
-
-document.getElementById("startUpload").onclick=function(){
- imageInput.click();
-};
-
-document.getElementById("brightness").addEventListener("input",function(){
- settings.brightness=Number(this.value);
- document.getElementById("brightnessValue").textContent=this.value+"%";
- render();
-});
-
-document.getElementById("contrast").addEventListener("input",function(){
- settings.contrast=Number(this.value);
- document.getElementById("contrastValue").textContent=this.value+"%";
- render();
-});
-
-document.getElementById("saturation").addEventListener("input",function(){
- settings.saturation=Number(this.value);
- document.getElementById("saturationValue").textContent=this.value+"%";
- render();
-});
-
-document.getElementById("blur").addEventListener("input",function(){
- settings.blur=Number(this.value);
- document.getElementById("blurValue").textContent=this.value+"px";
- render();
-});
-
-["brightness","contrast","saturation","blur"].forEach(id=>{
- document.getElementById(id).addEventListener("change",saveHistory);
-});
-
-document.getElementById("rotateLeft").onclick=function(){
- if(!hasPhoto)return;
- settings.rotation-=90;
- render();saveHistory();
-};
-
-document.getElementById("rotateRight").onclick=function(){
- if(!hasPhoto)return;
- settings.rotation+=90;
- render();saveHistory();
-};
-
-document.getElementById("flipH").onclick=function(){
- if(!hasPhoto)return;
- settings.flipH=!settings.flipH;
- render();saveHistory();
-};
-
-document.getElementById("flipV").onclick=function(){
- if(!hasPhoto)return;
- settings.flipV=!settings.flipV;
- render();saveHistory();
-};
-
-document.querySelectorAll(".filter-btn").forEach(button=>{
- button.onclick=function(){
-  if(!hasPhoto)return;
-  settings.filter=this.dataset.filter;
-  render();saveHistory();
-
-  document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
-  this.classList.add("active");
- };
-});
-
-document.getElementById("applyText").onclick=function(){
- if(!hasPhoto){
-  alert("Please upload a photo first.");
-  return;
- }
-
- const text=document.getElementById("textInput").value.trim();
- if(!text){
-  alert("Please enter some text.");
-  return;
- }
-
- const size=Math.max(10,Math.min(150,Number(document.getElementById("fontSize").value)||48));
- const position=document.getElementById("textPosition").value;
-
- let y=canvas.height/2;
- if(position==="top") y=size+15;
- if(position==="bottom") y=canvas.height-size-15;
-
- settings.texts.push({
-  text:text,
-  size:size,
-  color:document.getElementById("textColor").value,
-  x:canvas.width/2,
-  y:y
+["brightness","contrast","saturation","blur"].forEach(function(id){
+ $(id).addEventListener("input",function(){
+  updateFilterLabels();
+  applyDisplayFilters();
  });
+ $(id).addEventListener("change",function(){
+  updateFilterLabels();
+  applyDisplayFilters();
+ });
+});
 
- render();
- saveHistory();
- status("Text added to photo.");
-};
+$("filter").addEventListener("change",applyDisplayFilters);
 
-document.getElementById("undoBtn").onclick=function(){
- if(historyIndex>0) restoreHistory(historyIndex-1);
-};
+$("brushSize").addEventListener("input",function(){
+ $("brushSizeValue").textContent = this.value+"px";
+});
 
-document.getElementById("redoBtn").onclick=function(){
- if(historyIndex<history.length-1) restoreHistory(historyIndex+1);
-};
-
-document.getElementById("resetBtn").onclick=function(){
- if(!hasPhoto)return;
-
- if(!confirm("Reset all editing changes?"))return;
-
- settings={
-  brightness:100,
-  contrast:100,
-  saturation:100,
-  blur:0,
-  filter:"normal",
-  rotation:0,
-  flipH:false,
-  flipV:false,
-  zoom:100,
-  texts:[]
+function getDrawSettings(){
+ return {
+  color:$("drawColor").value,
+  size:Number($("brushSize").value)
  };
+}
 
- document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+function drawShape(type,x1,y1,x2,y2){
+ const settings = getDrawSettings();
 
- syncControls();
- render();
- saveHistory();
- status("Editing settings have been reset.");
-};
+ ctx.save();
+ ctx.strokeStyle = settings.color;
+ ctx.lineWidth = settings.size;
+ ctx.lineCap = "round";
+ ctx.lineJoin = "round";
 
-document.getElementById("zoomIn").onclick=function(){
- if(!hasPhoto)return;
- settings.zoom=Math.min(200,settings.zoom+10);
- render();
- document.getElementById("zoomLabel").textContent=settings.zoom+"%";
-};
+ if(type === "rectangle"){
+  ctx.strokeRect(x1,y1,x2-x1,y2-y1);
+ }
 
-document.getElementById("zoomOut").onclick=function(){
- if(!hasPhoto)return;
- settings.zoom=Math.max(30,settings.zoom-10);
- render();
- document.getElementById("zoomLabel").textContent=settings.zoom+"%";
-};
+ if(type === "circle"){
+  const radiusX = Math.abs(x2-x1)/2;
+  const radiusY = Math.abs(y2-y1)/2;
+  const centerX = (x1+x2)/2;
+  const centerY = (y1+y2)/2;
 
-document.getElementById("cropHint").onclick=function(){
- alert("Crop tool is planned for the next version. It will include free crop and aspect ratio controls.");
-};
+  ctx.beginPath();
+  ctx.ellipse(centerX,centerY,radiusX,radiusY,0,0,Math.PI*2);
+  ctx.stroke();
+ }
 
-function downloadImage(){
- if(!hasPhoto){
-  alert("Please upload a photo first.");
+ if(type === "line"){
+  ctx.beginPath();
+  ctx.moveTo(x1,y1);
+  ctx.lineTo(x2,y2);
+  ctx.stroke();
+ }
+
+ ctx.restore();
+}
+
+canvas.addEventListener("pointerdown",function(event){
+ if(!hasImage() || currentTool === "move") return;
+
+ event.preventDefault();
+
+ const point = getPoint(event);
+ startX = point.x;
+ startY = point.y;
+ lastX = point.y;
+ lastY = point.y;
+ drawing = true;
+
+ try{canvas.setPointerCapture(event.pointerId)}catch(e){}
+
+ if(currentTool === "crop"){
+  cropBox = {x:startX,y:startY,w:0,h:0};
+  showCropBox();
   return;
  }
 
- const format=document.getElementById("format").value;
- const mime=format==="jpeg"?"image/jpeg":"image/png";
- const data=canvas.toDataURL(mime,0.95);
+ if(currentTool === "brush"){
+  ctx.save();
+  ctx.strokeStyle = getDrawSettings().color;
+  ctx.lineWidth = getDrawSettings().size;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.beginPath();
+  ctx.moveTo(startX,startY);
+  ctx.lineTo(startX + 0.1,startY + 0.1);
+  ctx.stroke();
+  ctx.restore();
+ }
 
- const link=document.createElement("a");
- link.href=data;
- link.download="rifora-edited-photo."+format;
- document.body.appendChild(link);
- link.click();
- document.body.removeChild(link);
+ if(["rectangle","circle","line"].includes(currentTool)){
+  drawingSnapshot = ctx.getImageData(0,0,canvas.width,canvas.height);
+ }
+});
 
- status("Your edited photo has been downloaded.");
+canvas.addEventListener("pointermove",function(event){
+ if(!drawing) return;
+
+ const point = getPoint(event);
+
+ if(currentTool === "crop"){
+  cropBox = {
+   x:Math.min(startX,point.x),
+   y:Math.min(startY,point.y),
+   w:Math.abs(point.x-startX),
+   h:Math.abs(point.y-startY)
+  };
+  showCropBox();
+  return;
+ }
+
+ if(currentTool === "brush"){
+  ctx.save();
+  ctx.strokeStyle = getDrawSettings().color;
+  ctx.lineWidth = getDrawSettings().size;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.beginPath();
+  ctx.moveTo(startX,startY);
+  ctx.lineTo(point.x,point.y);
+  ctx.stroke();
+  ctx.restore();
+
+  startX = point.x;
+  startY = point.y;
+ }
+});
+
+function finishDrawing(event){
+ if(!drawing) return;
+
+ drawing = false;
+
+ if(currentTool === "brush"){
+  saveHistory();
+ }
+
+ if(["rectangle","circle","line"].includes(currentTool)){
+  const point = getPoint(event);
+
+  if(drawingSnapshot){
+   ctx.putImageData(drawingSnapshot,0,0);
+   drawingSnapshot = null;
+  }
+
+  if(Math.abs(point.x-startX) > 1 || Math.abs(point.y-startY) > 1){
+   drawShape(currentTool,startX,startY,point.x,point.y);
+   saveHistory();
+  }
+ }
 }
 
-document.getElementById("downloadBtn").onclick=downloadImage;
-document.getElementById("exportBtn").onclick=downloadImage;
+canvas.addEventListener("pointerup",finishDrawing);
+canvas.addEventListener("pointercancel",finishDrawing);
 
+$("applyCrop").addEventListener("click",function(){
+ if(!cropBox || cropBox.w < 5 || cropBox.h < 5){
+  alert("Please draw a crop selection on the image first.");
+  return;
+ }
+
+ const x = Math.max(0,Math.floor(cropBox.x));
+ const y = Math.max(0,Math.floor(cropBox.y));
+ const w = Math.min(canvas.width-x,Math.floor(cropBox.w));
+ const h = Math.min(canvas.height-y,Math.floor(cropBox.h));
+
+ if(w < 1 || h < 1) return;
+
+ const temp = document.createElement("canvas");
+ temp.width = w;
+ temp.height = h;
+
+ temp.getContext("2d").drawImage(
+  canvas,x,y,w,h,0,0,w,h
+ );
+
+ canvas.width = w;
+ canvas.height = h;
+ ctx.drawImage(temp,0,0);
+
+ hideCropBox();
+ saveHistory();
+});
+
+$("cancelCrop").addEventListener("click",hideCropBox);
+
+$("addText").addEventListener("click",function(){
+ if(!hasImage()){
+  alert("Please upload an image first.");
+  return;
+ }
+
+ const text = $("textInput").value.trim();
+ if(!text){
+  alert("Please write some text first.");
+  return;
+ }
+
+ const size = Math.max(8,Math.min(200,Number($("textSize").value)||40));
+
+ ctx.save();
+ ctx.font = "bold "+size+"px Arial, sans-serif";
+ ctx.fillStyle = $("textColor").value;
+ ctx.textAlign = "center";
+ ctx.textBaseline = "middle";
+
+ ctx.shadowColor = "rgba(0,0,0,.45)";
+ ctx.shadowBlur = 3;
+ ctx.fillText(text,canvas.width/2,canvas.height/2);
+ ctx.restore();
+
+ saveHistory();
+});
+
+function transformImage(type){
+ if(!hasImage()) return;
+
+ const temp = document.createElement("canvas");
+ const tctx = temp.getContext("2d");
+
+ if(type === "left" || type === "right"){
+  temp.width = canvas.height;
+  temp.height = canvas.width;
+
+  if(type === "right"){
+   tctx.translate(temp.width,0);
+   tctx.rotate(Math.PI/2);
+  }else{
+   tctx.translate(0,temp.height);
+   tctx.rotate(-Math.PI/2);
+  }
+ }
+
+ if(type === "horizontal" || type === "vertical"){
+  temp.width = canvas.width;
+  temp.height = canvas.height;
+
+  if(type === "horizontal"){
+   tctx.translate(temp.width,0);
+   tctx.scale(-1,1);
+  }else{
+   tctx.translate(0,temp.height);
+   tctx.scale(1,-1);
+  }
+ }
+
+ tctx.drawImage(canvas,0,0);
+
+ canvas.width = temp.width;
+ canvas.height = temp.height;
+ ctx.drawImage(temp,0,0);
+
+ saveHistory();
+}
+
+$("rotateLeft").onclick = function(){transformImage("left")};
+$("rotateRight").onclick = function(){transformImage("right")};
+$("flipH").onclick = function(){transformImage("horizontal")};
+$("flipV").onclick = function(){transformImage("vertical")};
+
+$("undo").onclick = function(){
+ if(historyIndex > 0) restoreHistory(historyIndex-1);
+};
+
+$("redo").onclick = function(){
+ if(historyIndex < history.length-1) restoreHistory(historyIndex+1);
+};
+
+$("reset").onclick = function(){
+ if(!originalImage) return;
+
+ if(!confirm("Reset the image to its original uploaded version?")) return;
+
+ canvas.width = originalImage.naturalWidth;
+ canvas.height = originalImage.naturalHeight;
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.drawImage(originalImage,0,0);
+
+ resetAdjustments();
+ hideCropBox();
+ clearHistory();
+};
+
+$("zoomIn").onclick = function(){
+ zoom = Math.min(zoom + .1,3);
+ updateZoom();
+};
+
+$("zoomOut").onclick = function(){
+ zoom = Math.max(zoom - .1,.2);
+ updateZoom();
+};
+
+$("zoomReset").onclick = function(){
+ zoom = 1;
+ updateZoom();
+};
+
+function updateZoom(){
+ canvas.style.width = (canvas.width*zoom)+"px";
+ canvas.style.maxWidth = "none";
+}
+
+function exportImage(format){
+ if(!hasImage()){
+  alert("Please upload an image first.");
+  return;
+ }
+
+ const output = document.createElement("canvas");
+ output.width = canvas.width;
+ output.height = canvas.height;
+
+ const outCtx = output.getContext("2d");
+
+ if(format === "image/jpeg"){
+  outCtx.fillStyle = "#ffffff";
+  outCtx.fillRect(0,0,output.width,output.height);
+ }
+
+ outCtx.filter = getFilterString();
+ outCtx.drawImage(canvas,0,0);
+ outCtx.filter = "none";
+
+ const link = document.createElement("a");
+ link.download = "rifora-studio-edited." +
+  (format === "image/png" ? "png" : "jpg");
+
+ link.href = output.toDataURL(format,0.92);
+ link.click();
+}
+
+$("exportPNG").onclick = function(){exportImage("image/png")};
+$("exportJPG").onclick = function(){exportImage("image/jpeg")};
+
+updateFilterLabels();
+updateHistoryButtons();
+
+})();
 </script>
+
 </body>
 </html>
