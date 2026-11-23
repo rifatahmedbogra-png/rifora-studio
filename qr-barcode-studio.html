@@ -137,6 +137,13 @@ footer{
  background:linear-gradient(90deg,#1689ed,#18c5d8);
  transition:width .2s;
 }
+
+.qr-modes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:18px 0}
+.qr-mode{background:#0b2035;color:#dcecff;border:1px solid #34536e;border-radius:10px;padding:15px 8px;min-height:78px}
+.qr-mode.active{background:linear-gradient(120deg,#0878d2,#087e9d);border-color:#31b9df;color:#fff}
+.qr-input-panel{background:#0b1e32;border:1px solid #29445f;border-radius:10px;padding:15px;margin-top:12px}
+.qr-input-panel[hidden]{display:none}
+@media(max-width:750px){.qr-modes{grid-template-columns:repeat(2,minmax(0,1fr))}.qr-mode:last-child{grid-column:span 2}}
 @media(max-width:750px){
  .grid{grid-template-columns:1fr}
  .brand{font-size:21px}
@@ -179,96 +186,64 @@ footer{
  <nav class="tabs">
   <button class="tab active" data-tab="qr">QR Generator</button>
   <button class="tab" data-tab="barcode">Barcode Generator</button>
-  <button class="tab" data-tab="fileqr">File to QR</button>
   <button class="tab" data-tab="camera">Camera Scanner</button>
   <button class="tab" data-tab="files">File Scanner</button>
  </nav>
 
- <!-- QR GENERATOR -->
- <section class="section active" id="qr">
-  <div class="card">
-   <h2>QR Code Generator</h2>
-   <div class="grid">
-    <div>
-     <label>QR Code-এর তথ্য লিখুন</label>
-     <textarea id="qrText" placeholder="Website URL, লেখা, ফোন নম্বর অথবা অন্য তথ্য লিখুন"></textarea>
-     <label>QR Code-এর রং</label>
-     <input type="color" id="qrColor" value="#071d35">
-     <label>Background রং</label>
-     <input type="color" id="qrBg" value="#ffffff">
-     <label>QR Code-এর Size</label>
-     <select id="qrSize">
-      <option value="200">200 × 200</option>
-      <option value="300" selected>300 × 300</option>
-      <option value="400">400 × 400</option>
-      <option value="500">500 × 500</option>
-     </select>
-     <div class="actions">
-      <button class="primary" id="makeQR">QR Code তৈরি করুন</button>
-      <button class="secondary" id="downloadQR" disabled>PNG ডাউনলোড</button>
-     </div>
+ <!-- QR GENERATOR WITH FIVE INPUT OPTIONS -->
+  <section class="section active" id="qr">
+   <div class="card">
+    <h2>QR Code Generator</h2>
+    <p class="small">আপনার প্রয়োজন অনুযায়ী একটি অপশন বেছে নিন।</p>
+    <div class="qr-modes" role="group" aria-label="QR input type">
+     <button type="button" class="qr-mode active" data-mode="text">📝 Text</button>
+     <button type="button" class="qr-mode" data-mode="pdf">📄 PDF File</button>
+     <button type="button" class="qr-mode" data-mode="word">🗎 Word File</button>
+     <button type="button" class="qr-mode" data-mode="image">🖼️ Image</button>
+     <button type="button" class="qr-mode" data-mode="website">🌐 Website / Link</button>
     </div>
-    <div>
-     <h3>QR Code Preview</h3>
-     <div class="preview">
-      <div id="qrOutput">
-       <div class="output-title">আপনার QR Code এখানে দেখা যাবে</div>
+    <div class="qr-input-panel" id="qrPanelText">
+     <label>আপনার লেখা লিখুন</label>
+     <textarea id="qrText" placeholder="এখানে লেখা, ফোন নম্বর বা প্রয়োজনীয় তথ্য লিখুন"></textarea>
+     <div class="small">লেখা সরাসরি QR Code-এ সংরক্ষিত হবে।</div>
+    </div>
+    <div class="qr-input-panel" id="qrPanelWebsite" hidden>
+     <label>ওয়েবসাইটের লিংক লিখুন</label>
+     <input type="url" id="websiteUrl" placeholder="https://example.com">
+     <div class="small">সম্পূর্ণ ওয়েবসাইট ঠিকানা https:// দিয়ে লিখুন।</div>
+    </div>
+    <div class="qr-input-panel" id="qrPanelFile" hidden>
+     <label id="qrFileLabel">কম্পিউটার থেকে PDF ফাইল নির্বাচন করুন</label>
+     <input type="file" id="qrFileInput" accept=".pdf">
+     <div class="small" id="qrFileHelp">PDF, Word বা Image ফাইল আপলোড করে তার লিংকের QR তৈরি হবে।</div>
+     <div class="file-note">ফাইল QR তৈরির জন্য নিরাপদ Backend ও File Storage প্রয়োজন। ফাইল আপলোডের পর তৈরি লিংক যেকোনো ব্যক্তির কাছে গেলে তিনি ফাইলটি খুলতে পারবেন। গোপন বা ব্যক্তিগত নথি আপলোড করবেন না।</div>
+     <div id="qrFileStatus" class="status">এখনো কোনো ফাইল নির্বাচন করা হয়নি।</div>
+     <div id="uploadedFileInfo" class="file-info" hidden></div>
+    </div>
+    <div class="grid" style="margin-top:17px">
+     <div>
+      <label>QR Code-এর রং</label><input type="color" id="qrColor" value="#071d35">
+      <label>Background রং</label><input type="color" id="qrBg" value="#ffffff">
+      <label>QR Code-এর Size</label>
+      <select id="qrSize">
+       <option value="200">200 × 200</option><option value="300" selected>300 × 300</option>
+       <option value="400">400 × 400</option><option value="500">500 × 500</option>
+      </select>
+      <div class="actions">
+       <button class="primary" id="makeQR">QR Code তৈরি করুন</button>
+       <button class="secondary" id="downloadQR" disabled>PNG ডাউনলোড</button>
       </div>
      </div>
-     <div class="small">ডাউনলোড করার আগে QR Code স্ক্যান করে পরীক্ষা করুন।</div>
-    </div>
-   </div>
-  </div>
- </section>
-
- <!-- FILE TO QR GENERATOR -->
- <section class="section" id="fileqr">
-  <div class="card">
-   <h2>File to QR Code Generator</h2>
-   <p class="small">কম্পিউটার থেকে Word, PDF অথবা ছবি আপলোড করে QR Code তৈরি করুন। মোবাইল দিয়ে QR Code স্ক্যান করলে সংরক্ষিত মূল ফাইলটি খোলা বা ডাউনলোড করা যাবে।</p>
-   <label>কম্পিউটার থেকে ফাইল নির্বাচন করুন</label>
-   <input type="file" id="fileQrInput" accept=".doc,.docx,.pdf,.jpg,.jpeg,.png,.webp">
-   <div class="small">সমর্থিত ফাইল: DOC, DOCX, PDF, JPG, JPEG, PNG ও WEBP।</div>
-   <div class="actions">
-    <button class="primary" id="uploadMakeFileQR">ফাইল আপলোড করে QR তৈরি করুন</button>
-    <button class="secondary" id="downloadFileQR" disabled>QR Code PNG ডাউনলোড</button>
-   </div>
-   <div id="fileQrStatus" class="status">এখনো কোনো ফাইল নির্বাচন করা হয়নি।</div>
-   <div id="uploadedFileInfo" class="file-info" hidden></div>
-   <div class="grid" style="margin-top:17px">
-    <div>
-     <label>QR Code-এর রং</label>
-     <input type="color" id="fileQrColor" value="#071d35">
-     <label>Background রং</label>
-     <input type="color" id="fileQrBg" value="#ffffff">
-     <label>QR Code Size</label>
-     <select id="fileQrSize">
-      <option value="200">200 × 200</option>
-      <option value="300" selected>300 × 300</option>
-      <option value="400">400 × 400</option>
-      <option value="500">500 × 500</option>
-     </select>
-    </div>
-    <div>
-     <h3>File QR Preview</h3>
-     <div class="preview">
-      <div id="fileQrOutput">
-       <div class="output-title">আপনার File QR Code এখানে দেখা যাবে</div>
-      </div>
+     <div>
+      <h3>QR Code Preview</h3>
+      <div class="preview"><div id="qrOutput"><div class="output-title">আপনার QR Code এখানে দেখা যাবে</div></div></div>
+      <div class="small">ডাউনলোড করার আগে QR Code স্ক্যান করে পরীক্ষা করুন।</div>
      </div>
     </div>
    </div>
-   <div class="file-note">
-    <strong>গুরুত্বপূর্ণ:</strong>
-    এই সুবিধা চালাতে নিরাপদ Backend ও File Storage প্রয়োজন।
-    Backend ছাড়া ফাইল আপলোড বা স্থায়ী QR লিংক তৈরি হবে না।
-    QR Code-এর লিংক যেকোনো ব্যক্তির কাছে গেলে তিনি ফাইলটি খুলতে পারবেন।
-    তাই ব্যক্তিগত বা গোপন নথি আপলোড করবেন না।
-   </div>
-  </div>
- </section>
+  </section>
 
- <!-- BARCODE GENERATOR -->
+  <!-- BARCODE GENERATOR -->
  <section class="section" id="barcode">
   <div class="card">
    <h2>Barcode Generator</h2>
@@ -308,7 +283,6 @@ footer{
    </div>
   </div>
  </section>
-</main>
 <!-- CAMERA SCANNER -->
 <section class="section" id="camera">
  <div class="card">
@@ -381,7 +355,6 @@ footer{
 const ACCESS_API = "";
 const FILE_QR_API = "";
 
-let qrReady=false;
 let barcodeReady=false;
 let cameraReader=null;
 let cameraControls=null;
@@ -442,168 +415,82 @@ document.querySelectorAll(".tab").forEach(button=>{
  });
 });
 
-/* QR GENERATOR */
-$("makeQR").addEventListener("click",async()=>{
- const text=$("qrText").value.trim();
- if(!text){alert("প্রথমে QR Code-এর তথ্য লিখুন।");return;}
- const allowed=await authorizeUse("qr_generate");
- if(!allowed)return;
- const output=$("qrOutput");
- output.innerHTML="";
- try{
-  const size=Number($("qrSize").value);
-  new QRCode(output,{
-   text:text,width:size,height:size,
-   colorDark:$("qrColor").value,
-   colorLight:$("qrBg").value,
-   correctLevel:QRCode.CorrectLevel.H
-  });
-  qrReady=true;
-  $("downloadQR").disabled=false;
- }catch(error){
-  output.textContent="QR Code তৈরি করা যায়নি। তথ্য পরীক্ষা করুন।";
-  qrReady=false;
+/* QR GENERATOR: FIVE INPUT TYPES */
+let qrMode="text";
+let qrReady=false;
+let uploadedFileUrl="";
+const qrFileSettings={
+ pdf:{accept:".pdf",label:"PDF ফাইল নির্বাচন করুন",help:"PDF আপলোড করে তার লিংকের QR তৈরি হবে।",extensions:["pdf"]},
+ word:{accept:".doc,.docx",label:"Word ফাইল নির্বাচন করুন",help:"DOC বা DOCX আপলোড করে তার লিংকের QR তৈরি হবে।",extensions:["doc","docx"]},
+ image:{accept:".jpg,.jpeg,.png,.webp",label:"Image নির্বাচন করুন",help:"JPG, JPEG, PNG বা WEBP আপলোড করে তার লিংকের QR তৈরি হবে।",extensions:["jpg","jpeg","png","webp"]}
+};
+function setQrMode(mode){
+ qrMode=mode;
+ document.querySelectorAll(".qr-mode").forEach(b=>b.classList.toggle("active",b.dataset.mode===mode));
+ $("qrPanelText").hidden=mode!=="text";
+ $("qrPanelWebsite").hidden=mode!=="website";
+ $("qrPanelFile").hidden=!["pdf","word","image"].includes(mode);
+ $("downloadQR").disabled=true;qrReady=false;
+ $("qrOutput").innerHTML='<div class="output-title">আপনার QR Code এখানে দেখা যাবে</div>';
+ if(qrFileSettings[mode]){
+  $("qrFileInput").accept=qrFileSettings[mode].accept;
+  $("qrFileLabel").textContent=qrFileSettings[mode].label;
+  $("qrFileHelp").textContent=qrFileSettings[mode].help;
+  $("qrFileInput").value="";uploadedFileUrl="";
+  $("qrFileStatus").className="status";
+  $("qrFileStatus").textContent="এখনো কোনো ফাইল নির্বাচন করা হয়নি।";
+  $("uploadedFileInfo").hidden=true;
  }
+}
+document.querySelectorAll(".qr-mode").forEach(b=>b.addEventListener("click",()=>setQrMode(b.dataset.mode)));
+function createQrCode(value){
+ const out=$("qrOutput");out.innerHTML="";
+ const size=Number($("qrSize").value);
+ new QRCode(out,{text:value,width:size,height:size,colorDark:$("qrColor").value,colorLight:$("qrBg").value,correctLevel:QRCode.CorrectLevel.H});
+ qrReady=true;$("downloadQR").disabled=false;
+}
+async function uploadSelectedFileForQr(){
+ const file=$("qrFileInput").files[0];
+ if(!file){showStatus("qrFileStatus","প্রথমে একটি ফাইল নির্বাচন করুন।","error");return;}
+ const setting=qrFileSettings[qrMode],ext=file.name.split(".").pop().toLowerCase();
+ if(!setting || !setting.extensions.includes(ext)){showStatus("qrFileStatus","নির্বাচিত ফাইলের ধরন সঠিক নয়।","error");return;}
+ if(!FILE_QR_API){showStatus("qrFileStatus","File Upload Backend এখনো সংযুক্ত হয়নি। নিরাপত্তার জন্য আপলোড বন্ধ রাখা হয়েছে।","error");$("accessStatus").textContent="ফাইল QR চালু করতে নিরাপদ Backend ও File Storage প্রয়োজন।";return;}
+ const button=$("makeQR");button.disabled=true;$("downloadQR").disabled=true;
+ showStatus("qrFileStatus","ফাইল আপলোড হচ্ছে...");
+ try{
+  const fd=new FormData();fd.append("file",file,file.name);fd.append("service",qrMode+"_file_qr");
+  const response=await fetch(FILE_QR_API,{method:"POST",credentials:"include",body:fd});
+  const data=await response.json();
+  if(!response.ok || data.allowed!==true || !data.fileUrl)throw new Error(data.message||"ফাইল আপলোড বা পেমেন্ট যাচাই সফল হয়নি।");
+  const url=new URL(data.fileUrl,location.href);
+  if(url.protocol!=="https:")throw new Error("নিরাপত্তার জন্য HTTPS ফাইল লিংক প্রয়োজন।");
+  uploadedFileUrl=url.href;createQrCode(uploadedFileUrl);
+  const info=$("uploadedFileInfo");info.hidden=false;info.textContent="";
+  const title=document.createElement("strong");title.textContent="আপলোড সম্পন্ন: "+(data.fileName||file.name);
+  const link=document.createElement("a");link.href=uploadedFileUrl;link.target="_blank";link.rel="noopener noreferrer";link.textContent="আপলোড করা ফাইল খুলুন";
+  const row=document.createElement("div");row.style.marginTop="8px";row.appendChild(link);info.append(title,row);
+  showStatus("qrFileStatus","ফাইল আপলোড হয়েছে এবং QR Code তৈরি হয়েছে।","good");
+ }catch(error){showStatus("qrFileStatus",error.message||"ফাইল আপলোড করা যায়নি।","error");}
+ finally{button.disabled=false;}
+}
+$("makeQR").addEventListener("click",async()=>{
+ if(["pdf","word","image"].includes(qrMode)){await uploadSelectedFileForQr();return;}
+ let value="";
+ if(qrMode==="text"){value=$("qrText").value.trim();if(!value){alert("প্রথমে লেখা লিখুন।");return;}}
+ if(qrMode==="website"){
+  const raw=$("websiteUrl").value.trim();if(!raw){alert("প্রথমে ওয়েবসাইটের লিংক লিখুন।");return;}
+  try{const u=new URL(raw);if(!["http:","https:"].includes(u.protocol))throw 0;value=u.href;}
+  catch(e){alert("সঠিক Website URL লিখুন। উদাহরণ: https://example.com");return;}
+ }
+ const ok=await authorizeUse(qrMode==="website"?"website_qr_generate":"qr_generate");if(!ok)return;
+ try{createQrCode(value);}catch(e){qrReady=false;$("downloadQR").disabled=true;$("qrOutput").textContent="QR Code তৈরি করা যায়নি।";}
 });
-
 $("downloadQR").addEventListener("click",()=>{
  if(!qrReady)return;
- const output=$("qrOutput");
- const canvas=output.querySelector("canvas");
- if(canvas){
-  const link=document.createElement("a");
-  link.download="rifora-qr-code.png";
-  link.href=canvas.toDataURL("image/png");
-  link.click();
-  return;
- }
- const img=output.querySelector("img");
- if(img && img.src){
-  const link=document.createElement("a");
-  link.download="rifora-qr-code.png";
-  link.href=img.src;
-  link.click();
- }
+ const out=$("qrOutput"),canvas=out.querySelector("canvas");
+ if(canvas){const a=document.createElement("a");a.download="rifora-"+qrMode+"-qr.png";a.href=canvas.toDataURL("image/png");a.click();return;}
+ const img=out.querySelector("img");if(img&&img.src){const a=document.createElement("a");a.download="rifora-"+qrMode+"-qr.png";a.href=img.src;a.click();}
 });
-
-/* FILE TO QR GENERATOR */
-let fileQrReady=false;
-let uploadedFileUrl="";
-
-$("uploadMakeFileQR").addEventListener("click",async()=>{
- const file=$("fileQrInput").files[0];
- if(!file){
-  showStatus("fileQrStatus","প্রথমে কম্পিউটার থেকে একটি ফাইল নির্বাচন করুন।","error");
-  return;
- }
-
- const allowedExtensions=["doc","docx","pdf","jpg","jpeg","png","webp"];
- const extension=file.name.split(".").pop().toLowerCase();
-
- if(!allowedExtensions.includes(extension)){
-  showStatus("fileQrStatus","এই ফাইলের ধরন সমর্থিত নয়।","error");
-  return;
- }
-
- if(!FILE_QR_API){
-  showStatus("fileQrStatus","File Upload Backend এখনো সংযুক্ত হয়নি। নিরাপত্তার জন্য আপলোড বন্ধ রাখা হয়েছে।","error");
-  $("accessStatus").textContent="File-to-QR চালু করতে নিরাপদ Backend ও File Storage সংযুক্ত করতে হবে।";
-  return;
- }
-
- const button=$("uploadMakeFileQR");
- button.disabled=true;
- $("downloadFileQR").disabled=true;
- fileQrReady=false;
- uploadedFileUrl="";
- $("uploadedFileInfo").hidden=true;
- $("fileQrOutput").innerHTML='<div class="output-title">ফাইল আপলোড হচ্ছে...</div>';
-
- try{
-  const formData=new FormData();
-  formData.append("file",file,file.name);
-
-  const response=await fetch(FILE_QR_API,{
-   method:"POST",
-   credentials:"include",
-   body:formData
-  });
-
-  let data={};
-  try{data=await response.json();}
-  catch(parseError){throw new Error("সার্ভার থেকে সঠিক JSON উত্তর পাওয়া যায়নি।");}
-
-  if(!response.ok || data.allowed!==true || !data.fileUrl){
-   throw new Error(data.message || "ফাইল আপলোড বা পেমেন্ট যাচাই সফল হয়নি।");
-  }
-
-  const safeUrl=new URL(data.fileUrl,window.location.href);
-  if(safeUrl.protocol!=="https:"){
-   throw new Error("নিরাপত্তার কারণে HTTPS ফাইল লিংক ছাড়া QR তৈরি করা যাবে না।");
-  }
-
-  uploadedFileUrl=safeUrl.href;
-  $("fileQrOutput").innerHTML="";
-
-  new QRCode($("fileQrOutput"),{
-   text:uploadedFileUrl,
-   width:Number($("fileQrSize").value),
-   height:Number($("fileQrSize").value),
-   colorDark:$("fileQrColor").value,
-   colorLight:$("fileQrBg").value,
-   correctLevel:QRCode.CorrectLevel.H
-  });
-
-  const info=$("uploadedFileInfo");
-  info.hidden=false;
-  info.textContent="";
-
-  const title=document.createElement("strong");
-  title.textContent="আপলোড সম্পন্ন: "+(data.fileName || file.name);
-
-  const link=document.createElement("a");
-  link.href=uploadedFileUrl;
-  link.target="_blank";
-  link.rel="noopener noreferrer";
-  link.textContent="আপলোড করা ফাইল খুলুন";
-
-  const linkLine=document.createElement("div");
-  linkLine.style.marginTop="8px";
-  linkLine.appendChild(link);
-  info.append(title,linkLine);
-
-  fileQrReady=true;
-  $("downloadFileQR").disabled=false;
-  showStatus("fileQrStatus","ফাইল আপলোড হয়েছে এবং QR Code তৈরি হয়েছে। QR Code ডাউনলোড করে মোবাইলে পরীক্ষা করুন।","good");
-
- }catch(error){
-  $("fileQrOutput").innerHTML='<div class="output-title">QR Code তৈরি করা যায়নি</div>';
-  showStatus("fileQrStatus",error.message || "ফাইল আপলোড করতে সমস্যা হয়েছে।","error");
- }finally{
-  button.disabled=false;
- }
-});
-
-$("downloadFileQR").addEventListener("click",()=>{
- if(!fileQrReady || !uploadedFileUrl)return;
- const output=$("fileQrOutput");
- const canvas=output.querySelector("canvas");
- if(canvas){
-  const link=document.createElement("a");
-  link.download="rifora-file-qr.png";
-  link.href=canvas.toDataURL("image/png");
-  link.click();
-  return;
- }
- const img=output.querySelector("img");
- if(img && img.src){
-  const link=document.createElement("a");
-  link.download="rifora-file-qr.png";
-  link.href=img.src;
-  link.click();
- }
-});
-
 /* BARCODE GENERATOR */
 $("makeBarcode").addEventListener("click",async()=>{
  const value=$("barcodeText").value.trim();
