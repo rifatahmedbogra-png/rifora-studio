@@ -3,156 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rifora Studio - Professional Photo Editor v2.0</title>
-
+<title>Rifora Studio - Photo Editor</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#071525;color:#eaf3ff;
- font-family:Arial,sans-serif;
-}
-header{
- background:linear-gradient(120deg,#102a43,#1769aa);
- padding:18px 22px;display:flex;justify-content:space-between;
- align-items:center;flex-wrap:wrap;gap:12px;
- border-bottom:1px solid #31516e;
-}
+body{margin:0;background:#071525;color:#eaf3ff;font-family:Arial,sans-serif}
+header{background:linear-gradient(120deg,#102a43,#1769aa);padding:18px 22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 header h1{margin:0;font-size:23px}
 header p{margin:5px 0 0;color:#c9e4ff;font-size:12px}
 .version{color:#f0c040;font-size:12px}
-.layout{
- display:grid;grid-template-columns:220px minmax(0,1fr) 260px;
- gap:14px;padding:14px;min-height:calc(100vh - 75px);
-}
-.panel{
- background:#10243a;border:1px solid #29445f;
- border-radius:12px;padding:14px;
-}
-.panel h3{
- margin:0 0 13px;color:#f0c040;font-size:15px;
-}
-.tool{
- display:block;width:100%;padding:11px;margin:7px 0;
- border:1px solid #34516d;border-radius:7px;
- background:#17334e;color:#fff;cursor:pointer;text-align:left;
-}
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr) 250px;gap:14px;padding:14px;min-height:calc(100vh - 75px)}
+.panel{background:#10243a;border:1px solid #29445f;border-radius:12px;padding:14px}
+.panel h3{margin:0 0 13px;color:#f0c040;font-size:15px}
+.tool{display:block;width:100%;padding:11px;margin:7px 0;border:1px solid #34516d;border-radius:7px;background:#17334e;color:#fff;cursor:pointer;text-align:left}
 .tool:hover,.tool.active{background:#1769aa;border-color:#58b9ff}
-button:disabled{opacity:.4;cursor:not-allowed}
-.workspace{
- background:#091a2b;border:1px solid #29445f;
- border-radius:12px;display:flex;flex-direction:column;
- align-items:center;justify-content:center;min-height:550px;
- padding:18px;overflow:hidden;
-}
-.canvas-wrap{
- position:relative;display:inline-block;max-width:100%;
- line-height:0;
-}
-canvas{
- display:block;max-width:100%;height:auto;
- background:#fff;box-shadow:0 5px 25px #0008;
- touch-action:none;
-}
-#selection{
- position:absolute;display:none;border:2px dashed #f0c040;
- background:#f0c04022;pointer-events:none;
-}
-.empty{
- text-align:center;color:#9fb5ca;line-height:1.8;
-}
-.empty strong{font-size:20px;color:#fff}
-.upload-label{
- display:inline-block;background:#1769aa;color:#fff;
- padding:12px 20px;border-radius:8px;cursor:pointer;margin-top:15px;
-}
+.upload-label{display:block;background:#1769aa;color:white;padding:12px;text-align:center;border-radius:8px;cursor:pointer}
 input[type=file]{display:none}
+.workspace{background:#091a2b;border:1px solid #29445f;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:550px;padding:18px;overflow:auto}
+.canvas-wrap{position:relative;display:inline-block;line-height:0;max-width:100%}
+canvas{display:block;max-width:100%;height:auto;background:white;box-shadow:0 5px 25px #0008;touch-action:none;cursor:crosshair}
+#selection{position:absolute;display:none;border:2px dashed #f0c040;background:#f0c04022;pointer-events:none}
+.empty{text-align:center;color:#9fb5ca;line-height:1.8}
+.empty strong{font-size:20px;color:white}
 .control{margin:15px 0}
-.control label{
- display:flex;justify-content:space-between;
- font-size:13px;margin-bottom:7px;color:#c8d9e9;
-}
+.control label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px;color:#c8d9e9}
 input[type=range]{width:100%;accent-color:#2196c8}
 input[type=color]{width:100%;height:38px;border:0;background:none}
-input[type=number],select,input[type=text]{
- width:100%;padding:9px;background:#071a2c;color:white;
- border:1px solid #34516d;border-radius:6px;
-}
-.action{
- padding:10px 12px;border:0;border-radius:7px;
- background:#1769aa;color:#fff;cursor:pointer;margin:4px 2px;
-}
+input[type=number],select,input[type=text]{width:100%;padding:9px;background:#071a2c;color:white;border:1px solid #34516d;border-radius:6px}
+.action{padding:10px 12px;border:0;border-radius:7px;background:#1769aa;color:white;cursor:pointer;margin:4px 2px}
 .action.secondary{background:#29445f}
-.action.danger{background:#9b3030}
+.action:disabled{opacity:.4;cursor:not-allowed}
 .actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
 .note{font-size:11px;color:#9fb5ca;line-height:1.6}
-.tool-section{margin-bottom:18px}
 footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
-@media(max-width:900px){
- .layout{grid-template-columns:1fr}
- .workspace{min-height:350px;order:1}
- .panel{order:2}
-}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.workspace{min-height:350px;order:1}.panel{order:2}}
 </style>
 </head>
-
 <body>
 
 <header>
- <div>
-  <h1>Rifora Studio</h1>
-  <p>LEARN • CREATE • GROW</p>
- </div>
- <div class="version">PROFESSIONAL PHOTO EDITOR v2.0</div>
+ <div><h1>Rifora Studio</h1><p>LEARN • CREATE • GROW</p></div>
+ <div class="version">PROFESSIONAL PHOTO EDITOR v2.1</div>
 </header>
 
 <div class="layout">
 
-<!-- LEFT TOOLS -->
 <aside class="panel">
  <h3>Editing Tools</h3>
-
  <input type="file" id="upload" accept="image/png,image/jpeg,image/webp">
- <label for="upload" class="upload-label" style="display:block;text-align:center">
-  + Upload Image
- </label>
+ <label for="upload" class="upload-label">+ Upload Image</label>
 
- <div class="tool-section" style="margin-top:18px">
-  <button class="tool active" data-tool="move">✋ Move / View</button>
-  <button class="tool" data-tool="crop">✂ Crop Tool</button>
-  <button class="tool" data-tool="brush">🖌 Brush Tool</button>
-  <button class="tool" data-tool="rectangle">▭ Rectangle</button>
-  <button class="tool" data-tool="circle">◯ Circle</button>
-  <button class="tool" data-tool="line">／ Line</button>
- </div>
+ <h3 style="margin-top:22px">Drawing Tools</h3>
+ <button class="tool active" data-tool="move">✋ Move / View</button>
+ <button class="tool" data-tool="crop">✂ Crop Tool</button>
+ <button class="tool" data-tool="brush">🖌 Brush Tool</button>
+ <button class="tool" data-tool="rectangle">▭ Rectangle</button>
+ <button class="tool" data-tool="circle">◯ Circle</button>
+ <button class="tool" data-tool="line">／ Line</button>
 
- <div class="tool-section">
-  <h3>Transform</h3>
-  <button class="tool" id="rotateLeft">↶ Rotate Left</button>
-  <button class="tool" id="rotateRight">↷ Rotate Right</button>
-  <button class="tool" id="flipH">↔ Flip Horizontal</button>
-  <button class="tool" id="flipV">↕ Flip Vertical</button>
- </div>
+ <h3 style="margin-top:22px">Transform</h3>
+ <button class="tool" id="rotateLeft">↶ Rotate Left</button>
+ <button class="tool" id="rotateRight">↷ Rotate Right</button>
+ <button class="tool" id="flipH">↔ Flip Horizontal</button>
+ <button class="tool" id="flipV">↕ Flip Vertical</button>
 
- <div class="tool-section">
-  <h3>Text Editor</h3>
-  <input type="text" id="textInput" placeholder="Write your text">
-  <div class="control">
-   <label>Text Size</label>
-   <input type="number" id="textSize" value="40" min="8" max="200">
-  </div>
-  <div class="control">
-   <label>Text Color</label>
-   <input type="color" id="textColor" value="#ffffff">
-  </div>
-  <button class="action" id="addText">Add Text</button>
+ <h3 style="margin-top:22px">Text Editor</h3>
+ <input type="text" id="textInput" placeholder="Write your text">
+ <div class="control">
+  <label>Text Size</label>
+  <input type="number" id="textSize" value="40" min="8" max="200">
  </div>
+ <div class="control">
+  <label>Text Color</label>
+  <input type="color" id="textColor" value="#ffffff">
+ </div>
+ <button class="action" id="addText">Add Text</button>
 </aside>
 
-<!-- CENTER WORKSPACE -->
 <main class="workspace">
  <div class="empty" id="emptyMessage">
   <strong>Welcome to Rifora Studio</strong><br>
-  Upload an image to start editing.<br>
+  Upload an image to start editing.<br><br>
   <label for="upload" class="upload-label">Choose Your Image</label>
  </div>
 
@@ -170,25 +100,20 @@ footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
  </div>
 </main>
 
-<!-- RIGHT SETTINGS -->
 <aside class="panel">
  <h3>Adjustments</h3>
-
  <div class="control">
   <label>Brightness <span id="brightnessValue">100%</span></label>
   <input type="range" id="brightness" min="0" max="200" value="100">
  </div>
-
  <div class="control">
   <label>Contrast <span id="contrastValue">100%</span></label>
   <input type="range" id="contrast" min="0" max="200" value="100">
  </div>
-
  <div class="control">
   <label>Saturation <span id="saturationValue">100%</span></label>
   <input type="range" id="saturation" min="0" max="200" value="100">
  </div>
-
  <div class="control">
   <label>Blur <span id="blurValue">0px</span></label>
   <input type="range" id="blur" min="0" max="10" value="0" step=".5">
@@ -205,21 +130,15 @@ footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
  </select>
 
  <h3 style="margin-top:25px">Brush & Shapes</h3>
-
  <div class="control">
-  <label>Brush / Shape Color</label>
+  <label>Drawing Color</label>
   <input type="color" id="drawColor" value="#ff3333">
  </div>
-
  <div class="control">
-  <label>Brush / Shape Size <span id="brushSizeValue">6px</span></label>
+  <label>Drawing Size <span id="brushSizeValue">6px</span></label>
   <input type="range" id="brushSize" min="1" max="60" value="6">
  </div>
-
- <p class="note">
-  Select Brush, Rectangle, Circle or Line from the left panel.
-  Then draw directly on your image.
- </p>
+ <p class="note">Select a drawing tool on the left, then drag on the image.</p>
 
  <h3 style="margin-top:25px">Zoom</h3>
  <div class="actions">
@@ -231,571 +150,477 @@ footer{text-align:center;padding:15px;color:#819bb5;font-size:12px}
  <h3 style="margin-top:25px">Export Image</h3>
  <button class="action" id="exportPNG" style="width:100%">Download PNG</button>
  <button class="action" id="exportJPG" style="width:100%">Download JPG</button>
-
- <p class="note">
-  Your image is edited inside your browser. This version does not upload
-  your image to a server.
- </p>
+ <p class="note">Images are processed locally in your browser. This editor does not upload your photos to a server.</p>
 </aside>
 
 </div>
 
-<footer>
-© 2026 Rifora Studio | LEARN • CREATE • GROW
-</footer>
+<footer>© 2026 Rifora Studio | LEARN • CREATE • GROW</footer>
 
 <script>
 (function(){
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const upload = document.getElementById("upload");
-const wrap = document.getElementById("canvasWrap");
-const emptyMessage = document.getElementById("emptyMessage");
-const selection = document.getElementById("selection");
+var canvas=document.getElementById("canvas");
+var ctx=canvas.getContext("2d");
+var upload=document.getElementById("upload");
+var wrap=document.getElementById("canvasWrap");
+var empty=document.getElementById("emptyMessage");
+var selection=document.getElementById("selection");
 
-let originalImage = null;
-let currentTool = "move";
-let drawing = false;
-let startX = 0;
-let startY = 0;
-let lastX = 0;
-let lastY = 0;
-let cropBox = null;
-let zoom = 1;
-let history = [];
-let historyIndex = -1;
-let drawingSnapshot = null;
+var originalImage=null;
+var tool="move";
+var drawing=false;
+var startX=0,startY=0;
+var cropBox=null;
+var shapeSnapshot=null;
+var history=[];
+var historyIndex=-1;
+var zoom=1;
 
-const $ = id => document.getElementById(id);
-
-function hasImage(){
- return canvas.width > 0 && canvas.height > 0;
-}
+function $(id){return document.getElementById(id)}
+function hasImage(){return canvas.width>0 && canvas.height>0}
 
 function saveHistory(){
- if(!hasImage()) return;
-
- const snapshot = {
+ if(!hasImage())return;
+ var item={
   width:canvas.width,
   height:canvas.height,
   data:canvas.toDataURL("image/png")
  };
-
- history = history.slice(0,historyIndex + 1);
- history.push(snapshot);
-
- if(history.length > 20) history.shift();
-
- historyIndex = history.length - 1;
+ history=history.slice(0,historyIndex+1);
+ history.push(item);
+ if(history.length>20)history.shift();
+ historyIndex=history.length-1;
  updateHistoryButtons();
 }
 
-function restoreHistory(index){
- if(index < 0 || index >= history.length) return;
+function updateHistoryButtons(){
+ $("undo").disabled=historyIndex<=0;
+ $("redo").disabled=historyIndex>=history.length-1;
+}
 
- const item = history[index];
- const img = new Image();
-
- img.onload = function(){
-  canvas.width = item.width;
-  canvas.height = item.height;
+function loadHistory(index){
+ if(index<0 || index>=history.length)return;
+ var item=history[index];
+ var img=new Image();
+ img.onload=function(){
+  canvas.width=item.width;
+  canvas.height=item.height;
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.drawImage(img,0,0);
-  historyIndex = index;
+  historyIndex=index;
   updateHistoryButtons();
-  applyDisplayFilters();
+  updateFilters();
  };
-
- img.src = item.data;
+ img.src=item.data;
 }
 
-function updateHistoryButtons(){
- $("undo").disabled = historyIndex <= 0;
- $("redo").disabled = historyIndex >= history.length - 1;
-}
-
-function clearHistory(){
- history = [];
- historyIndex = -1;
+function resetHistory(){
+ history=[];
+ historyIndex=-1;
  saveHistory();
 }
 
-function getFilterString(){
- return "brightness(" + $("brightness").value + "%) " +
- "contrast(" + $("contrast").value + "%) " +
- "saturate(" + $("saturation").value + "%) " +
- "blur(" + $("blur").value + "px) " +
- $("filter").value;
+function getFilter(){
+ return "brightness("+$("brightness").value+"%) "+
+ "contrast("+$("contrast").value+"%) "+
+ "saturate("+$("saturation").value+"%) "+
+ "blur("+$("blur").value+"px) "+$("filter").value;
 }
 
-function applyDisplayFilters(){
- canvas.style.filter = getFilterString();
+function updateFilters(){
+ canvas.style.filter=getFilter();
 }
 
-function updateFilterLabels(){
+function updateLabels(){
  ["brightness","contrast","saturation","blur"].forEach(function(id){
-  const value = $(id).value;
-  $(id+"Value").textContent =
-   id === "blur" ? value+"px" : value+"%";
+  $(id+"Value").textContent=id==="blur"?$(id).value+"px":$(id).value+"%";
  });
-}
-
-function getPoint(event){
- const rect = canvas.getBoundingClientRect();
-
- return {
-  x:(event.clientX - rect.left) * canvas.width / rect.width,
-  y:(event.clientY - rect.top) * canvas.height / rect.height,
-  cssX:event.clientX - rect.left,
-  cssY:event.clientY - rect.top
- };
-}
-
-function showCropBox(){
- if(!cropBox) return;
-
- const rect = canvas.getBoundingClientRect();
- const scaleX = rect.width / canvas.width;
- const scaleY = rect.height / canvas.height;
-
- selection.style.display = "block";
- selection.style.left = cropBox.x * scaleX + "px";
- selection.style.top = cropBox.y * scaleY + "px";
- selection.style.width = cropBox.w * scaleX + "px";
- selection.style.height = cropBox.h * scaleY + "px";
-}
-
-function hideCropBox(){
- selection.style.display = "none";
- cropBox = null;
- $("applyCrop").style.display = "none";
- $("cancelCrop").style.display = "none";
-}
-
-function setTool(tool){
- currentTool = tool;
-
- document.querySelectorAll("[data-tool]").forEach(function(button){
-  button.classList.toggle("active",button.dataset.tool === tool);
- });
-
- if(tool === "crop"){
-  $("applyCrop").style.display = "inline-block";
-  $("cancelCrop").style.display = "inline-block";
- }else{
-  hideCropBox();
- }
-
- canvas.style.cursor =
-  tool === "move" ? "default" :
-  tool === "crop" ? "crosshair" : "crosshair";
-}
-
-document.querySelectorAll("[data-tool]").forEach(function(button){
- button.addEventListener("click",function(){
-  if(!hasImage()){
-   alert("Please upload an image first.");
-   return;
-  }
-  setTool(button.dataset.tool);
- });
-});
-
-upload.addEventListener("change",function(event){
- const file = event.target.files[0];
- if(!file) return;
-
- if(!/^image\/(jpeg|png|webp)$/.test(file.type)){
-  alert("Please select a JPG, PNG or WEBP image.");
-  upload.value = "";
-  return;
- }
-
- const reader = new FileReader();
-
- reader.onload = function(e){
-  const img = new Image();
-
-  img.onload = function(){
-   canvas.width = img.naturalWidth;
-   canvas.height = img.naturalHeight;
-   ctx.clearRect(0,0,canvas.width,canvas.height);
-   ctx.drawImage(img,0,0);
-
-   originalImage = new Image();
-   originalImage.src = e.target.result;
-
-   emptyMessage.style.display = "none";
-   wrap.style.display = "inline-block";
-
-   zoom = 1;
-   canvas.style.width = "";
-   canvas.style.maxWidth = "100%";
-
-   resetAdjustments();
-   hideCropBox();
-   setTool("move");
-   clearHistory();
-  };
-
-  img.src = e.target.result;
- };
-
- reader.readAsDataURL(file);
-});
-
-function resetAdjustments(){
- $("brightness").value = 100;
- $("contrast").value = 100;
- $("saturation").value = 100;
- $("blur").value = 0;
- $("filter").value = "none";
- updateFilterLabels();
- applyDisplayFilters();
 }
 
 ["brightness","contrast","saturation","blur"].forEach(function(id){
  $(id).addEventListener("input",function(){
-  updateFilterLabels();
-  applyDisplayFilters();
- });
- $(id).addEventListener("change",function(){
-  updateFilterLabels();
-  applyDisplayFilters();
+  updateLabels();
+  updateFilters();
  });
 });
 
-$("filter").addEventListener("change",applyDisplayFilters);
+$("filter").addEventListener("change",updateFilters);
 
-$("brushSize").addEventListener("input",function(){
- $("brushSizeValue").textContent = this.value+"px";
+function resetAdjustments(){
+ $("brightness").value=100;
+ $("contrast").value=100;
+ $("saturation").value=100;
+ $("blur").value=0;
+ $("filter").value="none";
+ updateLabels();
+ updateFilters();
+}
+
+upload.addEventListener("change",function(){
+ var file=upload.files[0];
+ if(!file)return;
+
+ if(!/^image\/(jpeg|png|webp)$/.test(file.type)){
+  alert("Please choose a JPG, PNG or WEBP image.");
+  upload.value="";
+  return;
+ }
+
+ var reader=new FileReader();
+ reader.onload=function(e){
+  var img=new Image();
+  img.onload=function(){
+   canvas.width=img.naturalWidth;
+   canvas.height=img.naturalHeight;
+   ctx.clearRect(0,0,canvas.width,canvas.height);
+   ctx.drawImage(img,0,0);
+   originalImage=new Image();
+   originalImage.src=e.target.result;
+   empty.style.display="none";
+   wrap.style.display="inline-block";
+   canvas.style.width="";
+   canvas.style.maxWidth="100%";
+   zoom=1;
+   resetAdjustments();
+   cancelCrop();
+   setTool("move");
+   resetHistory();
+  };
+  img.onerror=function(){alert("The selected image could not be opened.")};
+  img.src=e.target.result;
+ };
+ reader.readAsDataURL(file);
 });
 
-function getDrawSettings(){
+function setTool(name){
+ tool=name;
+ var buttons=document.querySelectorAll("[data-tool]");
+ for(var i=0;i<buttons.length;i++){
+  buttons[i].classList.toggle("active",buttons[i].getAttribute("data-tool")===name);
+ }
+ if(name==="crop"){
+  $("applyCrop").style.display="inline-block";
+  $("cancelCrop").style.display="inline-block";
+ }else{
+  cancelCrop();
+ }
+}
+
+document.querySelectorAll("[data-tool]").forEach(function(button){
+ button.addEventListener("click",function(){
+  if(!hasImage()){alert("Please upload an image first.");return}
+  setTool(button.getAttribute("data-tool"));
+ });
+});
+
+function getPoint(event){
+ var rect=canvas.getBoundingClientRect();
+ var clientX,clientY;
+
+ if(event.touches && event.touches.length){
+  clientX=event.touches[0].clientX;
+  clientY=event.touches[0].clientY;
+ }else if(event.changedTouches && event.changedTouches.length){
+  clientX=event.changedTouches[0].clientX;
+  clientY=event.changedTouches[0].clientY;
+ }else{
+  clientX=event.clientX;
+  clientY=event.clientY;
+ }
+
  return {
-  color:$("drawColor").value,
-  size:Number($("brushSize").value)
+  x:(clientX-rect.left)*(canvas.width/rect.width),
+  y:(clientY-rect.top)*(canvas.height/rect.height)
  };
 }
 
-function drawShape(type,x1,y1,x2,y2){
- const settings = getDrawSettings();
+function drawShape(name,x1,y1,x2,y2){
+ var color=$("drawColor").value;
+ var size=Number($("brushSize").value);
 
  ctx.save();
- ctx.strokeStyle = settings.color;
- ctx.lineWidth = settings.size;
- ctx.lineCap = "round";
- ctx.lineJoin = "round";
+ ctx.strokeStyle=color;
+ ctx.lineWidth=size;
+ ctx.lineCap="round";
 
- if(type === "rectangle"){
+ if(name==="rectangle"){
   ctx.strokeRect(x1,y1,x2-x1,y2-y1);
  }
-
- if(type === "circle"){
-  const radiusX = Math.abs(x2-x1)/2;
-  const radiusY = Math.abs(y2-y1)/2;
-  const centerX = (x1+x2)/2;
-  const centerY = (y1+y2)/2;
-
+ if(name==="circle"){
   ctx.beginPath();
-  ctx.ellipse(centerX,centerY,radiusX,radiusY,0,0,Math.PI*2);
+  ctx.ellipse((x1+x2)/2,(y1+y2)/2,
+   Math.abs(x2-x1)/2,Math.abs(y2-y1)/2,0,0,Math.PI*2);
   ctx.stroke();
  }
-
- if(type === "line"){
+ if(name==="line"){
   ctx.beginPath();
   ctx.moveTo(x1,y1);
   ctx.lineTo(x2,y2);
   ctx.stroke();
  }
-
  ctx.restore();
 }
 
-canvas.addEventListener("pointerdown",function(event){
- if(!hasImage() || currentTool === "move") return;
+function showCrop(){
+ if(!cropBox)return;
+ var rect=canvas.getBoundingClientRect();
+ var scaleX=rect.width/canvas.width;
+ var scaleY=rect.height/canvas.height;
+ selection.style.display="block";
+ selection.style.left=(cropBox.x*scaleX)+"px";
+ selection.style.top=(cropBox.y*scaleY)+"px";
+ selection.style.width=(cropBox.w*scaleX)+"px";
+ selection.style.height=(cropBox.h*scaleY)+"px";
+}
 
- event.preventDefault();
+function cancelCrop(){
+ cropBox=null;
+ selection.style.display="none";
+ $("applyCrop").style.display="none";
+ $("cancelCrop").style.display="none";
+}
 
- const point = getPoint(event);
- startX = point.x;
- startY = point.y;
- lastX = point.y;
- lastY = point.y;
- drawing = true;
+function startDraw(event){
+ if(!hasImage() || tool==="move")return;
+ if(event.cancelable)event.preventDefault();
 
- try{canvas.setPointerCapture(event.pointerId)}catch(e){}
+ var p=getPoint(event);
+ startX=p.x;
+ startY=p.y;
+ drawing=true;
 
- if(currentTool === "crop"){
-  cropBox = {x:startX,y:startY,w:0,h:0};
-  showCropBox();
+ if(tool==="crop"){
+  cropBox={x:startX,y:startY,w:0,h:0};
+  showCrop();
   return;
  }
 
- if(currentTool === "brush"){
+ if(tool==="brush"){
   ctx.save();
-  ctx.strokeStyle = getDrawSettings().color;
-  ctx.lineWidth = getDrawSettings().size;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
+  ctx.strokeStyle=$("drawColor").value;
+  ctx.lineWidth=Number($("brushSize").value);
+  ctx.lineCap="round";
   ctx.beginPath();
   ctx.moveTo(startX,startY);
-  ctx.lineTo(startX + 0.1,startY + 0.1);
+  ctx.lineTo(startX+.1,startY+.1);
   ctx.stroke();
   ctx.restore();
  }
 
- if(["rectangle","circle","line"].includes(currentTool)){
-  drawingSnapshot = ctx.getImageData(0,0,canvas.width,canvas.height);
+ if(tool==="rectangle" || tool==="circle" || tool==="line"){
+  shapeSnapshot=ctx.getImageData(0,0,canvas.width,canvas.height);
  }
-});
+}
 
-canvas.addEventListener("pointermove",function(event){
- if(!drawing) return;
+function moveDraw(event){
+ if(!drawing)return;
+ if(event.cancelable)event.preventDefault();
 
- const point = getPoint(event);
+ var p=getPoint(event);
 
- if(currentTool === "crop"){
-  cropBox = {
-   x:Math.min(startX,point.x),
-   y:Math.min(startY,point.y),
-   w:Math.abs(point.x-startX),
-   h:Math.abs(point.y-startY)
+ if(tool==="crop"){
+  cropBox={
+   x:Math.min(startX,p.x),
+   y:Math.min(startY,p.y),
+   w:Math.abs(p.x-startX),
+   h:Math.abs(p.y-startY)
   };
-  showCropBox();
+  showCrop();
   return;
  }
 
- if(currentTool === "brush"){
+ if(tool==="brush"){
   ctx.save();
-  ctx.strokeStyle = getDrawSettings().color;
-  ctx.lineWidth = getDrawSettings().size;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
+  ctx.strokeStyle=$("drawColor").value;
+  ctx.lineWidth=Number($("brushSize").value);
+  ctx.lineCap="round";
+  ctx.lineJoin="round";
   ctx.beginPath();
   ctx.moveTo(startX,startY);
-  ctx.lineTo(point.x,point.y);
+  ctx.lineTo(p.x,p.y);
   ctx.stroke();
   ctx.restore();
-
-  startX = point.x;
-  startY = point.y;
+  startX=p.x;
+  startY=p.y;
  }
-});
+}
 
-function finishDrawing(event){
- if(!drawing) return;
+function stopDraw(event){
+ if(!drawing)return;
+ drawing=false;
+ var p=getPoint(event);
 
- drawing = false;
-
- if(currentTool === "brush"){
+ if(tool==="brush"){
   saveHistory();
  }
 
- if(["rectangle","circle","line"].includes(currentTool)){
-  const point = getPoint(event);
-
-  if(drawingSnapshot){
-   ctx.putImageData(drawingSnapshot,0,0);
-   drawingSnapshot = null;
+ if(tool==="rectangle" || tool==="circle" || tool==="line"){
+  if(shapeSnapshot){
+   ctx.putImageData(shapeSnapshot,0,0);
+   shapeSnapshot=null;
   }
-
-  if(Math.abs(point.x-startX) > 1 || Math.abs(point.y-startY) > 1){
-   drawShape(currentTool,startX,startY,point.x,point.y);
+  if(Math.abs(p.x-startX)>1 || Math.abs(p.y-startY)>1){
+   drawShape(tool,startX,startY,p.x,p.y);
    saveHistory();
   }
  }
 }
 
-canvas.addEventListener("pointerup",finishDrawing);
-canvas.addEventListener("pointercancel",finishDrawing);
+canvas.addEventListener("mousedown",startDraw);
+canvas.addEventListener("mousemove",moveDraw);
+window.addEventListener("mouseup",stopDraw);
+
+canvas.addEventListener("touchstart",startDraw,{passive:false});
+canvas.addEventListener("touchmove",moveDraw,{passive:false});
+window.addEventListener("touchend",stopDraw,{passive:false});
 
 $("applyCrop").addEventListener("click",function(){
- if(!cropBox || cropBox.w < 5 || cropBox.h < 5){
-  alert("Please draw a crop selection on the image first.");
+ if(!cropBox || cropBox.w<5 || cropBox.h<5){
+  alert("Please drag on the image to select the crop area.");
   return;
  }
 
- const x = Math.max(0,Math.floor(cropBox.x));
- const y = Math.max(0,Math.floor(cropBox.y));
- const w = Math.min(canvas.width-x,Math.floor(cropBox.w));
- const h = Math.min(canvas.height-y,Math.floor(cropBox.h));
+ var x=Math.max(0,Math.floor(cropBox.x));
+ var y=Math.max(0,Math.floor(cropBox.y));
+ var w=Math.min(canvas.width-x,Math.floor(cropBox.w));
+ var h=Math.min(canvas.height-y,Math.floor(cropBox.h));
 
- if(w < 1 || h < 1) return;
+ if(w<1 || h<1)return;
 
- const temp = document.createElement("canvas");
- temp.width = w;
- temp.height = h;
+ var temp=document.createElement("canvas");
+ temp.width=w;
+ temp.height=h;
+ temp.getContext("2d").drawImage(canvas,x,y,w,h,0,0,w,h);
 
- temp.getContext("2d").drawImage(
-  canvas,x,y,w,h,0,0,w,h
- );
-
- canvas.width = w;
- canvas.height = h;
+ canvas.width=w;
+ canvas.height=h;
  ctx.drawImage(temp,0,0);
-
- hideCropBox();
+ cancelCrop();
  saveHistory();
 });
 
-$("cancelCrop").addEventListener("click",hideCropBox);
+$("cancelCrop").addEventListener("click",cancelCrop);
+
+$("brushSize").addEventListener("input",function(){
+ $("brushSizeValue").textContent=this.value+"px";
+});
 
 $("addText").addEventListener("click",function(){
- if(!hasImage()){
-  alert("Please upload an image first.");
-  return;
- }
+ if(!hasImage()){alert("Upload an image first.");return}
+ var text=$("textInput").value.trim();
+ if(!text){alert("Write some text first.");return}
 
- const text = $("textInput").value.trim();
- if(!text){
-  alert("Please write some text first.");
-  return;
- }
-
- const size = Math.max(8,Math.min(200,Number($("textSize").value)||40));
-
+ var size=Math.max(8,Math.min(200,Number($("textSize").value)||40));
  ctx.save();
- ctx.font = "bold "+size+"px Arial, sans-serif";
- ctx.fillStyle = $("textColor").value;
- ctx.textAlign = "center";
- ctx.textBaseline = "middle";
-
- ctx.shadowColor = "rgba(0,0,0,.45)";
- ctx.shadowBlur = 3;
+ ctx.font="bold "+size+"px Arial, sans-serif";
+ ctx.fillStyle=$("textColor").value;
+ ctx.textAlign="center";
+ ctx.textBaseline="middle";
+ ctx.shadowColor="rgba(0,0,0,.45)";
+ ctx.shadowBlur=3;
  ctx.fillText(text,canvas.width/2,canvas.height/2);
  ctx.restore();
-
  saveHistory();
 });
 
-function transformImage(type){
- if(!hasImage()) return;
+function transform(type){
+ if(!hasImage()){alert("Upload an image first.");return}
+ var temp=document.createElement("canvas");
+ var t=temp.getContext("2d");
 
- const temp = document.createElement("canvas");
- const tctx = temp.getContext("2d");
-
- if(type === "left" || type === "right"){
-  temp.width = canvas.height;
-  temp.height = canvas.width;
-
-  if(type === "right"){
-   tctx.translate(temp.width,0);
-   tctx.rotate(Math.PI/2);
+ if(type==="left" || type==="right"){
+  temp.width=canvas.height;
+  temp.height=canvas.width;
+  if(type==="right"){
+   t.translate(temp.width,0);
+   t.rotate(Math.PI/2);
   }else{
-   tctx.translate(0,temp.height);
-   tctx.rotate(-Math.PI/2);
+   t.translate(0,temp.height);
+   t.rotate(-Math.PI/2);
+  }
+ }else{
+  temp.width=canvas.width;
+  temp.height=canvas.height;
+  if(type==="horizontal"){
+   t.translate(temp.width,0);
+   t.scale(-1,1);
+  }else{
+   t.translate(0,temp.height);
+   t.scale(1,-1);
   }
  }
 
- if(type === "horizontal" || type === "vertical"){
-  temp.width = canvas.width;
-  temp.height = canvas.height;
-
-  if(type === "horizontal"){
-   tctx.translate(temp.width,0);
-   tctx.scale(-1,1);
-  }else{
-   tctx.translate(0,temp.height);
-   tctx.scale(1,-1);
-  }
- }
-
- tctx.drawImage(canvas,0,0);
-
- canvas.width = temp.width;
- canvas.height = temp.height;
+ t.drawImage(canvas,0,0);
+ canvas.width=temp.width;
+ canvas.height=temp.height;
  ctx.drawImage(temp,0,0);
-
  saveHistory();
 }
 
-$("rotateLeft").onclick = function(){transformImage("left")};
-$("rotateRight").onclick = function(){transformImage("right")};
-$("flipH").onclick = function(){transformImage("horizontal")};
-$("flipV").onclick = function(){transformImage("vertical")};
+$("rotateLeft").onclick=function(){transform("left")};
+$("rotateRight").onclick=function(){transform("right")};
+$("flipH").onclick=function(){transform("horizontal")};
+$("flipV").onclick=function(){transform("vertical")};
 
-$("undo").onclick = function(){
- if(historyIndex > 0) restoreHistory(historyIndex-1);
+$("undo").onclick=function(){
+ if(historyIndex>0)loadHistory(historyIndex-1);
+};
+$("redo").onclick=function(){
+ if(historyIndex<history.length-1)loadHistory(historyIndex+1);
 };
 
-$("redo").onclick = function(){
- if(historyIndex < history.length-1) restoreHistory(historyIndex+1);
-};
-
-$("reset").onclick = function(){
- if(!originalImage) return;
-
- if(!confirm("Reset the image to its original uploaded version?")) return;
-
- canvas.width = originalImage.naturalWidth;
- canvas.height = originalImage.naturalHeight;
+$("reset").onclick=function(){
+ if(!originalImage)return;
+ if(!confirm("Reset to the original image?"))return;
+ canvas.width=originalImage.naturalWidth;
+ canvas.height=originalImage.naturalHeight;
  ctx.clearRect(0,0,canvas.width,canvas.height);
  ctx.drawImage(originalImage,0,0);
-
  resetAdjustments();
- hideCropBox();
- clearHistory();
-};
-
-$("zoomIn").onclick = function(){
- zoom = Math.min(zoom + .1,3);
- updateZoom();
-};
-
-$("zoomOut").onclick = function(){
- zoom = Math.max(zoom - .1,.2);
- updateZoom();
-};
-
-$("zoomReset").onclick = function(){
- zoom = 1;
- updateZoom();
+ cancelCrop();
+ zoom=1;
+ canvas.style.width="";
+ canvas.style.maxWidth="100%";
+ resetHistory();
 };
 
 function updateZoom(){
- canvas.style.width = (canvas.width*zoom)+"px";
- canvas.style.maxWidth = "none";
+ canvas.style.width=(canvas.width*zoom)+"px";
+ canvas.style.maxWidth="none";
 }
+$("zoomIn").onclick=function(){zoom=Math.min(zoom+.1,3);updateZoom()};
+$("zoomOut").onclick=function(){zoom=Math.max(zoom-.1,.2);updateZoom()};
+$("zoomReset").onclick=function(){zoom=1;canvas.style.width="";canvas.style.maxWidth="100%"};
 
-function exportImage(format){
- if(!hasImage()){
-  alert("Please upload an image first.");
-  return;
+function exportImage(type){
+ if(!hasImage()){alert("Upload an image first.");return}
+ var out=document.createElement("canvas");
+ out.width=canvas.width;
+ out.height=canvas.height;
+ var o=out.getContext("2d");
+
+ if(type==="image/jpeg"){
+  o.fillStyle="#ffffff";
+  o.fillRect(0,0,out.width,out.height);
  }
+ o.filter=getFilter();
+ o.drawImage(canvas,0,0);
+ o.filter="none";
 
- const output = document.createElement("canvas");
- output.width = canvas.width;
- output.height = canvas.height;
-
- const outCtx = output.getContext("2d");
-
- if(format === "image/jpeg"){
-  outCtx.fillStyle = "#ffffff";
-  outCtx.fillRect(0,0,output.width,output.height);
- }
-
- outCtx.filter = getFilterString();
- outCtx.drawImage(canvas,0,0);
- outCtx.filter = "none";
-
- const link = document.createElement("a");
- link.download = "rifora-studio-edited." +
-  (format === "image/png" ? "png" : "jpg");
-
- link.href = output.toDataURL(format,0.92);
+ var link=document.createElement("a");
+ link.download=type==="image/png"?"rifora-edited.png":"rifora-edited.jpg";
+ link.href=out.toDataURL(type,.92);
  link.click();
 }
 
-$("exportPNG").onclick = function(){exportImage("image/png")};
-$("exportJPG").onclick = function(){exportImage("image/jpeg")};
+$("exportPNG").onclick=function(){exportImage("image/png")};
+$("exportJPG").onclick=function(){exportImage("image/jpeg")};
 
-updateFilterLabels();
+updateLabels();
 updateHistoryButtons();
 
 })();
 </script>
-
 </body>
 </html>
