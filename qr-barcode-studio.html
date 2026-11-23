@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071a30">
+<title>Rifora QR & Barcode Studio</title>
+
+<!-- QR Code Generator -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- Barcode Generator -->
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+<!-- QR & Barcode Scanner -->
+<script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
+
+<!-- PDF Reader -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<!-- DOCX Image Extraction -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+:root{
+ --bg:#071525;
+ --panel:#10243a;
+ --panel2:#142e49;
+ --border:#29445f;
+ --blue:#1689ed;
+ --cyan:#18c5d8;
+ --gold:#f0c040;
+ --text:#eaf3ff;
+ --muted:#9bb0c6;
+ --green:#24c58a;
+ --red:#f06464;
+}
+body{
+ margin:0;
+ background:var(--bg);
+ color:var(--text);
+ font-family:Arial,"Noto Sans Bengali",sans-serif;
+ min-height:100vh;
+}
+header{
+ background:linear-gradient(120deg,#071d35,#104a78,#087d9c);
+ padding:22px 16px;
+ border-bottom:1px solid #356184;
+}
+.header-inner{
+ max-width:1250px;
+ margin:auto;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:15px;
+ flex-wrap:wrap;
+}
+.brand{
+ font-size:25px;
+ font-weight:800;
+ letter-spacing:.5px;
+}
+.brand span{color:var(--gold)}
+.tagline{
+ color:#c6e5f7;
+ font-size:11px;
+ letter-spacing:3px;
+ margin-top:6px;
+}
+.header-label{
+ border:1px solid #76b7d8;
+ border-radius:30px;
+ padding:9px 15px;
+ font-size:12px;
+ color:#e4f7ff;
+}
+main{
+ max-width:1250px;
+ margin:25px auto;
+ padding:0 15px 40px;
+}
+.welcome{
+ background:linear-gradient(120deg,#102d49,#123d60);
+ border:1px solid var(--border);
+ border-radius:15px;
+ padding:22px;
+ margin-bottom:20px;
+}
+.welcome h1{margin:0 0 9px;font-size:25px}
+.welcome p{color:#c2d6e9;margin:0;line-height:1.8}
+.tabs{
+ display:flex;
+ gap:9px;
+ flex-wrap:wrap;
+ margin:20px 0;
+}
+.tab{
+ border:1px solid var(--border);
+ background:var(--panel);
+ color:var(--text);
+ border-radius:9px;
+ padding:12px 17px;
+ cursor:pointer;
+ font-size:14px;
+}
+.tab.active{
+ background:linear-gradient(120deg,#0878d2,#087e9d);
+ border-color:#31b9df;
+}
+.section{display:none}
+.section.active{display:block}
+.card{
+ background:var(--panel);
+ border:1px solid var(--border);
+ border-radius:14px;
+ padding:20px;
+ margin-bottom:17px;
+}
+.card h2{font-size:19px;margin:0 0 17px}
+.card h3{font-size:15px;margin:0 0 12px}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:17px;
+}
+label{
+ display:block;
+ color:#c4d7e8;
+ font-size:13px;
+ margin:12px 0 7px;
+}
+input,select,textarea{
+ width:100%;
+ background:#081a2c;
+ color:white;
+ border:1px solid #365573;
+ border-radius:8px;
+ padding:12px;
+ font-size:14px;
+ outline:none;
+}
+textarea{min-height:95px;resize:vertical}
+input:focus,select:focus,textarea:focus{
+ border-color:var(--cyan);
+}
+input[type=color]{
+ height:43px;
+ padding:4px;
+}
+input[type=file]{padding:10px}
+input[type=range]{padding:0}
+button{
+ border:0;
+ border-radius:8px;
+ padding:12px 17px;
+ cursor:pointer;
+ font-weight:700;
+ font-size:14px;
+}
+button:disabled{opacity:.5;cursor:not-allowed}
+.primary{
+ color:white;
+ background:linear-gradient(110deg,#087ee0,#087f9f);
+}
+.secondary{
+ background:#203d59;
+ color:#eaf3ff;
+ border:1px solid #456580;
+}
+.success{background:#147d5c;color:white}
+.danger{background:#9d353d;color:white}
+.actions{
+ display:flex;
+ flex-wrap:wrap;
+ gap:10px;
+ margin-top:16px;
+}
+.preview{
+ background:#fff;
+ border-radius:10px;
+ min-height:190px;
+ padding:15px;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ overflow:auto;
+}
+.preview img{max-width:100%;height:auto}
+.preview svg{max-width:100%;height:auto}
+#qrOutput canvas,#qrOutput img{max-width:100%;height:auto}
+.result{
+ background:#081a2c;
+ border:1px solid #34536e;
+ border-radius:9px;
+ padding:13px;
+ margin-top:12px;
+ overflow-wrap:anywhere;
+}
+.result-item{
+ border-bottom:1px solid #29445f;
+ padding:12px 0;
+ line-height:1.7;
+}
+.result-item:last-child{border:0}
+.status{
+ padding:12px;
+ border-radius:9px;
+ background:#0b3044;
+ border:1px solid #23617c;
+ color:#c6efff;
+ line-height:1.7;
+ margin-top:12px;
+}
+.status.error{
+ background:#3b2027;
+ border-color:#8e414a;
+ color:#ffd6d6;
+}
+.status.good{
+ background:#10382f;
+ border-color:#247d60;
+ color:#c8ffe9;
+}
+.small{font-size:12px;color:var(--muted);line-height:1.7}
+.lockbox{
+ background:#342b16;
+ border:1px solid #8b7133;
+ color:#ffe5a0;
+ border-radius:10px;
+ padding:13px;
+ line-height:1.7;
+ margin-bottom:15px;
+}
+.output-title{
+ color:#153d57;
+ font-weight:bold;
+ text-align:center;
+ margin-bottom:8px;
+}
+footer{
+ border-top:1px solid var(--border);
+ text-align:center;
+ padding:25px 12px;
+ color:var(--muted);
+ font-size:12px;
+ line-height:1.8;
+}
+.progress{
+ width:100%;
+ height:9px;
+ border-radius:10px;
+ background:#071525;
+ overflow:hidden;
+ margin-top:12px;
+}
+.progress-bar{
+ height:100%;
+ width:0%;
+ background:linear-gradient(90deg,#1689ed,#18c5d8);
+ transition:width .2s;
+}
+@media(max-width:750px){
+ .grid{grid-template-columns:1fr}
+ .brand{font-size:21px}
+ .welcome h1{font-size:21px}
+ .card{padding:15px}
+ .tab{flex:1 1 42%;padding:11px 7px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="header-inner">
+  <div>
+   <div class="brand">RIFORA <span>QR & BARCODE STUDIO</span></div>
+   <div class="tagline">LEARN • CREATE • GROW</div>
+  </div>
+  <div class="header-label">QR GENERATOR • BARCODE • SCANNER</div>
+ </div>
+</header>
+
+<main>
+
+ <div class="welcome">
+  <h1>QR Code & Barcode Studio</h1>
+  <p>
+   সহজেই QR Code ও Barcode তৈরি করুন। ক্যামেরা, ছবি, PDF এবং
+   Word DOCX ফাইলের মধ্যে থাকা QR Code ও Barcode শনাক্ত করুন।
+  </p>
+ </div>
+
+ <div class="lockbox" id="accessMessage">
+  <strong>সেবা ব্যবহারের নিয়ম:</strong>
+  সাধারণ সদস্যের প্রতিবার ব্যবহারের জন্য মূল্য প্রযোজ্য।
+  Admin-এর ফ্রি সুবিধা Backend থেকে যাচাই করা হবে।
+  <div id="accessStatus" class="small">
+   নিরাপদ পেমেন্ট ও সদস্য যাচাই ব্যবস্থা এখনো সংযুক্ত করা হয়নি।
+  </div>
+ </div>
+
+ <nav class="tabs">
+  <button class="tab active" data-tab="qr">QR Generator</button>
+  <button class="tab" data-tab="barcode">Barcode Generator</button>
+  <button class="tab" data-tab="camera">Camera Scanner</button>
+  <button class="tab" data-tab="files">File Scanner</button>
+ </nav>
+
+ <!-- QR GENERATOR -->
+ <section class="section active" id="qr">
+  <div class="card">
+   <h2>QR Code Generator</h2>
+   <div class="grid">
+    <div>
+     <label>QR Code-এর তথ্য লিখুন</label>
+     <textarea id="qrText" placeholder="Website URL, লেখা, ফোন নম্বর অথবা অন্য তথ্য লিখুন"></textarea>
+
+     <label>QR Code-এর রং</label>
+     <input type="color" id="qrColor" value="#071d35">
+
+     <label>Background রং</label>
+     <input type="color" id="qrBg" value="#ffffff">
+
+     <label>QR Code-এর Size</label>
+     <select id="qrSize">
+      <option value="200">200 × 200</option>
+      <option value="300" selected>300 × 300</option>
+      <option value="400">400 × 400</option>
+      <option value="500">500 × 500</option>
+     </select>
+
+     <div class="actions">
+      <button class="primary" id="makeQR">QR Code তৈরি করুন</button>
+      <button class="secondary" id="downloadQR" disabled>PNG ডাউনলোড</button>
+     </div>
+    </div>
+
+    <div>
+     <h3>QR Code Preview</h3>
+     <div class="preview">
+      <div id="qrOutput">
+       <div class="output-title">আপনার QR Code এখানে দেখা যাবে</div>
+      </div>
+     </div>
+     <div class="small">ডাউনলোড করার আগে QR Code স্ক্যান করে পরীক্ষা করুন।</div>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <!-- BARCODE GENERATOR -->
+ <section class="section" id="barcode">
+  <div class="card">
+   <h2>Barcode Generator</h2>
+   <div class="grid">
+    <div>
+     <label>Barcode-এর নম্বর বা তথ্য</label>
+     <input id="barcodeText" type="text" placeholder="যেমন: 123456789012">
+
+     <label>Barcode Format</label>
+     <select id="barcodeFormat">
+      <option value="CODE128">CODE 128</option>
+      <option value="CODE39">CODE 39</option>
+      <option value="EAN13">EAN-13</option>
+      <option value="EAN8">EAN-8</option>
+      <option value="UPC">UPC-A</option>
+      <option value="ITF">ITF</option>
+      <option value="ITF14">ITF-14</option>
+     </select>
+
+     <label>Barcode-এর রং</label>
+     <input type="color" id="barcodeColor" value="#000000">
+
+     <label>Background রং</label>
+     <input type="color" id="barcodeBg" value="#ffffff">
+
+     <div class="actions">
+      <button class="primary" id="makeBarcode">Barcode তৈরি করুন</button>
+      <button class="secondary" id="downloadBarcode" disabled>SVG ডাউনলোড</button>
+     </div>
+    </div>
+
+    <div>
+     <h3>Barcode Preview</h3>
+     <div class="preview" id="barcodePreview">
+      <div class="output-title">আপনার Barcode এখানে দেখা যাবে</div>
+     </div>
+     <p class="small">
+      পণ্যের বাণিজ্যিক বিক্রির জন্য EAN/UPC নম্বর অনুমোদিত GS1 উৎস থেকে নিতে হয়।
+      ইচ্ছামতো নম্বর দিলে তা বৈধ পণ্য পরিচিতি নিশ্চিত করে না।
+     </p>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <!-- CAMERA SCANNER -->
+ <section class="section" id="camera">
+  <div class="card">
+   <h2>Camera QR & Barcode Scanner</h2>
+   <p class="small">
+    ক্যামেরা ব্যবহার করতে HTTPS ওয়েবসাইট এবং Browser Permission প্রয়োজন।
+   </p>
+   <div class="preview" style="background:#081a2c;min-height:260px">
+    <video id="cameraVideo" autoplay muted playsinline
+     style="width:100%;max-height:350px;object-fit:contain"></video>
+   </div>
+   <div class="actions">
+    <button class="primary" id="startCamera">ক্যামেরা চালু করুন</button>
+    <button class="danger" id="stopCamera">ক্যামেরা বন্ধ করুন</button>
+   </div>
+   <div id="cameraStatus" class="status">ক্যামেরা এখন বন্ধ আছে।</div>
+  </div>
+ </section>
+
+ <!-- FILE SCANNER -->
+ <section class="section" id="files">
+  <div class="card">
+   <h2>Image & Document Scanner</h2>
+   <p class="small">
+    ছবি, PDF এবং Word DOCX ফাইল নির্বাচন করুন।
+    PDF-এর প্রতিটি পৃষ্ঠা পরীক্ষা করা হবে। DOCX ফাইলের ভেতরে থাকা
+    ছবি পরীক্ষা করা হবে।
+   </p>
+
+   <label>ছবি / PDF / Word ফাইল নির্বাচন করুন</label>
+   <input type="file" id="scanFiles" multiple
+    accept="image/*,.pdf,.docx">
+
+   <div class="actions">
+    <button class="primary" id="scanSelected">ফাইল স্ক্যান করুন</button>
+    <button class="secondary" id="clearResults">ফলাফল মুছুন</button>
+   </div>
+
+   <div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+   </div>
+   <div id="fileStatus" class="status">এখনো কোনো ফাইল স্ক্যান করা হয়নি।</div>
+   <h3 style="margin-top:20px">স্ক্যানের ফলাফল</h3>
+   <div class="result" id="scanResults">
+    এখানে QR Code ও Barcode-এর তথ্য দেখা যাবে।
+   </div>
+   <div class="actions">
+    <button class="secondary" id="copyResults">সব ফলাফল কপি করুন</button>
+    <button class="secondary" id="downloadResults">TXT রিপোর্ট ডাউনলোড</button>
+   </div>
+  </div>
+ </section>
+
+ <div class="card">
+  <h3>ব্যবহার সংক্রান্ত তথ্য</h3>
+  <p class="small">
+   • আপনার নির্বাচিত ছবি ও ডকুমেন্ট এই ব্রাউজারেই প্রক্রিয়া করা হয়।<br>
+   • QR Code বা Barcode শনাক্ত না হলে ছবির মান, আলো ও রেজল্যুশন পরীক্ষা করুন।<br>
+   • PDF-এর পৃষ্ঠা ছবি হিসেবে রেন্ডার করে স্ক্যান করা হয়।<br>
+   • DOCX ফাইলের Embedded Image পরীক্ষা করা হয়; Word-এর পৃষ্ঠা বিন্যাস
+   পুনরায় তৈরি করে প্রতিটি পৃষ্ঠা স্ক্যান করা এই সংস্করণে নেই।<br>
+   • পাসওয়ার্ড-সুরক্ষিত PDF, DOC এবং পুরোনো DOC ফরম্যাট এই সংস্করণে সমর্থিত নয়।
+  </p>
+ </div>
+
+</main>
+
+<footer>
+ <strong>RIFORA STUDIO</strong><br>
+ LEARN • CREATE • GROW<br>
+ © 2026 Rifora Studio. All Rights Reserved.
+</footer>
+
+<script>
+"use strict";
+
+/* =========================================
+   CONFIGURATION
+   =========================================
+
+   Backend API যুক্ত না হওয়া পর্যন্ত ফাঁকা রাখুন।
+   Public GitHub HTML-এ কোনো Secret/API Key রাখবেন না।
+
+   Backend endpoint:
+   POST /api/access/consume
+
+   Server-এর কাজ:
+   1. Login session যাচাই
+   2. Admin হলে বিনামূল্যে অনুমতি
+   3. সাধারণ সদস্য হলে এক ব্যবহারের মূল্য যাচাই ও কর্তন
+   4. সফল হলে {allowed:true, role:"member"} পাঠানো
+   5. ব্যর্থ হলে {allowed:false, message:"..."} পাঠানো
+
+   ========================================= */
+
+const ACCESS_API = ""; // Backend তৈরি হলে এখানে API URL বসবে
+
+let qrReady = false;
+let barcodeReady = false;
+let cameraReader = null;
+let cameraControls = null;
+let scanRecords = [];
+let scanBusy = false;
+
+const $ = id => document.getElementById(id);
+
+function showStatus(id,message,type=""){
+ const el=$(id);
+ el.className="status "+type;
+ el.textContent=message;
+}
+
+function setProgress(value){
+ $("progressBar").style.width=Math.max(0,Math.min(100,value))+"%";
+}
+
+/* =========================================
+   ACCESS CONTROL
+   ========================================= */
+
+async function authorizeUse(service){
+ if(!ACCESS_API){
+  alert(
+   "সেবা ব্যবহারের পেমেন্ট ও Admin যাচাই ব্যবস্থা এখনো Backend-এর সঙ্গে যুক্ত হয়নি। নিরাপত্তার জন্য ব্যবহার বন্ধ রাখা হয়েছে।"
+  );
+  $("accessStatus").textContent=
+   "Backend সংযুক্ত না হওয়া পর্যন্ত Paid Service চালু হবে না।";
+  return false;
+ }
+
+ try{
+  const response=await fetch(
+   ACCESS_API.replace(/\/$/,"")+"/api/access/consume",
+   {
+    method:"POST",
+    credentials:"include",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({service:service})
+   }
+  );
+
+  const data=await response.json();
+
+  if(!response.ok || data.allowed!==true){
+   alert(data.message || "অনুমতি পাওয়া যায়নি।");
+   return false;
+  }
+
+  $("accessStatus").textContent=
+   data.role==="admin"
+    ?"Admin Access: বিনামূল্যে ব্যবহারের অনুমতি পাওয়া গেছে।"
+    :"পেমেন্ট যাচাই হয়েছে। এই ব্যবহারের অনুমতি দেওয়া হয়েছে।";
+
+  return true;
+
+ }catch(error){
+  alert("সার্ভারের সঙ্গে যোগাযোগ করা যাচ্ছে না। পরে আবার চেষ্টা করুন।");
+  return false;
+ }
+}
+
+/* =========================================
+   NAVIGATION
+   ========================================= */
+
+document.querySelectorAll(".tab").forEach(button=>{
+ button.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));
+
+  button.classList.add("active");
+  $(button.dataset.tab).classList.add("active");
+ });
+});
+
+/* =========================================
+   QR GENERATOR
+   ========================================= */
+
+$("makeQR").addEventListener("click",async()=>{
+ const text=$("qrText").value.trim();
+
+ if(!text){
+  alert("প্রথমে QR Code-এর তথ্য লিখুন।");
+  return;
+ }
+
+ const allowed=await authorizeUse("qr_generate");
+ if(!allowed)return;
+
+ const output=$("qrOutput");
+ output.innerHTML="";
+
+ try{
+  const size=Number($("qrSize").value);
+
+  new QRCode(output,{
+   text:text,
+   width:size,
+   height:size,
+   colorDark:$("qrColor").value,
+   colorLight:$("qrBg").value,
+   correctLevel:QRCode.CorrectLevel.H
+  });
+
+  qrReady=true;
+  $("downloadQR").disabled=false;
+
+ }catch(error){
+  output.textContent="QR Code তৈরি করা যায়নি। তথ্য পরীক্ষা করুন।";
+  qrReady=false;
+ }
+});
+
+$("downloadQR").addEventListener("click",()=>{
+ if(!qrReady)return;
+
+ const output=$("qrOutput");
+ const canvas=output.querySelector("canvas");
+
+ if(canvas){
+  const link=document.createElement("a");
+  link.download="rifora-qr-code.png";
+  link.href=canvas.toDataURL("image/png");
+  link.click();
+  return;
+ }
+
+ const img=output.querySelector("img");
+ if(img && img.src){
+  const link=document.createElement("a");
+  link.download="rifora-qr-code.png";
+  link.href=img.src;
+  link.click();
+ }
+});
+
+/* =========================================
+   BARCODE GENERATOR
+   ========================================= */
+
+$("makeBarcode").addEventListener("click",async()=>{
+ const value=$("barcodeText").value.trim();
+
+ if(!value){
+  alert("প্রথমে Barcode-এর তথ্য লিখুন।");
+  return;
+ }
+
+ const allowed=await authorizeUse("barcode_generate");
+ if(!allowed)return;
+
+ const preview=$("barcodePreview");
+ preview.innerHTML="";
+
+ const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+ preview.appendChild(svg);
+
+ try{
+  JsBarcode(svg,value,{
+   format:$("barcodeFormat").value,
+   lineColor:$("barcodeColor").value,
+   background:$("barcodeBg").value,
+   width:2,
+   height:90,
+   displayValue:true,
+   margin:12,
+   fontSize:17
+  });
+
+  barcodeReady=true;
+  $("downloadBarcode").disabled=false;
+
+ }catch(error){
+  preview.textContent="এই Format-এর জন্য তথ্যটি সঠিক নয়। নম্বর পরীক্ষা করুন।";
+  barcodeReady=false;
+  $("downloadBarcode").disabled=true;
+ }
+});
+
+$("downloadBarcode").addEventListener("click",()=>{
+ if(!barcodeReady)return;
+
+ const svg=$("barcodePreview").querySelector("svg");
+ if(!svg)return;
+
+ const data=new XMLSerializer().serializeToString(svg);
+ const blob=new Blob([data],{type:"image/svg+xml;charset=utf-8"});
+ downloadBlob(blob,"rifora-barcode.svg");
+});
+
+/* =========================================
+   DOWNLOAD HELPER
+   ========================================= */
+
+function downloadBlob(blob,filename){
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download=filename;
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+/* =========================================
+   ZXING SCANNER
+   ========================================= */
+
+function getReader(){
+ if(typeof ZXing==="undefined"){
+  throw new Error("Scanner Library লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।");
+ }
+ return new ZXing.BrowserMultiFormatReader();
+}
+
+function addScanResult(text,format,source){
+ const record={
+  text:String(text),
+  format:String(format || "Unknown"),
+  source:String(source || "Unknown"),
+  time:new Date().toLocaleString()
+ };
+
+ const duplicate=scanRecords.some(
+  item=>item.text===record.text && item.source===record.source
+ );
+
+ if(!duplicate){
+  scanRecords.push(record);
+  renderResults();
+ }
+
+ return record;
+}
+
+function renderResults(){
+ const box=$("scanResults");
+
+ if(!scanRecords.length){
+  box.textContent="কোনো QR Code বা Barcode পাওয়া যায়নি।";
+  return;
+ }
+
+ box.innerHTML="";
+
+ scanRecords.forEach((item,index)=>{
+  const div=document.createElement("div");
+  div.className="result-item";
+
+  const heading=document.createElement("strong");
+  heading.textContent=(index+1)+". "+item.format;
+
+  const value=document.createElement("div");
+  value.textContent=item.text;
+
+  const source=document.createElement("div");
+  source.className="small";
+  source.textContent="Source: "+item.source+" | "+item.time;
+
+  const copy=document.createElement("button");
+  copy.className="secondary";
+  copy.textContent="এই তথ্য কপি করুন";
+  copy.style.marginTop="8px";
+  copy.addEventListener("click",()=>{
+   copyText(item.text);
+  });
+
+  div.append(heading,value,source,copy);
+  box.appendChild(div);
+ });
+}
+
+async function copyText(text){
+ try{
+  await navigator.clipboard.writeText(text);
+  alert("তথ্য কপি হয়েছে।");
+ }catch(error){
+  const area=document.createElement("textarea");
+  area.value=text;
+  document.body.appendChild(area);
+  area.select();
+  document.execCommand("copy");
+  area.remove();
+  alert("তথ্য কপি হয়েছে।");
+ }
+}
+
+async function decodeCanvas(canvas,source){
+ const reader=getReader();
+ const data=canvas.toDataURL("image/png");
+ const result=await reader.decodeFromImageUrl(data);
+
+ addScanResult(
+  result.getText(),
+  result.getBarcodeFormat(),
+  source
+ );
+
+ return result;
+}
+
+/* =========================================
+   CAMERA SCANNER
+   ========================================= */
+
+$("startCamera").addEventListener("click",async()=>{
+ const allowed=await authorizeUse("camera_scan");
+ if(!allowed)return;
+
+ try{
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+   throw new Error("এই Browser-এ Camera API পাওয়া যাচ্ছে না। HTTPS ব্যবহার করুন।");
+  }
+
+  stopCamera();
+
+  cameraReader=getReader();
+
+  cameraControls=await cameraReader.decodeFromVideoDevice(
+   undefined,
+   "cameraVideo",
+   (result,error)=>{
+    if(result){
+     addScanResult(
+      result.getText(),
+      result.getBarcodeFormat(),
+      "Camera"
+     );
+     showStatus("cameraStatus","কোড পাওয়া গেছে: "+result.getText(),"good");
+    }
+   }
+  );
+
+  showStatus("cameraStatus","ক্যামেরা চালু হয়েছে। QR বা Barcode সামনে ধরুন।","good");
+
+ }catch(error){
+  showStatus("cameraStatus",error.message || "ক্যামেরা চালু করা যায়নি।","error");
+ }
+});
+
+function stopCamera(){
+ try{
+  if(cameraControls){
+   cameraControls.stop();
+   cameraControls=null;
+  }
+  if(cameraReader){
+   cameraReader.reset();
+   cameraReader=null;
+  }
+
+  const video=$("cameraVideo");
+  if(video.srcObject){
+   video.srcObject.getTracks().forEach(track=>track.stop());
+   video.srcObject=null;
+  }
+ }catch(error){
+  console.log("Camera stop:",error);
+ }
+}
+
+$("stopCamera").addEventListener("click",()=>{
+ stopCamera();
+ showStatus("cameraStatus","ক্যামেরা বন্ধ করা হয়েছে।");
+});
+
+window.addEventListener("beforeunload",stopCamera);
+
+/* =========================================
+   IMAGE SCANNER
+   ========================================= */
+
+async function scanImageBlob(blob,source){
+ const url=URL.createObjectURL(blob);
+
+ try{
+  const img=new Image();
+
+  await new Promise((resolve,reject)=>{
+   img.onload=resolve;
+   img.onerror=()=>reject(new Error("ছবি খোলা যায়নি"));
+   img.src=url;
+  });
+
+  const canvas=document.createElement("canvas");
+  canvas.width=img.naturalWidth;
+  canvas.height=img.naturalHeight;
+
+  const ctx=canvas.getContext("2d",{willReadFrequently:true});
+  ctx.drawImage(img,0,0);
+
+  try{
+   await decodeCanvas(canvas,source);
+   return 1;
+  }catch(error){
+   return 0;
+  }
+
+ }finally{
+  URL.revokeObjectURL(url);
+ }
+}
+
+/* =========================================
+   PDF SCANNER
+   ========================================= */
+
+async function scanPDF(file){
+ if(typeof pdfjsLib==="undefined"){
+  throw new Error("PDF Library লোড হয়নি।");
+ }
+
+ pdfjsLib.GlobalWorkerOptions.workerSrc=
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+ const buffer=await file.arrayBuffer();
+ const pdf=await pdfjsLib.getDocument({data:buffer}).promise;
+
+ let found=0;
+
+ for(let pageNo=1;pageNo<=pdf.numPages;pageNo++){
+  const page=await pdf.getPage(pageNo);
+  const viewport=page.getViewport({scale:1.7});
+
+  const canvas=document.createElement("canvas");
+  canvas.width=Math.ceil(viewport.width);
+  canvas.height=Math.ceil(viewport.height);
+
+  const context=canvas.getContext("2d",{willReadFrequently:true});
+
+  await page.render({
+   canvasContext:context,
+   viewport:viewport
+  }).promise;
+
+  try{
+   await decodeCanvas(canvas,file.name+" - Page "+pageNo);
+   found++;
+  }catch(error){
+   // এই পৃষ্ঠায় কোনো কোড পাওয়া যায়নি।
+  }
+
+  setProgress((pageNo/pdf.numPages)*100);
+ }
+
+ return found;
+}
+
+/* =========================================
+   DOCX IMAGE SCANNER
+   ========================================= */
+
+async function scanDOCX(file){
+ if(typeof JSZip==="undefined"){
+  throw new Error("DOCX Library লোড হয়নি।");
+ }
+
+ const zip=await JSZip.loadAsync(file);
+ const imageFiles=Object.keys(zip.files).filter(name=>
+  /^word\/media\/.+\.(png|jpe?g|webp|bmp|gif)$/i.test(name)
+ );
+
+ let found=0;
+
+ for(let i=0;i<imageFiles.length;i++){
+  const name=imageFiles[i];
+  const blob=await zip.files[name].async("blob");
+
+  const count=await scanImageBlob(
+   blob,
+   file.name+" - "+name
+  );
+
+  found+=count;
+  setProgress(((i+1)/Math.max(1,imageFiles.length))*100);
+ }
+
+ if(!imageFiles.length){
+  showStatus(
+   "fileStatus",
+   "এই Word ফাইলে আলাদা Embedded Image পাওয়া যায়নি।",
+   "error"
+  );
+ }
+
+ return found;
+}
+
+/* =========================================
+   FILE SCANNER MAIN
+   ========================================= */
+
+$("scanSelected").addEventListener("click",async()=>{
+ if(scanBusy)return;
+
+ const files=Array.from($("scanFiles").files || []);
+
+ if(!files.length){
+  alert("প্রথমে ছবি, PDF অথবা DOCX ফাইল নির্বাচন করুন।");
+  return;
+ }
+
+ const allowed=await authorizeUse("document_scan");
+ if(!allowed)return;
+
+ scanBusy=true;
+ $("scanSelected").disabled=true;
+ setProgress(0);
+
+ let totalFound=0;
+ let completed=0;
+
+ try{
+  for(const file of files){
+   showStatus("fileStatus","স্ক্যান হচ্ছে: "+file.name);
+
+   const ext=file.name.split(".").pop().toLowerCase();
+
+   if(["jpg","jpeg","png","webp","bmp","gif"].includes(ext)){
+    totalFound+=await scanImageBlob(file,file.name);
+   }
+   else if(ext==="pdf"){
+    totalFound+=await scanPDF(file);
+   }
+   else if(ext==="docx"){
+    totalFound+=await scanDOCX(file);
+   }
+   else{
+    showStatus(
+     "fileStatus",
+     "অসমর্থিত ফাইল: "+file.name,
+     "error"
+    );
+   }
+
+   completed++;
+   setProgress((completed/files.length)*100);
+  }
+
+  showStatus(
+   "fileStatus",
+   "স্ক্যান সম্পন্ন। নতুন শনাক্ত কোড: "+totalFound,
+   "good"
+  );
+
+ }catch(error){
+  showStatus(
+   "fileStatus",
+   "স্ক্যান করতে সমস্যা হয়েছে: "+error.message,
+   "error"
+  );
+
+ }finally{
+  scanBusy=false;
+  $("scanSelected").disabled=false;
+ }
+});
+
+/* =========================================
+   RESULTS
+   ========================================= */
+
+$("clearResults").addEventListener("click",()=>{
+ scanRecords=[];
+ renderResults();
+ setProgress(0);
+ showStatus("fileStatus","ফলাফল মুছে ফেলা হয়েছে।");
+});
+
+$("copyResults").addEventListener("click",()=>{
+ if(!scanRecords.length){
+  alert("কপি করার মতো কোনো ফলাফল নেই।");
+  return;
+ }
+
+ const text=scanRecords.map((item,index)=>
+  (index+1)+". "+item.format+"\n"+
+  item.text+"\n"+
+  "Source: "+item.source
+ ).join("\n\n");
+
+ copyText(text);
+});
+
+$("downloadResults").addEventListener("click",()=>{
+ if(!scanRecords.length){
+  alert("ডাউনলোড করার মতো কোনো ফলাফল নেই।");
+  return;
+ }
+
+ const text=scanRecords.map((item,index)=>
+  (index+1)+". "+item.format+"\n"+
+  item.text+"\n"+
+  "Source: "+item.source+"\n"+
+  "Time: "+item.time
+ ).join("\n\n");
+
+ downloadBlob(
+  new Blob([text],{type:"text/plain;charset=utf-8"}),
+  "rifora-scan-report.txt"
+ );
+});
+
+/* =========================================
+   INITIAL CHECK
+   ========================================= */
+
+window.addEventListener("load",()=>{
+ if(typeof QRCode==="undefined"){
+  $("accessStatus").textContent=
+   "QR Library লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।";
+ }
+
+ if(typeof ZXing==="undefined"){
+  console.warn("ZXing Library unavailable");
+ }
+
+ if(location.protocol!=="https:" && location.hostname!=="localhost"){
+  console.warn("Camera scanning requires HTTPS.");
+ }
+});
+</script>
+
+</body>
+</html>
