@@ -1,1 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Rifora Studio Professional Advanced Video Editor">
+<title>Rifora Studio | Video Editor</title>
 
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#10131d;color:#e9edf7}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:7px;padding:9px 13px;background:#29334a;color:white}
+button:hover{background:#435579}
+button:disabled{opacity:.4;cursor:not-allowed}
+.topbar{height:auto;min-height:62px;background:#191f30;border-bottom:1px solid #30394e;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{font-size:21px;font-weight:bold;color:#fff}
+.logo span{color:#f3bd4e}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.primary{background:#6652d9}
+.primary:hover{background:#7968ed}
+.green{background:#16865d}
+.app{display:grid;grid-template-columns:245px minmax(300px,1fr) 260px;min-height:calc(100vh - 62px)}
+.panel{background:#191f30;padding:15px;border-right:1px solid #30394e;min-width:0}
+.panel.right{border-right:0;border-left:1px solid #30394e}
+.panel h3{font-size:15px;margin-bottom:14px;color:#f3bd4e}
+.section{margin-bottom:22px}
+.small{font-size:12px;color:#9ba8c1;line-height:1.6}
+.media-actions{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.media-item{padding:9px;background:#242d40;border-radius:7px;margin-bottom:7px;cursor:pointer;font-size:12px;overflow-wrap:anywhere;border:1px solid transparent}
+.media-item.active{border-color:#8a79ff;background:#302c51}
+.workspace{padding:18px;min-width:0;display:flex;flex-direction:column;gap:15px}
+.preview-area{background:#080a10;border:1px solid #30394e;border-radius:10px;min-height:310px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+#previewVideo{display:block;max-width:100%;max-height:440px;width:auto;height:auto}
+#previewText{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:32px;font-weight:bold;color:white;text-shadow:2px 2px 5px #000;text-align:center;max-width:90%;pointer-events:none;white-space:pre-wrap}
+.placeholder{color:#77849d;text-align:center;padding:35px}
+.preview-controls{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap}
+#timeDisplay{font-size:13px;color:#b9c5d9;min-width:100px;text-align:center}
+.timeline-wrap{background:#191f30;border:1px solid #30394e;border-radius:10px;padding:14px;overflow:hidden}
+.timeline-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.timeline-head h3{font-size:15px;color:#f3bd4e}
+.track{display:flex;align-items:center;gap:8px;min-height:55px;border-top:1px solid #30394e;padding:7px 0;overflow-x:auto}
+.track-label{width:76px;flex-shrink:0;font-size:11px;color:#9ba8c1}
+.track-content{display:flex;gap:6px;align-items:center;min-height:40px}
+.clip{min-width:110px;max-width:180px;padding:10px;background:#365e91;border-radius:6px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;border:2px solid transparent}
+.clip.audio{background:#176d59}
+.clip.image{background:#76529a}
+.clip.textclip{background:#916b2e}
+.clip.selected{border-color:#ffe28a}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12px;color:#b9c5d9;margin-bottom:6px}
+.field input[type="text"],.field input[type="number"],.field select{width:100%;padding:9px;background:#101725;color:white;border:1px solid #3b4862;border-radius:6px}
+.field input[type="range"]{width:100%;accent-color:#8a79ff}
+.field input[type="file"]{display:none}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+hr{border:0;border-top:1px solid #30394e;margin:14px 0}
+.status{font-size:12px;color:#aab6cb;line-height:1.6;min-height:20px}
+.timeline-note{font-size:11px;color:#8795ad;line-height:1.6;margin-top:8px}
+.export-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:950px){
+.app{grid-template-columns:210px minmax(260px,1fr)}
+.panel.right{grid-column:1/-1;border-left:0;border-top:1px solid #30394e}
+}
+@media(max-width:650px){
+.app{display:flex;flex-direction:column}
+.panel{border-right:0;border-bottom:1px solid #30394e}
+.workspace{padding:10px}
+.preview-area{min-height:220px}
+#previewVideo{max-height:300px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="logo">Rifora <span>Studio</span> | Video Editor</div>
+    <div class="top-actions">
+        <button onclick="undoAction()">↶ Undo</button>
+        <button onclick="redoAction()">↷ Redo</button>
+        <button onclick="saveProject()">Save Project</button>
+        <button onclick="openProject()">Open Project</button>
+        <button class="primary" onclick="exportVideo()">Export Video</button>
+    </div>
+</header>
+
+<div class="app">
+
+<!-- LEFT MEDIA PANEL -->
+<aside class="panel">
+    <div class="section">
+        <h3>Media Library</h3>
+        <div class="media-actions">
+            <button class="primary" onclick="document.getElementById('mediaInput').click()">＋ Import Media</button>
+            <button onclick="document.getElementById('imageInput').click()">＋ Image</button>
+        </div>
+
+        <input type="file" id="mediaInput" accept="video/*,audio/*" multiple>
+        <input type="file" id="imageInput" accept="image/*" multiple>
+
+        <div id="mediaList">
+            <p class="small">Your imported media will appear here.</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <h3>Editing Tools</h3>
+        <div class="media-actions">
+            <button onclick="addText()">＋ Add Text</button>
+            <button onclick="addSelectedToTimeline()">＋ Add to Timeline</button>
+            <button onclick="splitClip()">✂ Split</button>
+            <button onclick="deleteClip()">Delete Clip</button>
+        </div>
+        <p class="small">Select a media item and add it to the timeline to start editing.</p>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <h3>Project Information</h3>
+        <p class="small" id="projectInfo">No media imported yet.</p>
+    </div>
+</aside>
+
+<!-- MAIN WORKSPACE -->
+<main class="workspace">
+
+    <div class="preview-area" id="previewArea">
+        <div class="placeholder" id="placeholder">
+            <h2>Video Preview</h2>
+            <p class="small">Import a video to begin editing.</p>
+        </div>
+        <video id="previewVideo" playsinline style="display:none"></video>
+        <div id="previewText"></div>
+    </div>
+
+    <div class="preview-controls">
+        <button onclick="playVideo()">▶ Play</button>
+        <button onclick="pauseVideo()">Ⅱ Pause</button>
+        <button onclick="stopVideo()">■ Stop</button>
+        <span id="timeDisplay">00:00 / 00:00</span>
+    </div>
+
+    <div class="timeline-wrap">
+        <div class="timeline-head">
+            <h3>Multi-Track Timeline</h3>
+            <div class="media-actions">
+                <button onclick="zoomTimeline(1.2)">＋ Zoom</button>
+                <button onclick="zoomTimeline(0.8)">－ Zoom</button>
+            </div>
+        </div>
+
+        <div class="track">
+            <div class="track-label">VIDEO 1</div>
+            <div class="track-content" id="videoTrack"></div>
+        </div>
+
+        <div class="track">
+            <div class="track-label">AUDIO 1</div>
+            <div class="track-content" id="audioTrack"></div>
+        </div>
+
+        <div class="track">
+            <div class="track-label">OVERLAY</div>
+            <div class="track-content" id="overlayTrack"></div>
+        </div>
+
+        <p class="timeline-note">
+            Select a timeline clip to edit it. Split divides a video clip at the current preview time.
+            This first version previews one selected clip at a time.
+        </p>
+    </div>
+
+    <div class="status" id="status">Welcome to Rifora Studio Video Editor.</div>
+
+</main>
+
+<!-- RIGHT PROPERTIES PANEL -->
+<aside class="panel right">
+    <div class="section">
+        <h3>Clip Properties</h3>
+
+        <div class="field">
+            <label>Clip Name</label>
+            <input type="text" id="clipName" placeholder="Selected clip name">
+        </div>
+
+        <div class="field-row">
+            <div class="field">
+                <label>Start (seconds)</label>
+                <input type="number" id="clipStart" min="0" step="0.1" value="0">
+            </div>
+            <div class="field">
+                <label>End (seconds)</label>
+                <input type="number" id="clipEnd" min="0" step="0.1" value="0">
+            </div>
+        </div>
+
+        <button class="primary" onclick="applyTrim()">Apply Trim</button>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <h3>Video Adjustments</h3>
+
+        <div class="field">
+            <label>Brightness <span id="brightnessValue">100%</span></label>
+            <input type="range" id="brightness" min="0" max="200" value="100">
+        </div>
+
+        <div class="field">
+            <label>Contrast <span id="contrastValue">100%</span></label>
+            <input type="range" id="contrast" min="0" max="200" value="100">
+        </div>
+
+        <div class="field">
+            <label>Saturation <span id="saturationValue">100%</span></label>
+            <input type="range" id="saturation" min="0" max="200" value="100">
+        </div>
+
+        <div class="field">
+            <label>Playback Speed</label>
+            <select id="speed">
+                <option value="0.25">0.25x</option>
+                <option value="0.5">0.5x</option>
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x Normal</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Volume <span id="volumeValue">100%</span></label>
+            <input type="range" id="volume" min="0" max="100" value="100">
+        </div>
+
+        <button onclick="resetAdjustments()">Reset Adjustments</button>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <h3>Text Editor</h3>
+
+        <div class="field">
+            <label>Text</label>
+            <input type="text" id="textInput" placeholder="Write your text">
+        </div>
+
+        <div class="field">
+            <label>Text Color</label>
+            <input type="color" id="textColor" value="#ffffff">
+        </div>
+
+        <div class="field">
+            <label>Font Size</label>
+            <input type="range" id="textSize" min="12" max="90" value="32">
+        </div>
+
+        <button class="primary" onclick="applyText()">Apply Text</button>
+        <button onclick="removeText()">Remove Text</button>
+    </div>
+
+</aside>
+</div>
+
+<script>
+"use strict";
+
+const video = document.getElementById("previewVideo");
+
+let mediaItems = [];
+let timelineItems = [];
+let selectedMediaId = null;
+let selectedClipId = null;
+let timelineZoom = 1;
+let clipCounter = 0;
+let history = [];
+let historyIndex = -1;
+let textOverlay = "";
+let projectName = "Rifora Video Project";
+
+const $ = id => document.getElementById(id);
+
+function makeId() {
+    return "item_" + Date.now() + "_" + Math.random().toString(36).slice(2,8);
+}
+
+function notify(message) {
+    $("status").textContent = message;
+}
+
+function formatTime(seconds) {
+    if (!Number.isFinite(seconds) || seconds < 0) seconds = 0;
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return String(mins).padStart(2,"0") + ":" + String(secs).padStart(2,"0");
+}
+
+function rememberHistory() {
+    const snapshot = JSON.stringify({
+        timelineItems,
+        textOverlay,
+        projectName
+    });
+
+    history = history.slice(0, historyIndex + 1);
+    history.push(snapshot);
+
+    if (history.length > 40) history.shift();
+
+    historyIndex = history.length - 1;
+}
+
+function restoreHistory(index) {
+    if (index < 0 || index >= history.length) return;
+
+    const data = JSON.parse(history[index]);
+    timelineItems = data.timelineItems || [];
+    textOverlay = data.textOverlay || "";
+    projectName = data.projectName || "Rifora Video Project";
+    historyIndex = index;
+
+    $("previewText").textContent = textOverlay;
+    renderTimeline();
+    updateSelectedClip();
+    notify("Editing history restored.");
+}
+
+function undoAction() {
+    if (historyIndex <= 0) {
+        notify("Nothing to undo.");
+        return;
+    }
+    restoreHistory(historyIndex - 1);
+}
+
+function redoAction() {
+    if (historyIndex >= history.length - 1) {
+        notify("Nothing to redo.");
+        return;
+    }
+    restoreHistory(historyIndex + 1);
+}
+
+function addMedia(file) {
+    const type = file.type.startsWith("video/") ? "video" :
+                 file.type.startsWith("audio/") ? "audio" :
+                 file.type.startsWith("image/") ? "image" : null;
+
+    if (!type) {
+        notify("Unsupported file type: " + file.name);
+        return;
+    }
+
+    const item = {
+        id: makeId(),
+        name: file.name,
+        type,
+        file,
+        url: URL.createObjectURL(file),
+        duration: 0
+    };
+
+    mediaItems.push(item);
+
+    if (type === "video" || type === "image") {
+        const probe = type === "video" ? document.createElement("video") :
+                                        document.createElement("img");
+        probe.preload = "metadata";
+        probe.src = item.url;
+
+        probe.onloadedmetadata = () => {
+            item.duration = type === "video" ? probe.duration : 5;
+            renderMedia();
+            updateProjectInfo();
+        };
+        probe.onload = () => {
+            if (type === "image") {
+                item.duration = 5;
+                renderMedia();
+            }
+        };
+    }
+
+    if (type === "audio") {
+        const probe = document.createElement("audio");
+        probe.preload = "metadata";
+        probe.src = item.url;
+        probe.onloadedmetadata = () => {
+            item.duration = probe.duration;
+            renderMedia();
+            updateProjectInfo();
+        };
+    }
+
+    renderMedia();
+    updateProjectInfo();
+    notify(file.name + " imported successfully.");
+}
+
+$("mediaInput").addEventListener("change", event => {
+    [...event.target.files].forEach(addMedia);
+    event.target.value = "";
+});
+
+$("imageInput").addEventListener("change", event => {
+    [...event.target.files].forEach(addMedia);
+    event.target.value = "";
+});
+
+function renderMedia() {
+    const list = $("mediaList");
+    list.innerHTML = "";
+
+    if (!mediaItems.length) {
+        list.innerHTML = '<p class="small">No media imported.</p>';
+        return;
+    }
+
+    mediaItems.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "media-item" +
+            (selectedMediaId === item.id ? " active" : "");
+
+        const icon = item.type === "video" ? "🎬" :
+                    item.type === "audio" ? "🎵" : "🖼️";
+
+        div.textContent = icon + " " + item.name;
+        div.title = item.name;
+
+        div.onclick = () => selectMedia(item.id);
+        list.appendChild(div);
+    });
+}
+
+function selectMedia(id) {
+    selectedMediaId = id;
+    const item = mediaItems.find(x => x.id === id);
+    if (!item) return;
+
+    renderMedia();
+
+    if (item.type === "video") {
+        loadPreview(item);
+    } else if (item.type === "image") {
+        loadImagePreview(item);
+    } else {
+        notify("Audio selected. Add it to the audio timeline.");
+    }
+}
+
+function loadPreview(item) {
+    pauseVideo();
+    video.src = item.url;
+    video.style.display = "block";
+    $("placeholder").style.display = "none";
+    video.load();
+
+    video.onloadedmetadata = () => {
+        video.currentTime = 0;
+        updateTime();
+        notify("Preview loaded: " + item.name);
+    };
+
+    applyVideoStyle();
+}
+
+function loadImagePreview(item) {
+    pauseVideo();
+    video.pause();
+    video.removeAttribute("src");
+    video.style.display = "none";
+    $("placeholder").style.display = "none";
+
+    let oldImage = $("previewImage");
+    if (oldImage) oldImage.remove();
+
+    const img = document.createElement("img");
+    img.id = "previewImage";
+    img.src = item.url;
+    img.style.maxWidth = "100%";
+    img.style.maxHeight = "440px";
+    $("previewArea").insertBefore(img, $("previewText"));
+
+    notify("Image preview loaded.");
+}
+
+function addSelectedToTimeline() {
+    const item = mediaItems.find(x => x.id === selectedMediaId);
+
+    if (!item) {
+        notify("Please select media first.");
+        return;
+    }
+
+    if (item.type === "video" && !item.duration) {
+        notify("Please wait until video metadata loads.");
+        return;
+    }
+
+    const clip = {
+        id: makeId(),
+        mediaId: item.id,
+        name: item.name,
+        type: item.type,
+        start: 0,
+        end: item.duration || 5,
+        duration: item.duration || 5
+    };
+
+    timelineItems.push(clip);
+    selectedClipId = clip.id;
+
+    rememberHistory();
+    renderTimeline();
+    updateSelectedClip();
+
+    if (item.type === "video") loadPreview(item);
+    if (item.type === "image") loadImagePreview(item);
+
+    notify(item.name + " added to timeline.");
+}
+
+function renderTimeline() {
+    $("videoTrack").innerHTML = "";
+    $("audioTrack").innerHTML = "";
+    $("overlayTrack").innerHTML = "";
+
+    timelineItems.forEach(clip => {
+        const el = document.createElement("div");
+        el.className = "clip" +
+            (clip.type === "audio" ? " audio" :
+             clip.type === "image" ? " image" : "") +
+            (clip.id === selectedClipId ? " selected" : "");
+
+        el.style.width = Math.max(110, (clip.end - clip.start) * 28 * timelineZoom) + "px";
+        el.textContent = clip.name;
+        el.title = clip.name + " | " + (clip.end - clip.start).toFixed(1) + " sec";
+        el.onclick = () => selectClip(clip.id);
+
+        const track = clip.type === "audio" ? $("audioTrack") :
+                      clip.type === "text" ? $("overlayTrack") :
+                      $("videoTrack");
+
+        track.appendChild(el);
+    });
+}
+
+function selectClip(id) {
+    selectedClipId = id;
+    const clip = timelineItems.find(x => x.id === id);
+    if (!clip) return;
+
+    const item = mediaItems.find(x => x.id === clip.mediaId);
+
+    if (item) {
+        selectedMediaId = item.id;
+        renderMedia();
+
+        if (item.type === "video") loadPreview(item);
+        if (item.type === "image") loadImagePreview(item);
+    }
+
+    updateSelectedClip();
+    renderTimeline();
+}
+
+function updateSelectedClip() {
+    const clip = timelineItems.find(x => x.id === selectedClipId);
+
+    if (!clip) {
+        $("clipName").value = "";
+        $("clipStart").value = 0;
+        $("clipEnd").value = 0;
+        return;
+    }
+
+    $("clipName").value = clip.name;
+    $("clipStart").value = clip.start;
+    $("clipEnd").value = clip.end;
+}
+
+function applyTrim() {
+    const clip = timelineItems.find(x => x.id === selectedClipId);
+
+    if (!clip) {
+        notify("Select a timeline clip first.");
+        return;
+    }
+
+    const start = Number($("clipStart").value);
+    const end = Number($("clipEnd").value);
+
+    if (!Number.isFinite(start) || !Number.isFinite(end) ||
+        start < 0 || end <= start || end > clip.duration) {
+        notify("Invalid trim range. Check start and end values.");
+        return;
+    }
+
+    clip.start = start;
+    clip.end = end;
+    clip.name = $("clipName").value || clip.name;
+
+    rememberHistory();
+    renderTimeline();
+    updateSelectedClip();
+
+    const item = mediaItems.find(x => x.id === clip.mediaId);
+    if (item && item.type === "video") {
+        loadPreview(item);
+        video.currentTime = start;
+    }
+
+    notify("Trim applied successfully.");
+}
+
+function deleteClip() {
+    if (!selectedClipId) {
+        notify("Select a clip first.");
+        return;
+    }
+
+    timelineItems = timelineItems.filter(x => x.id !== selectedClipId);
+    selectedClipId = null;
+
+    rememberHistory();
+    renderTimeline();
+    updateSelectedClip();
+    notify("Clip deleted from timeline.");
+}
+
+function splitClip() {
+    const clip = timelineItems.find(x => x.id === selectedClipId);
+
+    if (!clip || clip.type !== "video") {
+        notify("Select a video clip first.");
+        return;
+    }
+
+    const cutTime = video.currentTime;
+
+    if (cutTime <= clip.start || cutTime >= clip.end) {
+        notify("Move the video playhead inside the selected clip before splitting.");
+        return;
+    }
+
+    const second = {
+        ...clip,
+        id: makeId(),
+        name: clip.name + " (Part 2)",
+        start: cutTime
+    };
+
+    clip.end = cutTime;
+    timelineItems.splice(timelineItems.indexOf(clip) + 1, 0, second);
+
+    rememberHistory();
+    renderTimeline();
+    updateSelectedClip();
+    notify("Video clip split successfully.");
+}
+
+function addText() {
+    const text = $("textInput").value.trim();
+
+    if (!text) {
+        notify("Enter some text first.");
+        $("textInput").focus();
+        return;
+    }
+
+    textOverlay = text;
+    $("previewText").textContent = text;
+    $("previewText").style.color = $("textColor").value;
+    $("previewText").style.fontSize = $("textSize").value + "px";
+
+    const textClip = {
+        id: makeId(),
+        mediaId: null,
+        name: "Text: " + text.slice(0, 20),
+        type: "text",
+        start: 0,
+        end: 5,
+        duration: 5
+    };
+
+    timelineItems.push(textClip);
+    selectedClipId = textClip.id;
+
+    rememberHistory();
+    renderTimeline();
+    updateSelectedClip();
+    notify("Text added to preview and overlay track.");
+}
+
+function applyText() {
+    const text = $("textInput").value.trim();
+
+    if (!text) {
+        notify("Enter text first.");
+        return;
+    }
+
+    textOverlay = text;
+    $("previewText").textContent = text;
+    $("previewText").style.color = $("textColor").value;
+    $("previewText").style.fontSize = $("textSize").value + "px";
+
+    rememberHistory();
+    notify("Text style applied.");
+}
+
+function removeText() {
+    textOverlay = "";
+    $("previewText").textContent = "";
+    timelineItems = timelineItems.filter(x => x.type !== "text");
+
+    rememberHistory();
+    renderTimeline();
+    notify("Text overlay removed.");
+}
+
+function applyVideoStyle() {
+    video.style.filter =
+        "brightness(" + $("brightness").value + "%) " +
+        "contrast(" + $("contrast").value + "%) " +
+        "saturate(" + $("saturation").value + "%)";
+}
+
+["brightness","contrast","saturation"].forEach(id => {
+    $(id).addEventListener("input", () => {
+        $(id + "Value").textContent = $(id).value + "%";
+        applyVideoStyle();
+    });
+});
+
+$("volume").addEventListener("input", () => {
+    video.volume = Number($("volume").value) / 100;
+    $("volumeValue").textContent = $("volume").value + "%";
+});
+
+$("speed").addEventListener("change", () => {
+    video.playbackRate = Number($("speed").value);
+    notify("Playback speed changed.");
+});
+
+function resetAdjustments() {
+    $("brightness").value = 100;
+    $("contrast").value = 100;
+    $("saturation").value = 100;
+    $("volume").value = 100;
+    $("speed").value = 1;
+
+    $("brightnessValue").textContent = "100%";
+    $("contrastValue").textContent = "100%";
+    $("saturationValue").textContent = "100%";
+    $("volumeValue").textContent = "100%";
+
+    video.volume = 1;
+    video.playbackRate = 1;
+    applyVideoStyle();
+    notify("Adjustments reset.");
+}
+
+function playVideo() {
+    if (!video.src) {
+        notify("Import and select a video first.");
+        return;
+    }
+
+    video.play().catch(() => notify("The browser could not play this video."));
+}
+
+function pauseVideo() {
+    video.pause();
+}
+
+function stopVideo() {
+    video.pause();
+    video.currentTime = 0;
+    updateTime();
+}
+
+function updateTime() {
+    $("timeDisplay").textContent =
+        formatTime(video.currentTime) + " / " +
+        formatTime(video.duration);
+}
+
+video.addEventListener("timeupdate", updateTime);
+
+function zoomTimeline(factor) {
+    timelineZoom = Math.min(4, Math.max(0.3, timelineZoom * factor));
+    renderTimeline();
+}
+
+function updateProjectInfo() {
+    $("projectInfo").textContent =
+        mediaItems.length + " media files imported. " +
+        timelineItems.length + " timeline clips.";
+}
+
+function saveProject() {
+    const project = {
+        app: "Rifora Studio Video Editor",
+        version: "1.0",
+        projectName,
+        timelineItems,
+        textOverlay,
+        settings: {
+            brightness: $("brightness").value,
+            contrast: $("contrast").value,
+            saturation: $("saturation").value,
+            volume: $("volume").value,
+            speed: $("speed").value,
+            textColor: $("textColor").value,
+            textSize: $("textSize").value
+        }
+    };
+
+    const blob = new Blob([JSON.stringify(project, null, 2)], {
+        type: "application/json"
+    });
+
+    downloadBlob(blob, "rifora-video-project.json");
+    notify("Project settings downloaded. Keep your original media files too.");
+}
+
+function openProject() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json,application/json";
+
+    input.onchange = async () => {
+        const file = input.files[0];
+        if (!file) return;
+
+        try {
+            const project = JSON.parse(await file.text());
+
+            if (project.app !== "Rifora Studio Video Editor" ||
+                !Array.isArray(project.timelineItems)) {
+                throw new Error("Invalid project file.");
+            }
+
+            projectName = project.projectName || "Rifora Video Project";
+            timelineItems = project.timelineItems;
+            textOverlay = project.textOverlay || "";
+            selectedClipId = null;
+
+            const s = project.settings || {};
+            ["brightness","contrast","saturation","volume","speed",
+             "textColor","textSize"].forEach(id => {
+                if (s[id] !== undefined) $(id).value = s[id];
+            });
+
+            $("previewText").textContent = textOverlay;
+            $("previewText").style.color = $("textColor").value;
+            $("previewText").style.fontSize = $("textSize").value + "px";
+
+            applyVideoStyle();
+            video.volume = Number($("volume").value) / 100;
+            video.playbackRate = Number($("speed").value);
+
+            rememberHistory();
+            renderTimeline();
+            updateSelectedClip();
+            notify("Project settings opened. Re-import the original media files to preview them.");
+        } catch (error) {
+            notify("Could not open project: " + error.message);
+        }
+    };
+
+    input.click();
+}
+
+function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+}
+
+/*
+  Version 1 export:
+  Exports the currently selected video clip as a rendered preview recording.
+  It does not yet render the complete multi-track timeline.
+*/
+async function exportVideo() {
+    const clip = timelineItems.find(x => x.id === selectedClipId);
+
+    if (!clip || clip.type !== "video") {
+        notify("Select a video clip on the timeline before exporting.");
+        return;
+    }
+
+    if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) {
+        notify("Video export is not supported by this browser. Try a newer browser.");
+        return;
+    }
+
+    const item = mediaItems.find(x => x.id === clip.mediaId);
+    if (!item) {
+        notify("Original video is missing. Import it again.");
+        return;
+    }
+
+    pauseVideo();
+
+    const canvas = document.createElement("canvas");
+    const width = video.videoWidth || 1280;
+    const height = video.videoHeight || 720;
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext("2d");
+    const stream = canvas.captureStream(30);
+
+    let recorder;
+    let chunks = [];
+    let animationFrame;
+    let stopped = false;
+
+    const mimeTypes = [
+        "video/webm;codecs=vp9",
+        "video/webm;codecs=vp8",
+        "video/webm"
+    ];
+
+    const mimeType = mimeTypes.find(type =>
+        MediaRecorder.isTypeSupported(type)
+    );
+
+    if (!mimeType) {
+        notify("This browser does not support a compatible video format.");
+        stream.getTracks().forEach(track => track.stop());
+        return;
+    }
+
+    try {
+        recorder = new MediaRecorder(stream, {mimeType});
+    } catch (error) {
+        stream.getTracks().forEach(track => track.stop());
+        notify("Could not start video export: " + error.message);
+        return;
+    }
+
+    recorder.ondataavailable = event => {
+        if (event.data.size) chunks.push(event.data);
+    };
+
+    recorder.onstop = () => {
+        const blob = new Blob(chunks, {type:mimeType});
+        downloadBlob(blob, "rifora-edited-video.webm");
+        stream.getTracks().forEach(track => track.stop());
+        cancelAnimationFrame(animationFrame);
+        notify("Selected clip export completed.");
+    };
+
+    function drawFrame() {
+        if (stopped) return;
+
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0,0,width,height);
+
+        ctx.save();
+        ctx.filter =
+            "brightness(" + $("brightness").value + "%) " +
+            "contrast(" + $("contrast").value + "%) " +
+            "saturate(" + $("saturation").value + "%)";
+
+        if (video.readyState >= 2) {
+            ctx.drawImage(video,0,0,width,height);
+        }
+
+        ctx.restore();
+
+        if (textOverlay) {
+            const fontSize = Number($("textSize").value);
+            ctx.font = "bold " + fontSize + "px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = $("textColor").value;
+            ctx.shadowColor = "#000";
+            ctx.shadowBlur = 5;
+            ctx.fillText(textOverlay,width/2,height/2,width*.85);
+            ctx.shadowBlur = 0;
+        }
+
+        if (video.currentTime >= clip.end || video.ended) {
+            stopped = true;
+            video.pause();
+            if (recorder.state !== "inactive") recorder.stop();
+            return;
+        }
+
+        animationFrame = requestAnimationFrame(drawFrame);
+    }
+
+    try {
+        video.src = item.url;
+        video.load();
+
+        await new Promise((resolve,reject) => {
+            video.onloadedmetadata = resolve;
+            video.onerror = () => reject(new Error("Video could not be loaded."));
+        });
+
+        video.currentTime = clip.start;
+
+        await new Promise(resolve => {
+            if (Math.abs(video.currentTime - clip.start) < 0.05) resolve();
+            else video.onseeked = resolve;
+        });
+
+        video.volume = Number($("volume").value) / 100;
+        video.playbackRate = Number($("speed").value);
+
+        recorder.start(250);
+        await video.play();
+
+        drawFrame();
+        notify("Exporting selected video clip. Please wait...");
+    } catch (error) {
+        stopped = true;
+        if (recorder.state !== "inactive") recorder.stop();
+        else stream.getTracks().forEach(track => track.stop());
+        notify("Export failed: " + error.message);
+    }
+}
+
+$("textColor").addEventListener("input", () => {
+    $("previewText").style.color = $("textColor").value;
+});
+
+$("textSize").addEventListener("input", () => {
+    $("previewText").style.fontSize = $("textSize").value + "px";
+});
+
+video.addEventListener("loadedmetadata", updateTime);
+
+rememberHistory();
+renderMedia();
+renderTimeline();
+updateProjectInfo();
+
+</script>
+</body>
+</html>
