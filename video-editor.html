@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rifora Studio - Video & Audio Editor</title>
+<title>Rifora Studio 5.1 - Video & Audio Editor</title>
 <style>
 :root{
  --bg:#080d18;--panel:#111b2b;--panel2:#172438;
@@ -11,126 +11,82 @@
  --blue:#2588ff;--cyan:#19c5d8;--gold:#f0bd4b;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);
- font-family:Arial,"Noto Sans Bengali",sans-serif}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,"Noto Sans Bengali",sans-serif}
 button,input,textarea,select{font:inherit}
-button{border:1px solid var(--line);background:#1b2a40;color:white;
- padding:9px 12px;border-radius:7px;cursor:pointer}
+button{border:1px solid var(--line);background:#1b2a40;color:white;padding:9px 12px;border-radius:7px;cursor:pointer}
 button:hover{background:#29415f}
 button.primary{background:var(--blue);border-color:var(--blue)}
 button.danger{background:#762d3b}
 button:disabled{opacity:.4;cursor:not-allowed}
-.topbar{padding:13px 20px;display:flex;align-items:center;
- justify-content:space-between;gap:12px;flex-wrap:wrap;
- background:#101a2a;border-bottom:1px solid var(--line)}
+.topbar{padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#101a2a;border-bottom:1px solid var(--line)}
 .brand{font-size:23px;font-weight:900;letter-spacing:1px}
 .brand span{color:var(--cyan)}
-.brand small{display:block;font-size:10px;color:var(--muted);
- letter-spacing:3px;margin-top:3px}
+.brand small{display:block;font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:3px}
 .top-actions{display:flex;gap:8px;flex-wrap:wrap}
-.layout{display:grid;grid-template-columns:245px minmax(300px,1fr) 260px;
- gap:12px;padding:12px;align-items:start}
-.panel{background:var(--panel);border:1px solid var(--line);
- border-radius:11px;overflow:hidden}
-.panel-head{padding:13px;border-bottom:1px solid var(--line);
- display:flex;justify-content:space-between;align-items:center;font-weight:bold}
+.layout{display:grid;grid-template-columns:245px minmax(300px,1fr) 260px;gap:12px;padding:12px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.panel-head{padding:13px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-weight:bold}
 .panel-body{padding:13px}
-.section-label{font-size:11px;color:var(--muted);letter-spacing:1px;
- margin:15px 0 8px;text-transform:uppercase}
-input[type=text],textarea,select{width:100%;padding:9px;
- background:#0b1422;color:white;border:1px solid var(--line);border-radius:7px}
+.section-label{font-size:11px;color:var(--muted);letter-spacing:1px;margin:15px 0 8px;text-transform:uppercase}
+input[type=text],textarea,select{width:100%;padding:9px;background:#0b1422;color:white;border:1px solid var(--line);border-radius:7px}
 input[type=range]{width:100%;accent-color:var(--blue)}
 input[type=file]{display:none}
-.upload-label{display:block;padding:15px 10px;border:1px dashed #41628b;
- background:#14243a;border-radius:9px;text-align:center;cursor:pointer}
+.upload-label{display:block;padding:15px 10px;border:1px dashed #41628b;background:#14243a;border-radius:9px;text-align:center;cursor:pointer}
 .help{font-size:11px;color:var(--muted);line-height:1.6}
-.media-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;
- max-height:480px;overflow:auto}
-.media-item{display:flex;gap:9px;align-items:center;background:#17263b;
- padding:8px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+.media-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;max-height:480px;overflow:auto}
+.media-item{display:flex;gap:9px;align-items:center;background:#17263b;padding:8px;border-radius:8px;cursor:pointer;border:1px solid transparent}
 .media-item:hover,.media-item.selected{border-color:var(--blue)}
-.media-thumb{width:60px;height:43px;object-fit:cover;background:#07101d;
- border-radius:5px;flex-shrink:0;display:grid;place-items:center}
+.media-thumb{width:60px;height:43px;object-fit:cover;background:#07101d;border-radius:5px;flex-shrink:0;display:grid;place-items:center}
 .media-name{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .media-type{font-size:10px;color:var(--muted);margin-top:4px}
 .center{min-width:0}
-.preview-area{background:#05080e;padding:15px;display:flex;
- justify-content:center;align-items:center;min-height:280px}
-.preview-frame{position:relative;width:min(100%,720px);aspect-ratio:16/9;
- background:#000;overflow:hidden;border:1px solid #283b52;border-radius:7px}
+.preview-area{background:#05080e;padding:15px;display:flex;justify-content:center;align-items:center;min-height:280px}
+.preview-frame{position:relative;width:min(100%,720px);aspect-ratio:16/9;background:#000;overflow:hidden;border:1px solid #283b52;border-radius:7px}
 #previewVideo{width:100%;height:100%;object-fit:contain;display:block}
-#previewText{position:absolute;left:50%;bottom:12%;transform:translateX(-50%);
- max-width:90%;text-align:center;color:white;font-size:30px;font-weight:bold;
- text-shadow:2px 2px 5px black;pointer-events:none;white-space:pre-wrap}
-.preview-controls{display:flex;align-items:center;justify-content:center;
- gap:9px;padding:12px;background:#101a2a}
+#previewText{position:absolute;left:50%;bottom:12%;transform:translateX(-50%);max-width:90%;text-align:center;color:white;font-size:30px;font-weight:bold;text-shadow:2px 2px 5px black;pointer-events:none;white-space:pre-wrap}
+.preview-controls{display:flex;align-items:center;justify-content:center;gap:9px;padding:12px;background:#101a2a}
 .time{color:var(--cyan);font-family:monospace;font-size:12px}
 .timeline-panel{margin-top:12px}
-.toolbar{display:flex;gap:7px;flex-wrap:wrap;padding:10px;
- border-bottom:1px solid var(--line)}
+.toolbar{display:flex;gap:7px;flex-wrap:wrap;padding:10px;border-bottom:1px solid var(--line)}
 .timeline-scroll{overflow:auto;background:#0a1220;padding-bottom:10px}
 .timeline-inner{position:relative;width:max-content;min-width:100%}
-.ruler{height:29px;margin-left:72px;position:relative;
- border-bottom:1px solid var(--line);color:var(--muted);font-size:10px}
-.ruler-mark{position:absolute;top:5px;border-left:1px solid #52647c;
- height:20px;padding-left:4px}
+.ruler{height:29px;margin-left:72px;position:relative;border-bottom:1px solid var(--line);color:var(--muted);font-size:10px}
+.ruler-mark{position:absolute;top:5px;border-left:1px solid #52647c;height:20px;padding-left:4px}
 .track-row{display:flex;min-height:66px;border-bottom:1px solid #1e2c40}
-.track-name{width:72px;flex-shrink:0;padding:12px 7px;
- background:#142035;color:#b9cbe1;font-size:11px;border-right:1px solid var(--line)}
-.track-content{position:relative;min-height:66px;
- background:repeating-linear-gradient(90deg,#0c1727 0,#0c1727 39px,#142237 40px)}
-.timeline-clip{position:absolute;top:8px;height:49px;min-width:35px;
- border-radius:5px;background:linear-gradient(120deg,#1769ad,#168caa);
- border:1px solid #51b8e8;overflow:hidden;cursor:pointer;color:white}
+.track-name{width:72px;flex-shrink:0;padding:12px 7px;background:#142035;color:#b9cbe1;font-size:11px;border-right:1px solid var(--line)}
+.track-content{position:relative;min-height:66px;background:repeating-linear-gradient(90deg,#0c1727 0,#0c1727 39px,#142237 40px)}
+.timeline-clip{position:absolute;top:8px;height:49px;min-width:35px;border-radius:5px;background:linear-gradient(120deg,#1769ad,#168caa);border:1px solid #51b8e8;overflow:hidden;cursor:pointer;color:white}
 .timeline-clip.selected{outline:2px solid var(--gold)}
-.audio-clip{position:absolute;top:8px;height:49px;min-width:35px;
- border-radius:5px;background:linear-gradient(120deg,#16794c,#159b70);
- border:1px solid #45d49c;overflow:hidden;cursor:pointer;color:white}
+.audio-clip{position:absolute;top:8px;height:49px;min-width:35px;border-radius:5px;background:linear-gradient(120deg,#16794c,#159b70);border:1px solid #45d49c;overflow:hidden;cursor:pointer;color:white}
 .audio-clip.selected{outline:2px solid var(--gold)}
-.clip-title{position:absolute;inset:0;padding:7px;font-size:10px;
- text-shadow:1px 1px 3px black;overflow:hidden;pointer-events:none}
-.text-clip{position:absolute;top:8px;height:49px;background:#77539e;
- border:1px solid #b18ce0;border-radius:5px;color:white;padding:7px;
- font-size:11px;overflow:hidden;white-space:nowrap}
-.playhead{position:absolute;top:0;bottom:0;width:2px;background:#ff5267;
- z-index:5;pointer-events:none}
-.playhead:before{content:"";position:absolute;top:0;left:-5px;
- width:12px;height:12px;background:#ff5267;border-radius:2px}
+.clip-title{position:absolute;inset:0;padding:7px;font-size:10px;text-shadow:1px 1px 3px black;overflow:hidden;pointer-events:none}
+.text-clip{position:absolute;top:8px;height:49px;background:#77539e;border:1px solid #b18ce0;border-radius:5px;color:white;padding:7px;font-size:11px;overflow:hidden;white-space:nowrap}
+.playhead{position:absolute;top:0;bottom:0;width:2px;background:#ff5267;z-index:5;pointer-events:none}
+.playhead:before{content:"";position:absolute;top:0;left:-5px;width:12px;height:12px;background:#ff5267;border-radius:2px}
 .property-group{padding:12px 0;border-bottom:1px solid var(--line)}
 .property-group label{display:block;font-size:12px;color:#c5d5e8;margin-bottom:8px}
 .value-row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
 .full{width:100%}
-.status{padding:9px 12px;color:#a9c8e9;background:#101c2d;
- font-size:11px;border-top:1px solid var(--line)}
+.status{padding:9px 12px;color:#a9c8e9;background:#101c2d;font-size:11px;border-top:1px solid var(--line)}
 .empty{color:var(--muted);font-size:12px;text-align:center;padding:20px 8px}
-@media(max-width:1100px){
- .layout{grid-template-columns:220px minmax(300px,1fr)}
- .layout>.panel:last-child{grid-column:1/-1}
-}
-@media(max-width:750px){
- .layout{grid-template-columns:1fr}
- .layout>.panel:first-child{order:2}
- .layout>.center{order:1}
- .layout>.panel:last-child{order:3;grid-column:auto}
- .brand{font-size:19px}
-}
+@media(max-width:1100px){.layout{grid-template-columns:220px minmax(300px,1fr)}.layout>.panel:last-child{grid-column:1/-1}}
+@media(max-width:750px){.layout{grid-template-columns:1fr}.layout>.panel:first-child{order:2}.layout>.center{order:1}.layout>.panel:last-child{order:3;grid-column:auto}.brand{font-size:19px}}
 </style>
 </head>
 <body>
 
 <header class="topbar">
  <div class="brand">RIFORA <span>STUDIO</span>
-  <small>PROFESSIONAL VIDEO & AUDIO EDITOR</small>
+  <small>PROFESSIONAL VIDEO & AUDIO EDITOR 5.1</small>
  </div>
  <div class="top-actions">
   <button onclick="saveProject()">Save Project</button>
   <button onclick="document.getElementById('projectInput').click()">Open Project</button>
-  <button class="primary" onclick="exportSelected()">Export Clip</button>
+  <button class="primary" id="exportButton" onclick="exportSelected()">Export Clip + Audio</button>
  </div>
 </header>
 
 <div class="layout">
-
 <section class="panel">
  <div class="panel-head"><span>Media Library</span><span id="mediaCount">0</span></div>
  <div class="panel-body">
@@ -140,9 +96,7 @@ input[type=file]{display:none}
   </label>
   <input id="mediaInput" type="file" accept="video/*,image/*,audio/*" multiple>
   <div class="section-label">Your Media</div>
-  <div id="mediaList" class="media-list">
-   <div class="empty">এখনো কোনো মিডিয়া যোগ করা হয়নি</div>
-  </div>
+  <div id="mediaList" class="media-list"><div class="empty">এখনো কোনো মিডিয়া যোগ করা হয়নি</div></div>
   <div class="section-label">Selected Media</div>
   <div id="selectedInfo" class="help">কোনো মিডিয়া নির্বাচন করা হয়নি।</div>
   <button class="full primary" style="margin-top:12px" onclick="addSelectedToTimeline()">＋ Add to Timeline</button>
@@ -152,10 +106,7 @@ input[type=file]{display:none}
 
 <section class="center">
  <div class="panel">
-  <div class="panel-head">
-   <span>Preview Monitor</span>
-   <span class="time" id="timeDisplay">00:00 / 00:00</span>
-  </div>
+  <div class="panel-head"><span>Preview Monitor</span><span class="time" id="timeDisplay">00:00 / 00:00</span></div>
   <div class="preview-area">
    <div class="preview-frame">
     <video id="previewVideo" playsinline></video>
@@ -172,10 +123,7 @@ input[type=file]{display:none}
  </div>
 
  <div class="panel timeline-panel">
-  <div class="panel-head">
-   <span>Editing Timeline</span>
-   <span class="time" id="timelineDuration">00:00</span>
-  </div>
+  <div class="panel-head"><span>Editing Timeline</span><span class="time" id="timelineDuration">00:00</span></div>
   <div class="toolbar">
    <button onclick="addSelectedToTimeline()">＋ Add Media</button>
    <button onclick="splitClip()">✂ Split Video</button>
@@ -186,18 +134,9 @@ input[type=file]{display:none}
   <div class="timeline-scroll" id="timelineScroll">
    <div class="timeline-inner" id="timelineInner">
     <div class="ruler" id="ruler"></div>
-    <div class="track-row">
-     <div class="track-name">VIDEO 1</div>
-     <div class="track-content" id="videoTrack"></div>
-    </div>
-    <div class="track-row">
-     <div class="track-name">TEXT</div>
-     <div class="track-content" id="textTrack"></div>
-    </div>
-    <div class="track-row">
-     <div class="track-name">AUDIO 1</div>
-     <div class="track-content" id="audioTrack"></div>
-    </div>
+    <div class="track-row"><div class="track-name">VIDEO 1</div><div class="track-content" id="videoTrack"></div></div>
+    <div class="track-row"><div class="track-name">TEXT</div><div class="track-content" id="textTrack"></div></div>
+    <div class="track-row"><div class="track-name">AUDIO 1</div><div class="track-content" id="audioTrack"></div></div>
     <div class="playhead" id="playhead"></div>
    </div>
   </div>
@@ -208,14 +147,12 @@ input[type=file]{display:none}
 <section class="panel">
  <div class="panel-head">Properties & Tools</div>
  <div class="panel-body">
-
   <div class="property-group">
    <label>Text Overlay</label>
    <textarea id="textInput" rows="3" placeholder="ভিডিওর লেখা লিখুন"></textarea>
    <button class="full primary" style="margin-top:8px" onclick="addText()">＋ Add Text</button>
    <button class="full" style="margin-top:6px" onclick="clearText()">Clear Text</button>
   </div>
-
   <div class="property-group">
    <label>Brightness</label>
    <div class="value-row"><span>আলো</span><span id="brightnessValue">100%</span></div>
@@ -251,13 +188,8 @@ input[type=file]{display:none}
    <div class="value-row"><span>অডিওর শব্দ</span><span id="audioVolumeValue">100%</span></div>
    <input id="audioVolume" type="range" min="0" max="100" value="100" oninput="changeAudioVolume()">
   </div>
-  <div class="property-group">
-   <button class="full" onclick="resetAdjustments()">Reset Adjustments</button>
-  </div>
-  <p class="help">
-   অডিও ক্লিপ নির্বাচন করে Trim ও Volume নিয়ন্ত্রণ করুন।
-   পূর্ণ মাল্টি-ট্র্যাক Export পরবর্তী উন্নয়নের কাজ।
-  </p>
+  <div class="property-group"><button class="full" onclick="resetAdjustments()">Reset Adjustments</button></div>
+  <p class="help">অডিও ক্লিপ নির্বাচন করে Trim ও Volume নিয়ন্ত্রণ করুন। Export-এ নির্বাচিত ভিডিওর সঙ্গে সংশ্লিষ্ট অডিও যুক্ত হবে।</p>
  </div>
 </section>
 </div>
@@ -267,28 +199,19 @@ input[type=file]{display:none}
 <script>
 "use strict";
 
-const $ = id => document.getElementById(id);
-const video = $("previewVideo");
+const $=id=>document.getElementById(id);
+const video=$("previewVideo");
 
-let mediaItems=[];
-let clips=[];
-let audioClips=[];
-let textClips=[];
-let selectedMediaId=null;
-let selectedClipId=null;
-let selectedAudioId=null;
-let currentGlobalTime=0;
-let pixelsPerSecond=40;
-let nextId=1;
-let audioPlayers={};
-let syncing=false;
+let mediaItems=[],clips=[],audioClips=[],textClips=[];
+let selectedMediaId=null,selectedClipId=null,selectedAudioId=null;
+let currentGlobalTime=0,pixelsPerSecond=40,nextId=1;
+let audioPlayers={},syncing=false;
 
 function uid(){return "rifora_"+nextId++}
 function setStatus(t){$("status").textContent=t}
 function formatTime(s){
  s=Math.max(0,Number(s)||0);
- return String(Math.floor(s/60)).padStart(2,"0")+":"+
- String(Math.floor(s%60)).padStart(2,"0");
+ return String(Math.floor(s/60)).padStart(2,"0")+":"+String(Math.floor(s%60)).padStart(2,"0");
 }
 function totalDuration(){
  const vd=clips.reduce((n,c)=>n+c.duration,0);
@@ -296,19 +219,16 @@ function totalDuration(){
  return Math.max(vd,ad);
 }
 function getMedia(id){return mediaItems.find(m=>m.id===id)}
-function clipStart(index){
- return clips.slice(0,index).reduce((n,c)=>n+c.duration,0);
-}
+function clipStart(index){return clips.slice(0,index).reduce((n,c)=>n+c.duration,0)}
 function clipIndex(id){return clips.findIndex(c=>c.id===id)}
 function audioIndex(id){return audioClips.findIndex(a=>a.id===id)}
 
 $("mediaInput").addEventListener("change",e=>{
  Array.from(e.target.files||[]).forEach(file=>{
-  const item={id:uid(),name:file.name,type:file.type,
-   url:URL.createObjectURL(file),duration:0,thumbnails:[]};
+  const item={id:uid(),name:file.name,type:file.type,url:URL.createObjectURL(file),duration:0,thumbnails:[]};
   mediaItems.push(item);
-  if(file.type.startsWith("video/")) readVideoMetadata(item);
-  else if(file.type.startsWith("audio/")) readAudioMetadata(item);
+  if(file.type.startsWith("video/"))readVideoMetadata(item);
+  else if(file.type.startsWith("audio/"))readAudioMetadata(item);
   else renderMedia();
  });
  e.target.value="";
@@ -319,14 +239,12 @@ function readVideoMetadata(item){
  v.preload="metadata";v.src=item.url;
  v.onloadedmetadata=()=>{
   item.duration=Number.isFinite(v.duration)?v.duration:0;
-  renderMedia();
-  makeThumbnails(item);
+  renderMedia();makeThumbnails(item);
  };
  v.onerror=()=>renderMedia();
 }
 function readAudioMetadata(item){
- const a=new Audio();
- a.preload="metadata";a.src=item.url;
+ const a=new Audio();a.preload="metadata";a.src=item.url;
  a.onloadedmetadata=()=>{
   item.duration=Number.isFinite(a.duration)?a.duration:0;
   renderMedia();
@@ -340,8 +258,11 @@ function makeThumbnails(item){
   const count=Math.min(6,Math.max(1,Math.floor(item.duration)));
   for(let i=0;i<count;i++){
    try{
-    v.currentTime=item.duration*(i+.5)/count;
-    await new Promise(r=>v.addEventListener("seeked",r,{once:true}));
+    const target=item.duration*(i+.5)/count;
+    await new Promise(resolve=>{
+     v.addEventListener("seeked",resolve,{once:true});
+     v.currentTime=target;
+    });
     const c=document.createElement("canvas");c.width=120;c.height=68;
     c.getContext("2d").drawImage(v,0,0,120,68);
     item.thumbnails.push(c.toDataURL("image/jpeg",.6));
@@ -353,32 +274,27 @@ function makeThumbnails(item){
 function renderMedia(){
  $("mediaCount").textContent=mediaItems.length;
  const list=$("mediaList");list.innerHTML="";
- if(!mediaItems.length){
-  list.innerHTML='<div class="empty">এখনো কোনো মিডিয়া যোগ করা হয়নি</div>';return;
- }
+ if(!mediaItems.length){list.innerHTML='<div class="empty">এখনো কোনো মিডিয়া যোগ করা হয়নি</div>';return}
  mediaItems.forEach(item=>{
   const div=document.createElement("div");
   div.className="media-item"+(selectedMediaId===item.id?" selected":"");
-  const thumb=document.createElement("div");
-  thumb.className="media-thumb";
+  let thumb;
   if(item.type.startsWith("image/")){
-   const img=document.createElement("img");img.src=item.url;
-   img.className="media-thumb";thumb.replaceWith(img);
+   thumb=document.createElement("img");thumb.src=item.url;thumb.className="media-thumb";
   }else{
+   thumb=document.createElement("div");thumb.className="media-thumb";
    thumb.textContent=item.type.startsWith("audio/")?"♫":"▶";
   }
   const info=document.createElement("div");info.style.minWidth="0";
-  const name=document.createElement("div");name.className="media-name";
-  name.textContent=item.name;
+  const name=document.createElement("div");name.className="media-name";name.textContent=item.name;
   const type=document.createElement("div");type.className="media-type";
   type.textContent=(item.type.split("/")[0]||"Media")+" • "+formatTime(item.duration);
-  info.append(name,type);
-  div.append(thumb,info);
+  info.append(name,type);div.append(thumb,info);
   div.onclick=()=>{
    selectedMediaId=item.id;selectedClipId=null;selectedAudioId=null;
    $("selectedInfo").textContent=item.name;
    renderMedia();renderTimeline();
-   if(item.type.startsWith("video/")) loadPreview(item);
+   if(item.type.startsWith("video/"))loadPreview(item);
    setStatus("নির্বাচিত: "+item.name);
   };
   list.appendChild(div);
@@ -387,8 +303,7 @@ function renderMedia(){
 function loadPreview(item){
  video.pause();video.src=item.url;video.load();
  video.onloadedmetadata=()=>{
-  video.currentTime=0;currentGlobalTime=0;
-  updateDisplay();updatePlayhead();
+  video.currentTime=0;currentGlobalTime=0;updateDisplay();updatePlayhead();
  };
 }
 function addSelectedToTimeline(){
@@ -396,36 +311,26 @@ function addSelectedToTimeline(){
  if(!item){setStatus("Media Library থেকে একটি মিডিয়া নির্বাচন করুন।");return}
  if(!item.duration){setStatus("মিডিয়ার তথ্য লোড হচ্ছে, একটু অপেক্ষা করুন।");return}
  if(item.type.startsWith("video/")){
-  const c={id:uid(),mediaId:item.id,name:item.name,sourceIn:0,
-   sourceOut:item.duration,duration:item.duration};
+  const c={id:uid(),mediaId:item.id,name:item.name,sourceIn:0,sourceOut:item.duration,duration:item.duration};
   clips.push(c);selectedClipId=c.id;selectedAudioId=null;
   renderTimeline();seekGlobal(clipStart(clips.length-1));
   setStatus("ভিডিও ক্লিপ Timeline-এ যোগ হয়েছে।");
  }else if(item.type.startsWith("audio/")){
-  const a={id:uid(),mediaId:item.id,name:item.name,sourceIn:0,
-   sourceOut:item.duration,duration:item.duration,start:currentGlobalTime,
-   volume:1};
+  const a={id:uid(),mediaId:item.id,name:item.name,sourceIn:0,sourceOut:item.duration,duration:item.duration,start:currentGlobalTime,volume:1};
   audioClips.push(a);selectedAudioId=a.id;selectedClipId=null;
-  createAudioPlayer(a);
-  renderTimeline();syncAudio();
+  createAudioPlayer(a);renderTimeline();syncAudio();
   setStatus("অডিও ক্লিপ Timeline-এ যোগ হয়েছে।");
- }else{
-  setStatus("এই মিডিয়া টাইপ এখন Timeline-এ যোগ করা যাচ্ছে না।");
- }
+ }else setStatus("এই মিডিয়া টাইপ এখন Timeline-এ যোগ করা যাচ্ছে না।");
 }
 function createAudioPlayer(clip){
- const item=getMedia(clip.mediaId);
- if(!item)return;
- const player=new Audio(item.url);
- player.preload="auto";
- player.volume=clip.volume;
+ const item=getMedia(clip.mediaId);if(!item)return;
+ const player=new Audio(item.url);player.preload="auto";player.volume=clip.volume;
  audioPlayers[clip.id]=player;
 }
 function renderTimeline(){
  const vt=$("videoTrack"),at=$("audioTrack"),tt=$("textTrack"),r=$("ruler");
  vt.innerHTML="";at.innerHTML="";tt.innerHTML="";r.innerHTML="";
- const duration=Math.max(10,totalDuration()+5);
- const width=duration*pixelsPerSecond;
+ const duration=Math.max(10,totalDuration()+5),width=duration*pixelsPerSecond;
  [vt,at,tt].forEach(el=>el.style.width=width+"px");
  $("timelineInner").style.width=(width+72)+"px";
  for(let t=0;t<=duration;t+=5){
@@ -434,16 +339,15 @@ function renderTimeline(){
  }
  let pos=0;
  clips.forEach(c=>{
+  const clipPosition=pos;
   const el=document.createElement("div");
   el.className="timeline-clip"+(c.id===selectedClipId?" selected":"");
   el.style.left=(pos*pixelsPerSecond)+"px";
   el.style.width=Math.max(35,c.duration*pixelsPerSecond)+"px";
-  const title=document.createElement("div");title.className="clip-title";
-  title.textContent=c.name;el.append(title);
+  const title=document.createElement("div");title.className="clip-title";title.textContent=c.name;el.append(title);
   el.onclick=e=>{
    e.stopPropagation();selectedClipId=c.id;selectedAudioId=null;
-   $("selectedInfo").textContent=c.name;
-   renderTimeline();seekGlobal(pos);
+   $("selectedInfo").textContent=c.name;renderTimeline();seekGlobal(clipPosition);
   };
   vt.append(el);pos+=c.duration;
  });
@@ -452,8 +356,7 @@ function renderTimeline(){
   el.className="audio-clip"+(a.id===selectedAudioId?" selected":"");
   el.style.left=(a.start*pixelsPerSecond)+"px";
   el.style.width=Math.max(35,a.duration*pixelsPerSecond)+"px";
-  const title=document.createElement("div");title.className="clip-title";
-  title.textContent="♫ "+a.name;el.append(title);
+  const title=document.createElement("div");title.className="clip-title";title.textContent="♫ "+a.name;el.append(title);
   el.onclick=e=>{
    e.stopPropagation();selectedAudioId=a.id;selectedClipId=null;
    $("selectedInfo").textContent=a.name;
@@ -493,13 +396,9 @@ function seekGlobal(time){
      video.currentTime=Math.min(c.sourceIn+found.offset,video.duration||0);
      updateFilters();syncAudio();updateText();
     };
-   }else if(video.readyState>=1){
-    video.currentTime=Math.min(c.sourceIn+found.offset,video.duration||0);
-   }
+   }else if(video.readyState>=1)video.currentTime=Math.min(c.sourceIn+found.offset,video.duration||0);
   }
- }else{
-  video.pause();
- }
+ }else video.pause();
  syncAudio();updateText();updateDisplay();updatePlayhead();
 }
 function syncAudio(){
@@ -507,29 +406,18 @@ function syncAudio(){
  syncing=true;
  audioClips.forEach(c=>{
   const p=audioPlayers[c.id];if(!p)return;
-  const active=currentGlobalTime>=c.start&&
-   currentGlobalTime<c.start+c.duration;
+  const active=currentGlobalTime>=c.start&&currentGlobalTime<c.start+c.duration;
   if(active){
    const wanted=c.sourceIn+(currentGlobalTime-c.start);
-   if(Math.abs(p.currentTime-wanted)>.35){
-    try{p.currentTime=wanted}catch(e){}
-   }
+   if(Math.abs(p.currentTime-wanted)>.35){try{p.currentTime=wanted}catch(e){}}
    p.volume=c.volume;
-   if(!video.paused){
-    p.play().catch(()=>{});
-   }else p.pause();
-  }else{
-   p.pause();
-  }
+   if(!video.paused)p.play().catch(()=>{});else p.pause();
+  }else p.pause();
  });
  syncing=false;
 }
-function updatePlayhead(){
- $("playhead").style.left=(72+currentGlobalTime*pixelsPerSecond)+"px";
-}
-function updateDisplay(){
- $("timeDisplay").textContent=formatTime(currentGlobalTime)+" / "+formatTime(totalDuration());
-}
+function updatePlayhead(){$("playhead").style.left=(72+currentGlobalTime*pixelsPerSecond)+"px"}
+function updateDisplay(){$("timeDisplay").textContent=formatTime(currentGlobalTime)+" / "+formatTime(totalDuration())}
 function updateText(){
  const t=textClips.find(x=>currentGlobalTime>=x.start&&currentGlobalTime<=x.start+x.duration);
  $("previewText").textContent=t?t.text:"";
@@ -538,32 +426,22 @@ function togglePlay(){
  if(!clips.length){setStatus("ভিডিও Timeline-এ যোগ করুন।");return}
  if(video.paused){
   if(currentGlobalTime>=totalDuration())seekGlobal(0);
-  video.play().then(()=>{syncAudio();$("playButton").textContent="❚❚ Pause"})
-   .catch(()=>setStatus("ভিডিও চালু করা যায়নি।"));
- }else{
-  video.pause();pauseAllAudio();$("playButton").textContent="▶ Play";
- }
+  video.play().then(()=>{syncAudio();$("playButton").textContent="❚❚ Pause"}).catch(()=>setStatus("ভিডিও চালু করা যায়নি।"));
+ }else{video.pause();pauseAllAudio();$("playButton").textContent="▶ Play"}
 }
 function pauseAllAudio(){Object.values(audioPlayers).forEach(p=>p.pause())}
 video.addEventListener("timeupdate",()=>{
- const found=locateVideo(currentGlobalTime);
- if(!found)return;
+ const found=locateVideo(currentGlobalTime);if(!found)return;
  const c=clips[found.index];
  currentGlobalTime=clipStart(found.index)+(video.currentTime-c.sourceIn);
  updateDisplay();updatePlayhead();updateText();syncAudio();
  if(video.currentTime>=c.sourceOut-.08){
   if(found.index+1<clips.length){
-   const next=clipStart(found.index+1);
-   seekGlobal(next);video.play().catch(()=>{});
-  }else{
-   video.pause();pauseAllAudio();
-   $("playButton").textContent="▶ Play";
-  }
+   const next=clipStart(found.index+1);seekGlobal(next);video.play().catch(()=>{});
+  }else{video.pause();pauseAllAudio();$("playButton").textContent="▶ Play"}
  }
 });
-video.addEventListener("pause",()=>{
- $("playButton").textContent="▶ Play";pauseAllAudio();
-});
+video.addEventListener("pause",()=>{$("playButton").textContent="▶ Play";pauseAllAudio()});
 $("videoTrack").addEventListener("click",e=>{
  const r=$("videoTrack").getBoundingClientRect();
  seekGlobal((e.clientX-r.left+$("timelineScroll").scrollLeft)/pixelsPerSecond);
@@ -579,16 +457,14 @@ function splitClip(){
  if(offset<=.1||offset>=c.duration-.1){setStatus("ক্লিপের মাঝখানে Playhead রাখুন।");return}
  const second={...c,id:uid(),sourceIn:c.sourceIn+offset,duration:c.duration-offset};
  c.sourceOut=c.sourceIn+offset;c.duration=offset;
- clips.splice(i+1,0,second);selectedClipId=second.id;
- renderTimeline();setStatus("ভিডিও Split হয়েছে।");
+ clips.splice(i+1,0,second);selectedClipId=second.id;renderTimeline();setStatus("ভিডিও Split হয়েছে।");
 }
 function trimSelectedStart(){
  const i=clipIndex(selectedClipId);
  if(i>=0){
   const c=clips[i],offset=currentGlobalTime-clipStart(i);
   if(offset<=0||offset>=c.duration){setStatus("ক্লিপের ভেতরে Playhead রাখুন।");return}
-  c.sourceIn+=offset;c.duration-=offset;
-  renderTimeline();setStatus("ভিডিওর শুরু Trim হয়েছে।");return;
+  c.sourceIn+=offset;c.duration-=offset;renderTimeline();setStatus("ভিডিওর শুরু Trim হয়েছে।");return;
  }
  const a=audioClips.find(x=>x.id===selectedAudioId);
  if(a){
@@ -596,7 +472,7 @@ function trimSelectedStart(){
   if(offset<=0||offset>=a.duration){setStatus("অডিও ক্লিপের ভেতরে Playhead রাখুন।");return}
   a.sourceIn+=offset;a.start=currentGlobalTime;a.duration-=offset;
   const p=audioPlayers[a.id];if(p)p.currentTime=a.sourceIn;
-  renderTimeline();syncAudio();setStatus("অডিওর শুরু Trim হয়েছে.");return;
+  renderTimeline();syncAudio();setStatus("অডিওর শুরু Trim হয়েছে।");return;
  }
  setStatus("একটি ভিডিও বা অডিও ক্লিপ নির্বাচন করুন।");
 }
@@ -605,8 +481,7 @@ function trimSelectedEnd(){
  if(i>=0){
   const c=clips[i],offset=currentGlobalTime-clipStart(i);
   if(offset<=0||offset>=c.duration){setStatus("ক্লিপের ভেতরে Playhead রাখুন।");return}
-  c.sourceOut=c.sourceIn+offset;c.duration=offset;
-  renderTimeline();setStatus("ভিডিওর শেষ Trim হয়েছে।");return;
+  c.sourceOut=c.sourceIn+offset;c.duration=offset;renderTimeline();setStatus("ভিডিওর শেষ Trim হয়েছে।");return;
  }
  const a=audioClips.find(x=>x.id===selectedAudioId);
  if(a){
@@ -620,14 +495,12 @@ function trimSelectedEnd(){
 }
 function deleteSelected(){
  if(selectedClipId){
-  const i=clipIndex(selectedClipId);
-  if(i>=0)clips.splice(i,1);
+  const i=clipIndex(selectedClipId);if(i>=0)clips.splice(i,1);
   selectedClipId=null;renderTimeline();seekGlobal(Math.min(currentGlobalTime,totalDuration()));
   setStatus("ভিডিও ক্লিপ Delete হয়েছে।");return;
  }
  if(selectedAudioId){
-  const i=audioIndex(selectedAudioId);
-  if(i>=0)audioClips.splice(i,1);
+  const i=audioIndex(selectedAudioId);if(i>=0)audioClips.splice(i,1);
   if(audioPlayers[selectedAudioId])audioPlayers[selectedAudioId].pause();
   delete audioPlayers[selectedAudioId];selectedAudioId=null;
   renderTimeline();setStatus("অডিও ক্লিপ Delete হয়েছে।");return;
@@ -650,28 +523,21 @@ function addText(){
 function clearText(){textClips=[];updateText();renderTimeline()}
 function updateFilters(){
  const b=$("brightness").value,c=$("contrast").value,s=$("saturation").value;
- $("brightnessValue").textContent=b+"%";
- $("contrastValue").textContent=c+"%";
- $("saturationValue").textContent=s+"%";
+ $("brightnessValue").textContent=b+"%";$("contrastValue").textContent=c+"%";$("saturationValue").textContent=s+"%";
  video.style.filter=`brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
 }
 function changeSpeed(){video.playbackRate=Number($("speed").value)}
 function changeVolume(){video.volume=Number($("volume").value)/100}
 function resetAdjustments(){
  $("brightness").value=100;$("contrast").value=100;$("saturation").value=100;
- $("speed").value=1;$("volume").value=100;
- updateFilters();changeSpeed();changeVolume();
+ $("speed").value=1;$("volume").value=100;updateFilters();changeSpeed();changeVolume();
 }
 function saveProject(){
- const project={
-  app:"Rifora Studio",version:"5.0",
-  clips,audioClips,textClips,
-  media:mediaItems.map(m=>({id:m.id,name:m.name,type:m.type,duration:m.duration}))
- };
+ const project={app:"Rifora Studio",version:"5.1",clips,audioClips,textClips,media:mediaItems.map(m=>({id:m.id,name:m.name,type:m.type,duration:m.duration}))};
  const blob=new Blob([JSON.stringify(project,null,2)],{type:"application/json"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");a.href=url;a.download="rifora-project-v5.json";
- a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ const url=URL.createObjectURL(blob);const a=document.createElement("a");
+ a.href=url;a.download="rifora-project-v5.1.json";a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
  setStatus("Project JSON সেভ হয়েছে। মিডিয়া ফাইল আলাদাভাবে রাখতে হবে।");
 }
 $("projectInput").addEventListener("change",e=>{
@@ -686,64 +552,266 @@ $("projectInput").addEventListener("change",e=>{
   }catch(err){alert("Project ফাইলটি সঠিক নয়।")}
  };
  reader.readAsText(file);e.target.value="";
-}
-);
+});
+
+/* VERSION 5.1: VIDEO + TIMELINE AUDIO EXPORT */
 async function exportSelected(){
  const i=clipIndex(selectedClipId);
  if(i<0){setStatus("Export-এর জন্য ভিডিও ক্লিপ নির্বাচন করুন।");return}
+
  const c=clips[i],item=getMedia(c.mediaId);
  if(!item)return;
- if(!window.MediaRecorder){setStatus("এই ব্রাউজারে MediaRecorder নেই।");return}
- const v=document.createElement("video");
- v.src=item.url;v.muted=true;v.playsInline=true;
+
+ if(!window.MediaRecorder){
+  setStatus("এই ব্রাউজারে MediaRecorder নেই।");return;
+ }
+ const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+ if(!AudioContextClass){
+  setStatus("এই ব্রাউজারে AudioContext নেই।");return;
+ }
+
+ const exportButton=$("exportButton");
+ exportButton.disabled=true;
+ exportButton.textContent="Exporting...";
+
+ const exportVideo=document.createElement("video");
+ exportVideo.src=item.url;
+ exportVideo.playsInline=true;
+ exportVideo.preload="auto";
+ exportVideo.muted=false;
+
+ let audioContext=null,recorder=null,stream=null;
+ let stopped=false,animationId=null;
+ const exportAudio=[];
+ const chunks=[];
+
+ function cleanup(){
+  exportAudio.forEach(x=>{
+   try{x.player.pause();x.source.disconnect()}catch(e){}
+  });
+  if(stream)stream.getTracks().forEach(t=>t.stop());
+  if(audioContext&&audioContext.state!=="closed"){
+   audioContext.close().catch(()=>{});
+  }
+  exportButton.disabled=false;
+  exportButton.textContent="Export Clip + Audio";
+ }
+
  try{
   await new Promise((resolve,reject)=>{
-   v.onloadedmetadata=resolve;v.onerror=reject;
+   if(exportVideo.readyState>=1){resolve();return}
+   exportVideo.onloadedmetadata=resolve;
+   exportVideo.onerror=()=>reject(new Error("Video metadata failed"));
   });
+
   const canvas=document.createElement("canvas");
   canvas.width=1280;canvas.height=720;
   const ctx=canvas.getContext("2d");
-  const stream=canvas.captureStream(30);
-  let recorder;
-  try{recorder=new MediaRecorder(stream,{mimeType:"video/webm"})}
-  catch(e){recorder=new MediaRecorder(stream)}
-  const chunks=[];
-  recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+  if(!ctx)throw new Error("Canvas unavailable");
+
+  stream=canvas.captureStream(30);
+  audioContext=new AudioContextClass();
+  const destination=audioContext.createMediaStreamDestination();
+  await audioContext.resume();
+
+  // Export video-এর নিজস্ব অডিও
+  const videoSource=audioContext.createMediaElementSource(exportVideo);
+  videoSource.connect(destination);
+
+  // নির্বাচিত ভিডিওর Timeline অবস্থান
+  const timelineStart=clipStart(i);
+  const timelineEnd=timelineStart+c.duration;
+
+  // ভিডিওর সময়সীমার সঙ্গে মিলে এমন অডিও ক্লিপ
+  for(const a of audioClips){
+   const overlapStart=Math.max(timelineStart,a.start);
+   const overlapEnd=Math.min(timelineEnd,a.start+a.duration);
+   if(overlapEnd<=overlapStart)continue;
+
+   const audioItem=getMedia(a.mediaId);
+   if(!audioItem)continue;
+
+   const player=new Audio(audioItem.url);
+   player.preload="auto";
+   player.volume=Math.max(0,Math.min(1,a.volume));
+
+   await new Promise((resolve,reject)=>{
+    if(player.readyState>=1){resolve();return}
+    player.onloadedmetadata=resolve;
+    player.onerror=()=>reject(new Error("Audio loading failed"));
+    player.load();
+   });
+
+   const source=audioContext.createMediaElementSource(player);
+   source.connect(destination);
+
+   exportAudio.push({
+    clip:a,player,source,
+    overlapStart,overlapEnd
+   });
+  }
+
+  destination.stream.getAudioTracks().forEach(track=>stream.addTrack(track));
+
+  const types=[
+   "video/webm;codecs=vp8,opus",
+   "video/webm"
+  ];
+  let options={};
+  for(const type of types){
+   if(MediaRecorder.isTypeSupported(type)){
+    options.mimeType=type;break;
+   }
+  }
+
+  recorder=new MediaRecorder(stream,options);
+  recorder.ondataavailable=e=>{
+   if(e.data&&e.data.size)chunks.push(e.data);
+  };
+
+  recorder.onerror=()=>{
+   if(!stopped){
+    stopped=true;
+    cleanup();
+    setStatus("Export রেকর্ডিংয়ে সমস্যা হয়েছে।");
+   }
+  };
+
   recorder.onstop=()=>{
-   const blob=new Blob(chunks,{type:"video/webm"});
+   const blob=new Blob(chunks,{type:recorder.mimeType||"video/webm"});
+   if(!blob.size){
+    cleanup();setStatus("Export ফাইল তৈরি হয়নি।");return;
+   }
+
    const url=URL.createObjectURL(blob);
-   const a=document.createElement("a");a.href=url;a.download="rifora-video.webm";a.click();
-   setTimeout(()=>URL.revokeObjectURL(url),2000);
-   setStatus("নির্বাচিত ভিডিও ক্লিপ Export হয়েছে। এই Export-এ আলাদা Audio Track মেশানো হয় না।");
+   const a=document.createElement("a");
+   a.href=url;
+   a.download="rifora-video-with-audio.webm";
+   document.body.appendChild(a);
+   a.click();
+   a.remove();
+
+   setTimeout(()=>URL.revokeObjectURL(url),10000);
+   cleanup();
+   setStatus("ভিডিও ও অডিও Export সম্পন্ন হয়েছে। ফাইলটি পরীক্ষা করুন।");
   };
-  v.currentTime=c.sourceIn;
-  await new Promise(resolve=>v.onseeked=resolve);
-  const draw=()=>{
-   ctx.fillStyle="#000";ctx.fillRect(0,0,1280,720);
-   const scale=Math.min(1280/v.videoWidth,720/v.videoHeight);
-   const w=v.videoWidth*scale,h=v.videoHeight*scale;
-   ctx.filter=video.style.filter||"none";
-   ctx.drawImage(v,(1280-w)/2,(720-h)/2,w,h);
-   ctx.filter="none";
-  };
-  let stopped=false;
+
+  // ভিডিওর শুরুতে যাওয়া
+  await new Promise((resolve,reject)=>{
+   const done=()=>resolve();
+   exportVideo.addEventListener("seeked",done,{once:true});
+   exportVideo.currentTime=c.sourceIn;
+   if(Math.abs(exportVideo.currentTime-c.sourceIn)<0.01)resolve();
+  });
+
+  exportVideo.playbackRate=Number($("speed").value)||1;
+
+  function drawFrame(){
+   ctx.fillStyle="#000";
+   ctx.fillRect(0,0,canvas.width,canvas.height);
+
+   if(exportVideo.videoWidth&&exportVideo.videoHeight){
+    const scale=Math.min(canvas.width/exportVideo.videoWidth,canvas.height/exportVideo.videoHeight);
+    const w=exportVideo.videoWidth*scale;
+    const h=exportVideo.videoHeight*scale;
+
+    ctx.filter=video.style.filter||"none";
+    ctx.drawImage(exportVideo,(canvas.width-w)/2,(canvas.height-h)/2,w,h);
+    ctx.filter="none";
+   }
+
+   const globalTime=timelineStart+(exportVideo.currentTime-c.sourceIn);
+   const activeText=textClips.find(t=>
+    globalTime>=t.start&&globalTime<t.start+t.duration
+   );
+
+   if(activeText){
+    ctx.save();
+    ctx.font="bold 38px Arial, sans-serif";
+    ctx.textAlign="center";
+    ctx.textBaseline="bottom";
+    ctx.lineWidth=4;
+    ctx.strokeStyle="#000";
+    ctx.fillStyle="#fff";
+    const text=activeText.text;
+    ctx.strokeText(text,canvas.width/2,canvas.height*.86,canvas.width*.9);
+    ctx.fillText(text,canvas.width/2,canvas.height*.86,canvas.width*.9);
+    ctx.restore();
+   }
+  }
+
+  function syncExportAudio(){
+   const globalTime=timelineStart+(exportVideo.currentTime-c.sourceIn);
+
+   exportAudio.forEach(x=>{
+    const a=x.clip,p=x.player;
+    const active=globalTime>=x.overlapStart&&globalTime<x.overlapEnd;
+
+    if(active){
+     const wanted=a.sourceIn+(globalTime-a.start);
+     if(Math.abs(p.currentTime-wanted)>.3){
+      try{p.currentTime=wanted}catch(e){}
+     }
+     p.volume=Math.max(0,Math.min(1,a.volume));
+     if(p.paused)p.play().catch(()=>{});
+    }else{
+     p.pause();
+    }
+   });
+  }
+
+  function stopExport(){
+   if(stopped)return;
+   stopped=true;
+   if(animationId)cancelAnimationFrame(animationId);
+   exportVideo.pause();
+   exportAudio.forEach(x=>x.player.pause());
+   if(recorder&&recorder.state!=="inactive")recorder.stop();
+  }
+
   function frame(){
    if(stopped)return;
-   draw();
-   if(v.currentTime>=c.sourceOut||v.ended){
-    stopped=true;v.pause();recorder.stop();return;
+
+   drawFrame();
+   syncExportAudio();
+
+   if(exportVideo.currentTime>=c.sourceOut-.03||exportVideo.ended){
+    stopExport();return;
    }
-   requestAnimationFrame(frame);
+
+   animationId=requestAnimationFrame(frame);
   }
-  recorder.start();await v.play();frame();
-  setStatus("ভিডিও Export হচ্ছে...");
- }catch(err){setStatus("Export করা যায়নি। অন্য ব্রাউজারে চেষ্টা করুন।")}
+
+  recorder.start(250);
+  await exportVideo.play();
+  drawFrame();
+  syncExportAudio();
+  frame();
+
+  setStatus("ভিডিও ও অডিও একসঙ্গে Export হচ্ছে...");
+
+ }catch(err){
+  stopped=true;
+  if(animationId)cancelAnimationFrame(animationId);
+  if(recorder&&recorder.state!=="inactive"){
+   try{recorder.stop()}catch(e){}
+  }
+  cleanup();
+  setStatus("Export ব্যর্থ হয়েছে। Firefox-এর MediaRecorder ও Audio সমর্থন পরীক্ষা করুন।");
+  console.error("Rifora Export Error:",err);
+ }
 }
+
 window.addEventListener("beforeunload",()=>{
  mediaItems.forEach(m=>URL.revokeObjectURL(m.url));
  pauseAllAudio();
 });
-renderMedia();renderTimeline();updateDisplay();updateFilters();changeVolume();
+
+renderMedia();
+renderTimeline();
+updateDisplay();
+updateFilters();
+changeVolume();
 </script>
 </body>
 </html>
