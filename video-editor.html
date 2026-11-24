@@ -3,145 +3,375 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rifora Studio - Video Editor</title>
+<title>Rifora Studio - Professional Video Editor</title>
 
 <style>
+:root{
+  --bg:#080d18;
+  --panel:#111b2b;
+  --panel2:#172438;
+  --line:#26374e;
+  --text:#edf4ff;
+  --muted:#9aabc1;
+  --blue:#2588ff;
+  --cyan:#19c5d8;
+  --gold:#f0bd4b;
+  --red:#ef5365;
+}
 *{box-sizing:border-box}
 body{
- margin:0;background:#0c1420;color:#eef4fc;
- font-family:Arial,"Noto Sans Bengali",sans-serif
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,"Noto Sans Bengali",sans-serif;
 }
 button,input,select,textarea{font:inherit}
 button{
- background:#263b55;color:white;border:0;border-radius:6px;
- padding:9px 12px;cursor:pointer
+  border:1px solid var(--line);
+  background:#1b2a40;
+  color:white;
+  padding:9px 13px;
+  border-radius:7px;
+  cursor:pointer;
 }
-button:hover{background:#365779}
+button:hover{background:#29415f}
+button.primary{
+  background:var(--blue);
+  border-color:var(--blue);
+}
+button.danger{background:#762d3b;border-color:#a53a4b}
 button:disabled{opacity:.4;cursor:not-allowed}
-.primary{background:#087fc4}
-.danger{background:#a63749}
 .topbar{
- height:58px;background:#091321;border-bottom:1px solid #2a3b50;
- display:flex;align-items:center;justify-content:space-between;
- padding:0 16px;gap:10px
+  min-height:66px;
+  padding:12px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  background:#101a2a;
+  border-bottom:1px solid var(--line);
 }
-.brand{font-size:19px;font-weight:bold;color:#55c5ff}
-.brand span{color:#f0c45b}
-.top-actions{display:flex;gap:7px;flex-wrap:wrap}
+.brand{
+  font-size:23px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+.brand span{color:var(--cyan)}
+.brand small{
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:3px;
+  margin-top:3px;
+}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
 .layout{
- display:grid;grid-template-columns:235px minmax(300px,1fr) 235px;
- gap:12px;padding:12px;min-height:calc(100vh - 58px)
+  display:grid;
+  grid-template-columns:245px minmax(350px,1fr) 265px;
+  gap:12px;
+  padding:12px;
+  align-items:start;
 }
 .panel{
- background:#172333;border:1px solid #2b3c51;
- border-radius:9px;overflow:hidden;min-width:0
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:11px;
+  overflow:hidden;
 }
-.panel-title{
- padding:12px 14px;border-bottom:1px solid #2b3c51;
- font-weight:bold;color:#b9dfff
+.panel-head{
+  padding:13px 14px;
+  font-weight:bold;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-.panel-body{padding:12px}
-.center{display:flex;flex-direction:column;gap:12px;min-width:0}
-.preview-panel{display:flex;flex-direction:column;min-height:390px}
-.preview-area{
- background:#03070c;flex:1;min-height:300px;position:relative;
- display:flex;align-items:center;justify-content:center;overflow:hidden
+.panel-body{padding:13px}
+.section-label{
+  font-size:11px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin:14px 0 8px;
 }
-#previewVideo,#previewImage{
- max-width:100%;max-height:100%;width:auto;height:auto;
- object-fit:contain;display:none
+.full{width:100%}
+input[type="text"],input[type="number"],textarea,select{
+  width:100%;
+  padding:9px;
+  background:#0b1422;
+  color:white;
+  border:1px solid var(--line);
+  border-radius:7px;
+  outline:none;
 }
-#emptyPreview{text-align:center;color:#8294a9}
-#textOverlay{
- position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
- width:90%;text-align:center;white-space:pre-wrap;
- font-size:30px;font-weight:bold;color:white;
- text-shadow:2px 2px 5px black;pointer-events:none
+input[type="range"]{width:100%;accent-color:var(--blue)}
+input[type="file"]{display:none}
+.upload-label{
+  display:block;
+  padding:15px 10px;
+  border:1px dashed #41628b;
+  background:#14243a;
+  border-radius:9px;
+  text-align:center;
+  cursor:pointer;
+  color:#bcd7fa;
 }
-.preview-controls{
- padding:10px;background:#101c2b;display:flex;
- align-items:center;gap:8px;flex-wrap:wrap
-}
-.preview-controls input{flex:1;min-width:100px}
-.time{font-size:12px;color:#b5c6d8;white-space:nowrap}
-.timeline-panel{min-height:330px}
-.toolbar{
- display:flex;gap:6px;flex-wrap:wrap;padding:10px;
- border-bottom:1px solid #2b3c51
-}
-.timeline-scroll{
- overflow:auto;position:relative;padding:12px;
- min-height:220px;background:#101b29
-}
-.timeline-inner{position:relative;min-width:500px}
-.ruler{
- height:28px;position:relative;border-bottom:1px solid #52647a;
- color:#a9bbd0;font-size:11px
-}
-.ruler span{position:absolute;top:5px}
-.track{
- display:flex;min-height:72px;border-bottom:1px solid #34465b;
- position:relative
-}
-.track-name{
- width:66px;flex-shrink:0;font-size:11px;color:#a9bbd0;
- display:flex;align-items:center
-}
-.track-content{position:relative;flex:1;min-height:72px}
-.clip{
- position:absolute;top:9px;height:53px;overflow:hidden;
- border:2px solid #318bc0;border-radius:5px;
- background:#24415b;cursor:pointer;min-width:25px
-}
-.clip.selected{border-color:#ffd15b;box-shadow:0 0 0 1px #ffd15b}
-.clip-thumbs{height:100%;display:flex;overflow:hidden}
-.clip-thumbs img{height:100%;width:55px;object-fit:cover;flex-shrink:0}
-.clip-name{
- position:absolute;left:3px;right:3px;bottom:2px;
- font-size:10px;background:#071321d9;padding:2px;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis
-}
-.playhead{
- position:absolute;top:0;bottom:0;width:2px;background:#ff5252;
- z-index:5;pointer-events:none
-}
-.playhead:before{
- content:"";position:absolute;top:23px;left:-5px;
- width:12px;height:12px;background:#ff5252;
- border-radius:2px;transform:rotate(45deg)
-}
-.timeline-info{
- padding:9px 12px;color:#a9bbd0;font-size:12px
+.upload-label:hover{border-color:var(--cyan)}
+.media-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:12px;
+  max-height:470px;
+  overflow:auto;
 }
 .media-item{
- display:flex;gap:8px;align-items:center;padding:8px;
- background:#202f42;border:1px solid transparent;
- border-radius:6px;margin:8px 0;cursor:pointer
+  display:flex;
+  gap:9px;
+  align-items:center;
+  background:#17263b;
+  padding:7px;
+  border-radius:8px;
+  cursor:pointer;
+  border:1px solid transparent;
+  min-width:0;
 }
-.media-item.active{border-color:#42b8f5}
+.media-item:hover{border-color:var(--blue)}
 .media-thumb{
- width:60px;height:42px;object-fit:cover;
- background:#0b1522;border-radius:4px;flex-shrink:0
+  width:65px;
+  height:45px;
+  background:#07101d;
+  object-fit:cover;
+  border-radius:5px;
+  flex-shrink:0;
 }
-.media-name{font-size:12px;overflow-wrap:anywhere}
-.small{font-size:11px;color:#9fb1c6;margin-top:4px}
-.field{margin:13px 0}
-.field label{display:block;font-size:12px;color:#b6c7d9;margin-bottom:6px}
-.field input,.field select,.field textarea{
- width:100%;background:#0d1826;color:white;
- border:1px solid #3a4c62;border-radius:6px;padding:9px
+.media-name{
+  font-size:12px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
-.field input[type=range]{padding:0}
-.field input[type=color]{height:38px;padding:3px}
-.field textarea{min-height:65px}
-.full{width:100%;margin-top:7px}
-.help{font-size:12px;color:#9fb1c6;line-height:1.7}
-.status{font-size:12px;color:#79d4a5;padding:8px 0}
-@media(max-width:950px){
- .layout{grid-template-columns:1fr}
- .center{order:1}
- .layout>.panel:first-child{order:2}
- .layout>.panel:last-child{order:3}
+.media-type{font-size:10px;color:var(--muted);margin-top:4px}
+.center-panel{min-width:0}
+.preview-area{
+  background:#05080e;
+  padding:15px;
+  min-height:320px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.preview-frame{
+  position:relative;
+  width:min(100%,720px);
+  aspect-ratio:16/9;
+  background:#000;
+  overflow:hidden;
+  border:1px solid #283b52;
+  border-radius:7px;
+}
+#previewVideo{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+#previewText{
+  position:absolute;
+  left:50%;
+  bottom:12%;
+  transform:translateX(-50%);
+  max-width:90%;
+  text-align:center;
+  color:white;
+  font-size:30px;
+  font-weight:bold;
+  text-shadow:2px 2px 5px black;
+  pointer-events:none;
+  white-space:pre-wrap;
+}
+.preview-controls{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  padding:12px;
+  background:#101a2a;
+  border-top:1px solid var(--line);
+}
+.time-display{
+  color:var(--cyan);
+  font-family:monospace;
+  font-size:13px;
+}
+.timeline-panel{margin-top:12px}
+.timeline-toolbar{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  padding:10px;
+  border-bottom:1px solid var(--line);
+}
+.timeline-scroll{
+  overflow:auto;
+  background:#0a1220;
+  padding-bottom:10px;
+}
+.timeline-inner{
+  position:relative;
+  min-width:100%;
+  width:max-content;
+}
+.ruler{
+  height:29px;
+  margin-left:72px;
+  position:relative;
+  border-bottom:1px solid var(--line);
+  color:var(--muted);
+  font-size:10px;
+}
+.ruler-mark{
+  position:absolute;
+  top:5px;
+  border-left:1px solid #52647c;
+  height:20px;
+  padding-left:4px;
+}
+.track-row{
+  display:flex;
+  min-height:66px;
+  border-bottom:1px solid #1e2c40;
+}
+.track-name{
+  width:72px;
+  flex-shrink:0;
+  padding:12px 7px;
+  background:#142035;
+  color:#b9cbe1;
+  font-size:11px;
+  border-right:1px solid var(--line);
+}
+.track-content{
+  position:relative;
+  min-height:66px;
+  background:repeating-linear-gradient(
+    90deg,#0c1727 0,#0c1727 39px,#142237 40px
+  );
+}
+.timeline-clip{
+  position:absolute;
+  top:8px;
+  height:49px;
+  min-width:35px;
+  border-radius:5px;
+  background:linear-gradient(120deg,#1769ad,#168caa);
+  border:1px solid #51b8e8;
+  overflow:hidden;
+  cursor:pointer;
+  color:white;
+}
+.timeline-clip.selected{outline:2px solid var(--gold)}
+.clip-thumbs{
+  display:flex;
+  height:100%;
+  opacity:.55;
+}
+.clip-thumbs img{
+  width:55px;
+  height:100%;
+  object-fit:cover;
+  flex:1;
+  min-width:0;
+}
+.clip-title{
+  position:absolute;
+  inset:0;
+  padding:5px;
+  font-size:10px;
+  text-shadow:1px 1px 3px black;
+  overflow:hidden;
+  pointer-events:none;
+}
+.text-clip{
+  position:absolute;
+  top:8px;
+  height:49px;
+  background:#77539e;
+  border:1px solid #b18ce0;
+  border-radius:5px;
+  color:white;
+  padding:7px;
+  font-size:11px;
+  overflow:hidden;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.playhead{
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:2px;
+  background:#ff5267;
+  z-index:5;
+  pointer-events:none;
+}
+.playhead:before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-5px;
+  width:12px;
+  height:12px;
+  background:#ff5267;
+  border-radius:2px;
+}
+.property-group{
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+.property-group:first-child{padding-top:0}
+.property-group label{
+  display:block;
+  font-size:12px;
+  color:#c5d5e8;
+  margin-bottom:8px;
+}
+.value-row{
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+  color:var(--muted);
+}
+.help-text{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.6;
+}
+.status{
+  padding:9px 12px;
+  color:#a9c8e9;
+  background:#101c2d;
+  font-size:11px;
+  border-top:1px solid var(--line);
+}
+.empty{
+  color:var(--muted);
+  font-size:12px;
+  text-align:center;
+  padding:20px 8px;
+}
+@media(max-width:1100px){
+  .layout{grid-template-columns:220px minmax(300px,1fr)}
+  .layout>.panel:last-child{grid-column:1/-1}
+}
+@media(max-width:750px){
+  .layout{grid-template-columns:1fr}
+  .layout>.panel:first-child{order:2}
+  .layout>.center-panel{order:1}
+  .layout>.panel:last-child{order:3;grid-column:auto}
+  .preview-area{min-height:220px}
+  .brand{font-size:19px}
 }
 </style>
 </head>
@@ -149,934 +379,987 @@ button:disabled{opacity:.4;cursor:not-allowed}
 <body>
 
 <header class="topbar">
- <div class="brand">RIFORA <span>STUDIO</span></div>
- <div class="top-actions">
-  <button onclick="saveProject()">Save Project</button>
-  <button class="primary" onclick="exportSelected()">Export Clip</button>
- </div>
+  <div class="brand">
+    RIFORA <span>STUDIO</span>
+    <small>PROFESSIONAL VIDEO EDITOR</small>
+  </div>
+  <div class="top-actions">
+    <button onclick="saveProject()">Save Project</button>
+    <button onclick="document.getElementById('projectInput').click()">Open Project</button>
+    <button class="primary" onclick="exportSelected()">Export Clip</button>
+  </div>
 </header>
 
-<main class="layout">
+<div class="layout">
 
-<!-- MEDIA LIBRARY -->
-<section class="panel">
- <div class="panel-title">📁 Media Library</div>
- <div class="panel-body">
-  <p class="help">ভিডিও, ছবি ও অডিও Import করুন।</p>
-  <input type="file" id="mediaInput"
-   accept="video/*,image/*,audio/*" multiple hidden>
-  <button class="primary full"
-   onclick="document.getElementById('mediaInput').click()">
-   ＋ Import Media
-  </button>
-  <div id="mediaList"></div>
-  <button class="full" onclick="addSelectedToTimeline()">
-   ＋ Add to Timeline
-  </button>
-  <div id="mediaStatus" class="status">কোনো মিডিয়া যোগ করা হয়নি।</div>
- </div>
-</section>
-
-<!-- WORKSPACE -->
-<section class="center">
-
- <section class="panel preview-panel">
-  <div class="panel-title">▶ Video Preview</div>
-
-  <div class="preview-area">
-   <div id="emptyPreview">
-    <div style="font-size:48px">🎬</div>
-    <b>Rifora Studio</b>
-    <p>Import Media করে Timeline-এ যোগ করুন</p>
-   </div>
-   <video id="previewVideo" playsinline></video>
-   <img id="previewImage" alt="Preview">
-   <div id="textOverlay"></div>
-  </div>
-
-  <div class="preview-controls">
-   <button onclick="playPause()">▶ Play / Pause</button>
-   <button onclick="stopPreview()">■ Stop</button>
-   <input id="seekBar" type="range" min="0" max="100" value="0" step="0.01">
-   <span id="timeDisplay" class="time">00:00 / 00:00</span>
-  </div>
- </section>
-
- <section class="panel timeline-panel">
-  <div class="panel-title">🎞 Professional Timeline</div>
-
-  <div class="toolbar">
-   <button onclick="splitClip()">✂ Split</button>
-   <button onclick="trimStart()">Trim Start</button>
-   <button onclick="trimEnd()">Trim End</button>
-   <button class="danger" onclick="deleteClip()">Delete</button>
-   <button onclick="addTextClip()">＋ Add Text</button>
-  </div>
-
-  <div class="timeline-scroll" id="timelineScroll">
-   <div class="timeline-inner" id="timelineInner">
-    <div class="ruler" id="ruler"></div>
-    <div class="track">
-     <div class="track-name">VIDEO</div>
-     <div class="track-content" id="videoTrack"></div>
+  <!-- MEDIA LIBRARY -->
+  <section class="panel">
+    <div class="panel-head">
+      <span>Media Library</span>
+      <span id="mediaCount">0</span>
     </div>
-    <div class="track">
-     <div class="track-name">TEXT</div>
-     <div class="track-content" id="textTrack"></div>
+    <div class="panel-body">
+      <label class="upload-label" for="mediaInput">
+        <strong>＋ Import Media</strong>
+        <div class="help-text">ভিডিও, ছবি ও অডিও যোগ করুন</div>
+      </label>
+      <input id="mediaInput" type="file" accept="video/*,image/*,audio/*" multiple>
+
+      <div class="section-label">Your Media</div>
+      <div id="mediaList" class="media-list">
+        <div class="empty">এখনো কোনো মিডিয়া যোগ করা হয়নি</div>
+      </div>
+
+      <div class="section-label">ব্যবহার</div>
+      <p class="help-text">
+        মিডিয়া নির্বাচন করে Add to Timeline চাপুন।
+        ভিডিও ক্লিপগুলো টাইমলাইনে সাজানো যাবে।
+      </p>
     </div>
-    <div class="playhead" id="playhead"></div>
-   </div>
-  </div>
+  </section>
 
-  <div class="panel-body">
-   <label class="help">Timeline Playhead — সময় নির্বাচন করুন</label>
-   <input id="timelineSeek" type="range" min="0" max="100" value="0" step="0.01" style="width:100%">
-   <div class="timeline-info" id="timelineInfo">Timeline খালি।</div>
-  </div>
- </section>
-</section>
+  <!-- EDITOR CENTER -->
+  <section class="center-panel">
 
-<!-- PROPERTIES -->
-<section class="panel">
- <div class="panel-title">⚙ Properties & Tools</div>
- <div class="panel-body">
+    <div class="panel">
+      <div class="panel-head">
+        <span>Preview Monitor</span>
+        <span class="time-display" id="timeDisplay">00:00 / 00:00</span>
+      </div>
 
-  <div class="field">
-   <label>Text / Subtitle</label>
-   <textarea id="textInput" placeholder="ভিডিওর লেখা লিখুন"></textarea>
-   <button class="primary full" onclick="applyText()">Apply Text</button>
-  </div>
+      <div class="preview-area">
+        <div class="preview-frame" id="previewFrame">
+          <video id="previewVideo" playsinline></video>
+          <div id="previewText"></div>
+        </div>
+      </div>
 
-  <div class="field">
-   <label>Text Size</label>
-   <input id="textSize" type="range" min="16" max="60" value="30">
-  </div>
+      <div class="preview-controls">
+        <button onclick="goToStart()" title="শুরুতে যান">|◀</button>
+        <button onclick="stepBack()">−5s</button>
+        <button class="primary" id="playButton" onclick="togglePlay()">▶ Play</button>
+        <button onclick="stepForward()">+5s</button>
+        <button onclick="goToEnd()">▶|</button>
+      </div>
+    </div>
 
-  <div class="field">
-   <label>Text Color</label>
-   <input id="textColor" type="color" value="#ffffff">
-  </div>
+    <div class="panel timeline-panel">
+      <div class="panel-head">
+        <span>Editing Timeline</span>
+        <span class="time-display" id="timelineDuration">00:00</span>
+      </div>
 
-  <div class="field">
-   <label>Brightness</label>
-   <input id="brightness" type="range" min="50" max="150" value="100">
-  </div>
+      <div class="timeline-toolbar">
+        <button onclick="addSelectedToTimeline()">＋ Add to Timeline</button>
+        <button onclick="splitClip()">✂ Split</button>
+        <button onclick="trimStart()">Trim Start</button>
+        <button onclick="trimEnd()">Trim End</button>
+        <button class="danger" onclick="deleteClip()">Delete</button>
+      </div>
 
-  <div class="field">
-   <label>Contrast</label>
-   <input id="contrast" type="range" min="50" max="150" value="100">
-  </div>
+      <div class="timeline-scroll" id="timelineScroll">
+        <div class="timeline-inner" id="timelineInner">
+          <div class="ruler" id="ruler"></div>
 
-  <div class="field">
-   <label>Saturation</label>
-   <input id="saturation" type="range" min="0" max="200" value="100">
-  </div>
+          <div class="track-row">
+            <div class="track-name">VIDEO 1</div>
+            <div class="track-content" id="videoTrack"></div>
+          </div>
 
-  <div class="field">
-   <label>Playback Speed</label>
-   <select id="speed">
-    <option value=".5">0.5x Slow</option>
-    <option value=".75">0.75x</option>
-    <option value="1" selected>1x Normal</option>
-    <option value="1.25">1.25x</option>
-    <option value="1.5">1.5x</option>
-    <option value="2">2x Fast</option>
-   </select>
-  </div>
+          <div class="track-row">
+            <div class="track-name">TEXT</div>
+            <div class="track-content" id="textTrack"></div>
+          </div>
 
-  <div class="field">
-   <label>Video Volume</label>
-   <input id="volume" type="range" min="0" max="100" value="100">
-  </div>
+          <div class="track-row">
+            <div class="track-name">AUDIO</div>
+            <div class="track-content" id="audioTrack">
+              <div class="help-text" style="padding:15px">
+                অডিও ট্র্যাকের উন্নত এডিটিং পরবর্তী সংস্করণে যোগ করা হবে।
+              </div>
+            </div>
+          </div>
 
-  <button class="full" onclick="resetAdjustments()">Reset Adjustments</button>
+          <div class="playhead" id="playhead"></div>
+        </div>
+      </div>
+      <div class="status" id="status">প্রথমে একটি ভিডিও ইমপোর্ট করুন।</div>
+    </div>
+  </section>
 
-  <hr style="border-color:#34465b;margin:18px 0">
+  <!-- PROPERTIES -->
+  <section class="panel">
+    <div class="panel-head">Properties & Tools</div>
+    <div class="panel-body">
 
-  <div class="help">
-   **ব্যবহারের নিয়ম**<br>
-   ১. Import Media চাপুন।<br>
-   ২. ভিডিও নির্বাচন করুন।<br>
-   ৩. Add to Timeline চাপুন।<br>
-   ৪. Timeline-এর ক্লিপে ক্লিক করুন।<br>
-   ৫. Playhead সরিয়ে Split বা Trim করুন।<br>
-   ৬. Export Clip দিয়ে নির্বাচিত ক্লিপ সেভ করুন।
-  </div>
- </div>
-</section>
+      <div class="property-group">
+        <label>Selected Media / Clip</label>
+        <div id="selectedInfo" class="help-text">কোনো ক্লিপ নির্বাচন করা হয়নি।</div>
+      </div>
 
-</main>
+      <div class="property-group">
+        <label>Text Overlay</label>
+        <textarea id="textInput" rows="3" placeholder="আপনার ভিডিওর লেখা লিখুন"></textarea>
+        <button class="full primary" style="margin-top:8px" onclick="addText()">＋ Add Text</button>
+        <button class="full" style="margin-top:6px" onclick="clearText()">Clear Text</button>
+      </div>
+
+      <div class="property-group">
+        <label>Brightness</label>
+        <div class="value-row"><span>আলো</span><span id="brightnessValue">100%</span></div>
+        <input id="brightness" type="range" min="50" max="150" value="100" oninput="updateFilters()">
+      </div>
+
+      <div class="property-group">
+        <label>Contrast</label>
+        <div class="value-row"><span>কনট্রাস্ট</span><span id="contrastValue">100%</span></div>
+        <input id="contrast" type="range" min="50" max="150" value="100" oninput="updateFilters()">
+      </div>
+
+      <div class="property-group">
+        <label>Saturation</label>
+        <div class="value-row"><span>রঙের উজ্জ্বলতা</span><span id="saturationValue">100%</span></div>
+        <input id="saturation" type="range" min="0" max="200" value="100" oninput="updateFilters()">
+      </div>
+
+      <div class="property-group">
+        <label>Playback Speed</label>
+        <select id="speed" onchange="changeSpeed()">
+          <option value="0.5">0.5x Slow</option>
+          <option value="0.75">0.75x</option>
+          <option value="1" selected>1x Normal</option>
+          <option value="1.25">1.25x</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2x Fast</option>
+        </select>
+      </div>
+
+      <div class="property-group">
+        <label>Volume</label>
+        <input id="volume" type="range" min="0" max="100" value="100" oninput="changeVolume()">
+      </div>
+
+      <div class="property-group">
+        <button class="full" onclick="resetAdjustments()">Reset Adjustments</button>
+      </div>
+
+      <p class="help-text">
+        নোট: এই সংস্করণে Export নির্বাচিত ভিডিও ক্লিপের জন্য।
+        সম্পূর্ণ মাল্টি-ট্র্যাক Export, অডিও মিক্সিং,
+        ট্রানজিশন ও Keyframe এখনো যুক্ত হয়নি।
+      </p>
+
+    </div>
+  </section>
+
+</div>
+
+<input id="projectInput" type="file" accept=".json,application/json" style="display:none">
 
 <script>
-const $=id=>document.getElementById(id);
+"use strict";
 
-const mediaInput=$("mediaInput");
-const mediaList=$("mediaList");
-const video=$("previewVideo");
-const imagePreview=$("previewImage");
-const emptyPreview=$("emptyPreview");
-const videoTrack=$("videoTrack");
-const textTrack=$("textTrack");
-const timelineInner=$("timelineInner");
-const timelineSeek=$("timelineSeek");
-const seekBar=$("seekBar");
+const $ = id => document.getElementById(id);
 
-let mediaItems=[];
-let clips=[];
-let textClips=[];
-let selectedMediaId=null;
-let selectedClipId=null;
-let currentGlobalTime=0;
-let playing=false;
-let nextId=1;
-let currentText="";
-let pixelsPerSecond=40;
-let switching=false;
+let mediaItems = [];
+let clips = [];
+let textClips = [];
+let selectedMediaId = null;
+let selectedClipId = null;
+let currentGlobalTime = 0;
+let pixelsPerSecond = 40;
+let nextId = 1;
+let isSeeking = false;
 
-function id(){return nextId++}
+const video = $("previewVideo");
 
-function formatTime(t){
- t=Math.max(0,Number(t)||0);
- let m=Math.floor(t/60);
- let s=Math.floor(t%60);
- return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+function uid(){
+  return "item_" + nextId++;
 }
 
-function duration(c){return Math.max(0,c.sourceOut-c.sourceIn)}
+function setStatus(message){
+  $("status").textContent = message;
+}
+
+function formatTime(seconds){
+  if(!Number.isFinite(seconds) || seconds < 0) seconds = 0;
+  const minutes = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return String(minutes).padStart(2,"0") + ":" +
+         String(secs).padStart(2,"0");
+}
+
 function totalDuration(){
- return clips.reduce((sum,c)=>sum+duration(c),0);
+  return clips.reduce((sum,clip)=>sum+clip.duration,0);
 }
+
 function clipStart(index){
- let t=0;
- for(let i=0;i<index;i++)t+=duration(clips[i]);
- return t;
-}
-function selectedClip(){
- return clips.find(c=>c.id===selectedClipId)||null;
-}
-function selectedIndex(){
- return clips.findIndex(c=>c.id===selectedClipId);
-}
-function escapeHTML(s){
- return String(s).replace(/[&<>"']/g,c=>({
- "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- }[c]));
+  let start = 0;
+  for(let i=0;i<index;i++) start += clips[i].duration;
+  return start;
 }
 
-/* IMPORT */
-mediaInput.addEventListener("change",function(){
- Array.from(this.files).forEach(file=>{
-  const url=URL.createObjectURL(file);
-  const item={
-   id:id(),file,url,name:file.name,type:file.type,
-   duration:0,thumb:""
-  };
-  mediaItems.push(item);
+function getClipIndex(id){
+  return clips.findIndex(c=>c.id===id);
+}
 
-  if(file.type.startsWith("video/")){
-   getVideoInfo(item);
-  }else if(file.type.startsWith("image/")){
-   item.thumb=url;
-   renderMedia();
-  }else{
-   renderMedia();
-  }
- });
- this.value="";
+function getMedia(id){
+  return mediaItems.find(m=>m.id===id);
+}
+
+$("mediaInput").addEventListener("change",event=>{
+  const files = Array.from(event.target.files || []);
+
+  files.forEach(file=>{
+    const url = URL.createObjectURL(file);
+    const item = {
+      id:uid(),
+      name:file.name,
+      type:file.type,
+      file:file,
+      url:url,
+      duration:0,
+      thumbnails:[]
+    };
+
+    mediaItems.push(item);
+
+    if(file.type.startsWith("video/")){
+      readVideoMetadata(item);
+    }else{
+      renderMedia();
+    }
+  });
+
+  event.target.value = "";
 });
 
-function getVideoInfo(item){
- const temp=document.createElement("video");
- temp.preload="metadata";
- temp.muted=true;
- temp.src=item.url;
+function readVideoMetadata(item){
+  const temp = document.createElement("video");
+  temp.preload = "metadata";
+  temp.muted = true;
+  temp.src = item.url;
 
- temp.onloadedmetadata=function(){
-  item.duration=Number.isFinite(temp.duration)?temp.duration:0;
-  renderMedia();
-  if(item.duration>0)makeThumbnails(item);
- };
- temp.onerror=renderMedia;
+  temp.addEventListener("loadedmetadata",()=>{
+    item.duration = Number.isFinite(temp.duration) ? temp.duration : 0;
+    renderMedia();
+    makeThumbnails(item);
+  },{once:true});
+
+  temp.addEventListener("error",()=>{
+    renderMedia();
+  },{once:true});
 }
 
 function makeThumbnails(item){
- const temp=document.createElement("video");
- temp.muted=true;
- temp.preload="auto";
- temp.src=item.url;
+  const temp = document.createElement("video");
+  temp.muted = true;
+  temp.preload = "auto";
+  temp.src = item.url;
 
- temp.onloadedmetadata=function(){
-  const count=Math.min(8,Math.max(2,Math.ceil(item.duration/5)));
-  let index=0;
-  const canvas=document.createElement("canvas");
-  canvas.width=120;
-  canvas.height=68;
-  const ctx=canvas.getContext("2d");
-  item.thumbs=[];
-
-  function capture(){
-   if(index>=count){
-    renderMedia();
+  temp.addEventListener("loadedmetadata",async()=>{
+    const count = Math.min(8,Math.max(1,Math.floor(item.duration)));
+    for(let i=0;i<count;i++){
+      const time = item.duration * (i + 0.5) / count;
+      try{
+        await seekVideo(temp,time);
+        const canvas = document.createElement("canvas");
+        canvas.width = 160;
+        canvas.height = 90;
+        canvas.getContext("2d").drawImage(temp,0,0,160,90);
+        item.thumbnails.push(canvas.toDataURL("image/jpeg",0.65));
+      }catch(e){}
+    }
     renderTimeline();
-    temp.removeAttribute("src");
-    temp.load();
-    return;
-   }
+    renderMedia();
+  },{once:true});
+}
 
-   const target=Math.min(
-    Math.max(0.05,item.duration-0.1),
-    item.duration*(index+0.5)/count
-   );
-
-   const done=function(){
+function seekVideo(v,time){
+  return new Promise((resolve,reject)=>{
+    const done = ()=>resolve();
+    const fail = ()=>reject(new Error("ভিডিও seek করা যায়নি"));
+    v.addEventListener("seeked",done,{once:true});
+    v.addEventListener("error",fail,{once:true});
     try{
-     ctx.drawImage(temp,0,0,120,68);
-     item.thumbs.push(canvas.toDataURL("image/jpeg",0.65));
-    }catch(e){}
-    index++;
-    capture();
-   };
-
-   temp.addEventListener("seeked",done,{once:true});
-   try{temp.currentTime=target}catch(e){
-    index++;
-    capture();
-   }
-  }
-  capture();
- };
+      v.currentTime = Math.max(0,Math.min(time,v.duration || time));
+    }catch(e){reject(e)}
+  });
 }
 
-/* MEDIA LIST */
 function renderMedia(){
- mediaList.innerHTML="";
+  $("mediaCount").textContent = mediaItems.length;
+  const list = $("mediaList");
+  list.innerHTML = "";
 
- mediaItems.forEach(item=>{
-  const div=document.createElement("div");
-  div.className="media-item"+(selectedMediaId===item.id?" active":"");
+  if(!mediaItems.length){
+    list.innerHTML = '<div class="empty">এখনো কোনো মিডিয়া যোগ করা হয়নি</div>';
+    return;
+  }
 
-  const thumb=document.createElement("img");
-  thumb.className="media-thumb";
-  thumb.src=item.thumb||"";
-  if(!item.thumb)thumb.style.display="none";
+  mediaItems.forEach(item=>{
+    const div = document.createElement("div");
+    div.className = "media-item";
 
-  const info=document.createElement("div");
-  info.className="media-name";
-  info.innerHTML=escapeHTML(item.name)+
-   '<div class="small">'+
-   escapeHTML(item.type.split("/")[0]||"Media")+
-   (item.duration?" • "+formatTime(item.duration):"")+
-   '</div>';
+    let thumb = "";
+    if(item.type.startsWith("image/")){
+      thumb = `<img class="media-thumb" src="${item.url}">`;
+    }else if(item.type.startsWith("video/")){
+      thumb = item.thumbnails.length
+        ? `<img class="media-thumb" src="${item.thumbnails[0]}">`
+        : `<div class="media-thumb" style="display:grid;place-items:center">▶</div>`;
+    }else{
+      thumb = `<div class="media-thumb" style="display:grid;place-items:center">♫</div>`;
+    }
 
-  div.append(thumb,info);
-  div.onclick=()=>selectMedia(item.id);
-  mediaList.appendChild(div);
- });
+    div.innerHTML = thumb + `
+      <div style="min-width:0;flex:1">
+        <div class="media-name"></div>
+        <div class="media-type">${item.type.split("/")[0]} ${item.duration ? "• "+formatTime(item.duration) : ""}</div>
+      </div>
+    `;
+    div.querySelector(".media-name").textContent = item.name;
+    div.addEventListener("click",()=>{
+      selectedMediaId = item.id;
+      selectedClipId = null;
+      $("selectedInfo").textContent = item.name;
+      if(item.type.startsWith("video/")) loadMediaPreview(item);
+      renderTimeline();
+      setStatus("মিডিয়া নির্বাচন করা হয়েছে: " + item.name);
+    });
+    list.appendChild(div);
+  });
 }
 
-function selectMedia(mediaId){
- selectedMediaId=mediaId;
- const item=mediaItems.find(x=>x.id===mediaId);
- if(!item)return;
-
- renderMedia();
-
- if(item.type.startsWith("video/")){
-  showVideo(item.url,0);
- }else if(item.type.startsWith("image/")){
+function loadMediaPreview(item){
   video.pause();
-  video.style.display="none";
-  imagePreview.src=item.url;
-  imagePreview.style.display="block";
-  emptyPreview.style.display="none";
- }else{
-  $("mediaStatus").textContent="অডিও ফাইল নির্বাচন করা হয়েছে।";
- }
+  video.src = item.url;
+  video.load();
+  video.onloadedmetadata = ()=>{
+    video.currentTime = 0;
+    currentGlobalTime = 0;
+    updateTimeDisplay();
+    updatePlayhead();
+  };
 }
 
-/* ADD CLIP */
 function addSelectedToTimeline(){
- const item=mediaItems.find(x=>x.id===selectedMediaId);
+  const item = getMedia(selectedMediaId);
+  if(!item){
+    setStatus("প্রথমে Media Library থেকে একটি ভিডিও নির্বাচন করুন।");
+    return;
+  }
 
- if(!item){
-  alert("প্রথমে Media Library থেকে ভিডিও নির্বাচন করুন।");
-  return;
- }
- if(!item.type.startsWith("video/")){
-  alert("এই ধাপে Video Track-এ ভিডিও যোগ করা যাবে।");
-  return;
- }
- if(!item.duration){
-  alert("ভিডিওর তথ্য প্রস্তুত হচ্ছে। একটু অপেক্ষা করুন।");
-  return;
- }
+  if(!item.type.startsWith("video/")){
+    setStatus("এই সংস্করণে Timeline-এ শুধু ভিডিও ক্লিপ যোগ করা যায়।");
+    return;
+  }
 
- const clip={
-  id:id(),
-  itemId:item.id,
-  url:item.url,
-  name:item.name,
-  sourceIn:0,
-  sourceOut:item.duration,
-  thumbs:item.thumbs||[]
- };
+  if(!item.duration){
+    setStatus("ভিডিওর তথ্য এখনো লোড হচ্ছে। একটু অপেক্ষা করুন।");
+    return;
+  }
 
- clips.push(clip);
- selectedClipId=clip.id;
- currentGlobalTime=clipStart(clips.length-1);
+  const clip = {
+    id:uid(),
+    mediaId:item.id,
+    name:item.name,
+    sourceIn:0,
+    sourceOut:item.duration,
+    duration:item.duration
+  };
 
- renderTimeline();
- selectClip(clip.id);
+  clips.push(clip);
+  selectedClipId = clip.id;
+  selectedMediaId = item.id;
+  renderTimeline();
+  seekGlobal(clipStart(clips.length-1));
+  setStatus("ভিডিও টাইমলাইনে যোগ হয়েছে।");
 }
 
-/* TIMELINE */
 function renderTimeline(){
- const total=totalDuration();
- const width=Math.max(500,total*pixelsPerSecond+100);
+  const videoTrack = $("videoTrack");
+  const textTrack = $("textTrack");
+  const ruler = $("ruler");
 
- timelineInner.style.width=width+"px";
- $("ruler").style.width=width+"px";
- videoTrack.innerHTML="";
- textTrack.innerHTML="";
+  videoTrack.innerHTML = "";
+  textTrack.innerHTML = "";
+  ruler.innerHTML = "";
 
- clips.forEach((clip,index)=>{
-  const div=document.createElement("div");
-  div.className="clip"+(clip.id===selectedClipId?" selected":"");
+  const duration = Math.max(10,totalDuration()+5);
+  const width = duration * pixelsPerSecond;
 
-  div.style.left=(clipStart(index)*pixelsPerSecond)+"px";
-  div.style.width=Math.max(25,duration(clip)*pixelsPerSecond)+"px";
+  videoTrack.style.width = width+"px";
+  textTrack.style.width = width+"px";
+  $("audioTrack").style.width = width+"px";
+  $("timelineInner").style.width = (width+72)+"px";
 
-  const thumbs=document.createElement("div");
-  thumbs.className="clip-thumbs";
+  for(let t=0;t<=duration;t+=5){
+    const mark = document.createElement("div");
+    mark.className = "ruler-mark";
+    mark.style.left = (t*pixelsPerSecond)+"px";
+    mark.textContent = formatTime(t);
+    ruler.appendChild(mark);
+  }
 
-  (clip.thumbs||[]).forEach(src=>{
-   const img=document.createElement("img");
-   img.src=src;
-   thumbs.appendChild(img);
+  let position = 0;
+
+  clips.forEach((clip,index)=>{
+    const el = document.createElement("div");
+    el.className = "timeline-clip";
+    if(clip.id===selectedClipId) el.classList.add("selected");
+
+    el.style.left = (position*pixelsPerSecond)+"px";
+    el.style.width = Math.max(35,clip.duration*pixelsPerSecond)+"px";
+
+    const item = getMedia(clip.mediaId);
+    if(item && item.thumbnails.length){
+      const thumbs = document.createElement("div");
+      thumbs.className = "clip-thumbs";
+      item.thumbnails.forEach(src=>{
+        const img = document.createElement("img");
+        img.src = src;
+        thumbs.appendChild(img);
+      });
+      el.appendChild(thumbs);
+    }
+
+    const title = document.createElement("div");
+    title.className = "clip-title";
+    title.textContent = clip.name;
+    el.appendChild(title);
+
+    el.addEventListener("click",event=>{
+      event.stopPropagation();
+      selectedClipId = clip.id;
+      selectedMediaId = clip.mediaId;
+      $("selectedInfo").textContent = clip.name;
+      seekGlobal(clipStart(index));
+      renderTimeline();
+    });
+
+    videoTrack.appendChild(el);
+    position += clip.duration;
   });
 
-  div.appendChild(thumbs);
+  textClips.forEach(tc=>{
+    const el = document.createElement("div");
+    el.className = "text-clip";
+    el.style.left = (tc.start*pixelsPerSecond)+"px";
+    el.style.width = Math.max(35,tc.duration*pixelsPerSecond)+"px";
+    el.textContent = tc.text;
+    textTrack.appendChild(el);
+  });
 
-  const name=document.createElement("div");
-  name.className="clip-name";
-  name.textContent=clip.name;
-  div.appendChild(name);
-
-  div.title=clip.name+" • "+formatTime(duration(clip));
-  div.onclick=()=>selectClip(clip.id);
-
-  videoTrack.appendChild(div);
- });
-
- textClips.forEach(t=>{
-  const div=document.createElement("div");
-  div.className="clip";
-  div.style.left=(t.start*pixelsPerSecond)+"px";
-  div.style.width=Math.max(45,t.duration*pixelsPerSecond)+"px";
-  div.style.background="#72518f";
-  div.textContent="T: "+t.text.slice(0,15);
-  textTrack.appendChild(div);
- });
-
- renderRuler(total,width);
- timelineSeek.max=total||100;
- timelineSeek.value=Math.min(currentGlobalTime,total);
- seekBar.max=total||100;
- seekBar.value=Math.min(currentGlobalTime,total);
-
- $("timelineInfo").textContent=
-  clips.length+"টি ভিডিও ক্লিপ • মোট সময় "+formatTime(total);
-
- updatePlayhead();
- updateTime();
+  $("timelineDuration").textContent = formatTime(totalDuration());
+  updatePlayhead();
 }
 
-function renderRuler(total,width){
- const ruler=$("ruler");
- ruler.innerHTML="";
-
- let step=5;
- if(total>60)step=10;
- if(total>180)step=30;
-
- for(let t=0;t<=Math.max(total,10);t+=step){
-  const mark=document.createElement("span");
-  mark.style.left=(t*pixelsPerSecond)+"px";
-  mark.textContent=formatTime(t);
-  ruler.appendChild(mark);
- }
-}
-
-function updatePlayhead(){
- $("playhead").style.left=
-  (66+currentGlobalTime*pixelsPerSecond)+"px";
-}
-
-/* SELECT CLIP */
-function selectClip(clipId){
- selectedClipId=clipId;
- const index=selectedIndex();
- const clip=selectedClip();
- if(!clip)return;
-
- currentGlobalTime=clipStart(index);
- showVideo(clip.url,clip.sourceIn);
- renderTimeline();
-}
-
-function showVideo(url,time){
- switching=true;
- imagePreview.style.display="none";
- video.style.display="block";
- emptyPreview.style.display="none";
- video.pause();
-
- function seek(){
-  try{
-   video.currentTime=time;
-  }catch(e){}
-  switching=false;
- }
-
- if(video.src!==url){
-  video.src=url;
-  video.load();
-  video.addEventListener("loadedmetadata",seek,{once:true});
- }else if(video.readyState>=1){
-  seek();
- }else{
-  video.addEventListener("loadedmetadata",seek,{once:true});
- }
-
- applyVideoSettings();
-}
-
-/* TIME MAPPING */
 function locateTime(time){
- let cursor=0;
+  let position = 0;
 
- for(let i=0;i<clips.length;i++){
-  const c=clips[i];
-  const d=duration(c);
-
-  if(time<cursor+d || i===clips.length-1){
-   return {
-    clip:c,
-    index:i,
-    sourceTime:c.sourceIn+Math.max(0,Math.min(d,time-cursor))
-   };
+  for(let i=0;i<clips.length;i++){
+    const clip = clips[i];
+    if(time < position + clip.duration || i===clips.length-1){
+      return {
+        index:i,
+        offset:Math.max(0,Math.min(clip.duration,time-position))
+      };
+    }
+    position += clip.duration;
   }
-  cursor+=d;
- }
- return null;
+  return null;
 }
 
 function seekGlobal(time){
- const total=totalDuration();
- currentGlobalTime=Math.max(0,Math.min(total,Number(time)||0));
-
- if(!clips.length){
-  updateTime();
-  updatePlayhead();
-  return;
- }
-
- const found=locateTime(currentGlobalTime);
- if(!found)return;
-
- if(selectedClipId!==found.clip.id || video.src!==found.clip.url){
-  selectedClipId=found.clip.id;
-  showVideo(found.clip.url,found.sourceTime);
-  renderTimeline();
- }else{
-  try{
-   if(Math.abs(video.currentTime-found.sourceTime)>0.12){
-    video.currentTime=found.sourceTime;
-   }
-  }catch(e){}
- }
-
- updateTime();
- updatePlayhead();
-}
-
-timelineSeek.addEventListener("input",()=>{
- seekGlobal(Number(timelineSeek.value));
-});
-seekBar.addEventListener("input",()=>{
- seekGlobal(Number(seekBar.value));
-});
-
-/* CLICK ON TIMELINE TO MOVE PLAYHEAD */
-videoTrack.addEventListener("click",function(e){
- const rect=videoTrack.getBoundingClientRect();
- const x=e.clientX-rect.left;
- seekGlobal(x/pixelsPerSecond);
-});
-
-textTrack.addEventListener("click",function(e){
- const rect=textTrack.getBoundingClientRect();
- seekGlobal((e.clientX-rect.left)/pixelsPerSecond);
-});
-
-/* PREVIEW SYNCHRONIZATION */
-video.addEventListener("timeupdate",()=>{
- if(switching)return;
-
- const index=selectedIndex();
- const clip=selectedClip();
- if(index<0||!clip)return;
-
- const sourceTime=video.currentTime;
- if(sourceTime<clip.sourceIn || sourceTime>clip.sourceOut+0.05)return;
-
- currentGlobalTime=clipStart(index)+(sourceTime-clip.sourceIn);
-
- timelineSeek.value=currentGlobalTime;
- seekBar.value=currentGlobalTime;
- updateTime();
- updatePlayhead();
-});
-
-video.addEventListener("ended",()=>{
- const index=selectedIndex();
-
- if(index>=0 && index<clips.length-1){
-  const next=clips[index+1];
-  selectedClipId=next.id;
-  showVideo(next.url,next.sourceIn);
-  renderTimeline();
-
-  if(playing)video.play().catch(()=>{});
- }else{
-  playing=false;
-  currentGlobalTime=totalDuration();
-  updateTime();
-  updatePlayhead();
- }
-});
-
-function updateTime(){
- $("timeDisplay").textContent=
-  formatTime(currentGlobalTime)+" / "+formatTime(totalDuration());
-}
-
-/* PLAYBACK */
-function playPause(){
- if(!clips.length){
-  alert("প্রথমে Timeline-এ ভিডিও যোগ করুন।");
-  return;
- }
-
- if(video.paused){
-  if(!selectedClip()){
-   seekGlobal(0);
+  if(!clips.length){
+    currentGlobalTime = 0;
+    updateTimeDisplay();
+    updatePlayhead();
+    return;
   }
-  playing=true;
-  video.play().catch(()=>{
-   playing=false;
-   alert("ভিডিও চালু করা যাচ্ছে না।");
-  });
- }else{
-  playing=false;
-  video.pause();
- }
+
+  currentGlobalTime = Math.max(0,Math.min(time,totalDuration()));
+  const located = locateTime(currentGlobalTime);
+
+  if(!located) return;
+
+  const clip = clips[located.index];
+  const item = getMedia(clip.mediaId);
+  if(!item) return;
+
+  if(video.src !== item.url){
+    video.pause();
+    video.src = item.url;
+    video.load();
+    video.onloadedmetadata = ()=>{
+      video.currentTime = clip.sourceIn + located.offset;
+      video.playbackRate = Number($("speed").value);
+      updateFilters();
+      updateTextOverlay();
+    };
+  }else{
+    if(video.readyState >= 1){
+      video.currentTime = clip.sourceIn + located.offset;
+    }
+  }
+
+  updateTimeDisplay();
+  updatePlayhead();
+  updateTextOverlay();
 }
 
-function stopPreview(){
- playing=false;
- video.pause();
- seekGlobal(0);
+function updatePlayhead(){
+  const left = 72 + currentGlobalTime*pixelsPerSecond;
+  $("playhead").style.left = left+"px";
 }
 
-/* SPLIT */
+function updateTimeDisplay(){
+  $("timeDisplay").textContent =
+    formatTime(currentGlobalTime)+" / "+formatTime(totalDuration());
+}
+
+$("videoTrack").addEventListener("click",event=>{
+  const rect = $("videoTrack").getBoundingClientRect();
+  const x = event.clientX - rect.left + $("timelineScroll").scrollLeft;
+  seekGlobal(x/pixelsPerSecond);
+});
+
+$("textTrack").addEventListener("click",event=>{
+  const rect = $("textTrack").getBoundingClientRect();
+  const x = event.clientX - rect.left + $("timelineScroll").scrollLeft;
+  seekGlobal(x/pixelsPerSecond);
+});
+
+function togglePlay(){
+  if(!clips.length){
+    setStatus("প্রথমে একটি ভিডিও টাইমলাইনে যোগ করুন।");
+    return;
+  }
+  if(video.paused){
+    if(currentGlobalTime>=totalDuration()) seekGlobal(0);
+    video.play().catch(()=>setStatus("ভিডিও চালু করা যায়নি।"));
+    $("playButton").textContent = "❚❚ Pause";
+  }else{
+    video.pause();
+    $("playButton").textContent = "▶ Play";
+  }
+}
+
+video.addEventListener("timeupdate",()=>{
+  if(isSeeking) return;
+
+  const located = locateTime(currentGlobalTime);
+  if(!located) return;
+
+  const clip = clips[located.index];
+  if(!clip) return;
+
+  const offset = video.currentTime - clip.sourceIn;
+  currentGlobalTime = clipStart(located.index) + offset;
+
+  updateTimeDisplay();
+  updatePlayhead();
+  updateTextOverlay();
+
+  if(video.currentTime >= clip.sourceOut - 0.05){
+    const nextIndex = located.index + 1;
+    if(nextIndex < clips.length){
+      seekGlobal(clipStart(nextIndex));
+      video.play().catch(()=>{});
+    }else{
+      video.pause();
+      $("playButton").textContent = "▶ Play";
+      currentGlobalTime = totalDuration();
+      updateTimeDisplay();
+      updatePlayhead();
+    }
+  }
+});
+
+video.addEventListener("pause",()=>{
+  $("playButton").textContent = "▶ Play";
+});
+
+function goToStart(){seekGlobal(0)}
+function goToEnd(){seekGlobal(totalDuration())}
+function stepBack(){seekGlobal(currentGlobalTime-5)}
+function stepForward(){seekGlobal(currentGlobalTime+5)}
+
 function splitClip(){
- const clip=selectedClip();
- if(!clip){
-  alert("একটি ক্লিপ নির্বাচন করুন।");
-  return;
- }
+  const index = getClipIndex(selectedClipId);
+  if(index<0){
+    setStatus("Split করার জন্য একটি ভিডিও ক্লিপ নির্বাচন করুন।");
+    return;
+  }
 
- const t=video.currentTime;
- if(t<=clip.sourceIn+0.15 || t>=clip.sourceOut-0.15){
-  alert("ক্লিপের মাঝামাঝি জায়গায় Playhead নিয়ে Split করুন।");
-  return;
- }
+  const clip = clips[index];
+  const offset = currentGlobalTime - clipStart(index);
 
- const index=selectedIndex();
+  if(offset <= 0.1 || offset >= clip.duration-0.1){
+    setStatus("ক্লিপের মাঝামাঝি জায়গায় Playhead রেখে Split করুন।");
+    return;
+  }
 
- const first={...clip,id:id(),sourceOut:t};
- const second={...clip,id:id(),sourceIn:t};
+  const second = {
+    ...clip,
+    id:uid(),
+    sourceIn:clip.sourceIn+offset,
+    duration:clip.duration-offset
+  };
 
- clips.splice(index,1,first,second);
- selectedClipId=second.id;
+  clip.sourceOut = clip.sourceIn+offset;
+  clip.duration = offset;
 
- renderTimeline();
- selectClip(second.id);
+  clips.splice(index+1,0,second);
+  selectedClipId = second.id;
+  renderTimeline();
+  setStatus("ভিডিও ক্লিপ Split হয়েছে।");
 }
 
-/* TRIM */
 function trimStart(){
- const clip=selectedClip();
- if(!clip)return alert("একটি ক্লিপ নির্বাচন করুন।");
+  const index = getClipIndex(selectedClipId);
+  if(index<0) return;
 
- const t=video.currentTime;
- if(t<=clip.sourceIn || t>=clip.sourceOut-0.2){
-  return alert("Trim করার জন্য ক্লিপের ভেতরে Playhead রাখুন।");
- }
+  const clip = clips[index];
+  const offset = currentGlobalTime - clipStart(index);
 
- clip.sourceIn=t;
- renderTimeline();
- selectClip(clip.id);
+  if(offset<=0 || offset>=clip.duration-0.1){
+    setStatus("Trim Start করতে ক্লিপের মাঝামাঝি Playhead রাখুন।");
+    return;
+  }
+
+  clip.sourceIn += offset;
+  clip.duration -= offset;
+  renderTimeline();
+  seekGlobal(clipStart(index));
+  setStatus("ক্লিপের শুরু Trim হয়েছে।");
 }
 
 function trimEnd(){
- const clip=selectedClip();
- if(!clip)return alert("একটি ক্লিপ নির্বাচন করুন।");
+  const index = getClipIndex(selectedClipId);
+  if(index<0) return;
 
- const t=video.currentTime;
- if(t<=clip.sourceIn+0.2 || t>=clip.sourceOut){
-  return alert("Trim করার জন্য ক্লিপের ভেতরে Playhead রাখুন।");
- }
+  const clip = clips[index];
+  const offset = currentGlobalTime - clipStart(index);
 
- clip.sourceOut=t;
- renderTimeline();
- selectClip(clip.id);
+  if(offset<=0.1 || offset>=clip.duration){
+    setStatus("Trim End করতে ক্লিপের মাঝামাঝি Playhead রাখুন।");
+    return;
+  }
+
+  clip.sourceOut = clip.sourceIn + offset;
+  clip.duration = offset;
+  renderTimeline();
+  seekGlobal(clipStart(index)+offset);
+  setStatus("ক্লিপের শেষ Trim হয়েছে।");
 }
 
-/* DELETE */
 function deleteClip(){
- const index=selectedIndex();
- if(index<0)return alert("একটি ক্লিপ নির্বাচন করুন।");
+  const index = getClipIndex(selectedClipId);
+  if(index<0){
+    setStatus("Delete করার জন্য একটি ক্লিপ নির্বাচন করুন।");
+    return;
+  }
 
- clips.splice(index,1);
-
- if(clips.length){
-  const next=clips[Math.min(index,clips.length-1)];
-  selectedClipId=next.id;
+  clips.splice(index,1);
+  selectedClipId = null;
   renderTimeline();
-  selectClip(next.id);
- }else{
-  selectedClipId=null;
-  currentGlobalTime=0;
-  video.pause();
-  video.removeAttribute("src");
-  video.load();
-  video.style.display="none";
-  emptyPreview.style.display="block";
+  seekGlobal(Math.min(currentGlobalTime,totalDuration()));
+  $("selectedInfo").textContent = "কোনো ক্লিপ নির্বাচন করা হয়নি।";
+  setStatus("ক্লিপ Delete হয়েছে।");
+}
+
+function addText(){
+  const text = $("textInput").value.trim();
+  if(!text){
+    setStatus("প্রথমে Text লিখুন।");
+    return;
+  }
+
+  const tc = {
+    id:uid(),
+    text:text,
+    start:currentGlobalTime,
+    duration:3
+  };
+
+  textClips.push(tc);
+  updateTextOverlay();
   renderTimeline();
- }
+  setStatus("Text যোগ হয়েছে।");
 }
 
-/* TEXT */
-function applyText(){
- currentText=$("textInput").value;
- $("textOverlay").textContent=currentText;
- $("textOverlay").style.fontSize=$("textSize").value+"px";
- $("textOverlay").style.color=$("textColor").value;
+function updateTextOverlay(){
+  const active = textClips.find(tc=>
+    currentGlobalTime >= tc.start &&
+    currentGlobalTime <= tc.start+tc.duration
+  );
+
+  $("previewText").textContent = active ? active.text : "";
 }
 
-function addTextClip(){
- const text=$("textInput").value.trim();
- if(!text)return alert("প্রথমে Text লিখুন।");
-
- textClips.push({
-  id:id(),
-  text:text,
-  start:currentGlobalTime,
-  duration:5
- });
-
- applyText();
- renderTimeline();
+function clearText(){
+  textClips = [];
+  $("previewText").textContent = "";
+  renderTimeline();
+  setStatus("Text Overlay মুছে ফেলা হয়েছে।");
 }
 
-$("textSize").addEventListener("input",applyText);
-$("textColor").addEventListener("input",applyText);
+function updateFilters(){
+  const b = $("brightness").value;
+  const c = $("contrast").value;
+  const s = $("saturation").value;
 
-/* VIDEO ADJUSTMENTS */
-function applyVideoSettings(){
- const b=$("brightness").value;
- const c=$("contrast").value;
- const s=$("saturation").value;
+  $("brightnessValue").textContent = b+"%";
+  $("contrastValue").textContent = c+"%";
+  $("saturationValue").textContent = s+"%";
 
- const filter=
-  "brightness("+b+"%) contrast("+c+"%) saturate("+s+"%)";
-
- video.style.filter=filter;
- imagePreview.style.filter=filter;
+  video.style.filter =
+    `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
 }
-
-["brightness","contrast","saturation"].forEach(id=>{
- $(id).addEventListener("input",applyVideoSettings);
-});
-
-$("speed").addEventListener("change",e=>{
- video.playbackRate=Number(e.target.value);
-});
-
-$("volume").addEventListener("input",e=>{
- video.volume=Number(e.target.value)/100;
-});
 
 function resetAdjustments(){
- ["brightness","contrast","saturation"].forEach(id=>$(id).value=100);
- $("speed").value="1";
- $("volume").value=100;
- video.playbackRate=1;
- video.volume=1;
- applyVideoSettings();
+  $("brightness").value = 100;
+  $("contrast").value = 100;
+  $("saturation").value = 100;
+  $("speed").value = 1;
+  $("volume").value = 100;
+  updateFilters();
+  changeSpeed();
+  changeVolume();
 }
 
-/* SAVE PROJECT */
+function changeSpeed(){
+  video.playbackRate = Number($("speed").value);
+}
+
+function changeVolume(){
+  video.volume = Number($("volume").value)/100;
+}
+
 function saveProject(){
- const project={
-  app:"Rifora Studio",
-  version:"4.0",
-  clips:clips.map(c=>({
-   name:c.name,
-   itemId:c.itemId,
-   sourceIn:c.sourceIn,
-   sourceOut:c.sourceOut
-  })),
-  textClips:textClips,
-  adjustments:{
-   brightness:$("brightness").value,
-   contrast:$("contrast").value,
-   saturation:$("saturation").value
-  }
- };
-
- const blob=new Blob(
-  [JSON.stringify(project,null,2)],
-  {type:"application/json"}
- );
-
- downloadBlob(blob,"rifora-project.json");
-
- alert("Project JSON সেভ হয়েছে। মূল ভিডিও ফাইলগুলোও সংরক্ষণ করুন।");
-}
-
-function downloadBlob(blob,name){
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;
- a.download=name;
- document.body.appendChild(a);
- a.click();
- a.remove();
- setTimeout(()=>URL.revokeObjectURL(url),3000);
-}
-
-/* EXPORT SELECTED CLIP */
-function exportSelected(){
- const clip=selectedClip();
- if(!clip)return alert("প্রথমে একটি ভিডিও ক্লিপ নির্বাচন করুন।");
-
- if(!window.MediaRecorder ||
-    !HTMLCanvasElement.prototype.captureStream){
-  return alert("এই ব্রাউজারে Export সুবিধা সমর্থিত নয়।");
- }
-
- const canvas=document.createElement("canvas");
- canvas.width=1280;
- canvas.height=720;
-
- const ctx=canvas.getContext("2d");
- const stream=canvas.captureStream(25);
-
- let mime="video/webm;codecs=vp8";
- if(!MediaRecorder.isTypeSupported(mime))mime="video/webm";
-
- let recorder;
- try{
-  recorder=new MediaRecorder(stream,{mimeType:mime});
- }catch(e){
-  return alert("Export শুরু করা যাচ্ছে না।");
- }
-
- const chunks=[];
-
- recorder.ondataavailable=e=>{
-  if(e.data&&e.data.size)chunks.push(e.data);
- };
-
- recorder.onstop=()=>{
-  downloadBlob(
-   new Blob(chunks,{type:"video/webm"}),
-   "rifora-video.webm"
-  );
-  stream.getTracks().forEach(t=>t.stop());
- };
-
- showVideo(clip.url,clip.sourceIn);
-
- function startExport(){
-  video.pause();
-
-  try{video.currentTime=clip.sourceIn}catch(e){}
-
-  const draw=()=>{
-   if(video.readyState>=2){
-    ctx.fillStyle="#000";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
-    const vw=video.videoWidth||1280;
-    const vh=video.videoHeight||720;
-    const scale=Math.min(canvas.width/vw,canvas.height/vh);
-    const w=vw*scale;
-    const h=vh*scale;
-
-    ctx.filter=video.style.filter||"none";
-    ctx.drawImage(
-     video,(canvas.width-w)/2,(canvas.height-h)/2,w,h
-    );
-    ctx.filter="none";
-
-    if(currentText){
-     ctx.font="bold 42px Arial";
-     ctx.textAlign="center";
-     ctx.fillStyle=$("textColor").value;
-     ctx.fillText(currentText,canvas.width/2,canvas.height-70,canvas.width-80);
-    }
-   }
-
-   if(!video.paused&&!video.ended){
-    requestAnimationFrame(draw);
-   }
+  const project = {
+    app:"Rifora Studio",
+    version:"4.0",
+    clips:clips.map(c=>({...c})),
+    textClips:textClips.map(t=>({...t})),
+    media:mediaItems.map(m=>({
+      id:m.id,
+      name:m.name,
+      type:m.type,
+      duration:m.duration
+    }))
   };
 
-  recorder.start();
+  const blob = new Blob(
+    [JSON.stringify(project,null,2)],
+    {type:"application/json"}
+  );
 
-  video.play().then(()=>{
-   draw();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "rifora-project.json";
+  a.click();
+  URL.revokeObjectURL(url);
+
+  setStatus("Project JSON সেভ হয়েছে। মূল মিডিয়া ফাইল আলাদাভাবে রাখতে হবে।");
+}
+
+$("projectInput").addEventListener("change",event=>{
+  const file = event.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const project = JSON.parse(reader.result);
+      if(!Array.isArray(project.clips)){
+        throw new Error("Invalid project");
+      }
+
+      alert(
+        "Project-এর JSON পড়া হয়েছে। " +
+        "মিডিয়া ফাইলগুলো নতুন করে Import না করলে " +
+        "পুরোনো ভিডিওগুলো চালানো যাবে না।"
+      );
+      setStatus("Project JSON পাওয়া গেছে। মিডিয়া পুনরায় Import করতে হবে।");
+    }catch(e){
+      alert("Project ফাইলটি সঠিক নয়।");
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = "";
+});
+
+async function exportSelected(){
+  const index = getClipIndex(selectedClipId);
+  if(index<0){
+    setStatus("Export করার জন্য একটি ভিডিও ক্লিপ নির্বাচন করুন।");
+    return;
+  }
+
+  if(!window.MediaRecorder){
+    alert("এই ব্রাউজারে MediaRecorder সমর্থিত নয়।");
+    return;
+  }
+
+  const clip = clips[index];
+  const item = getMedia(clip.mediaId);
+  if(!item) return;
+
+  const exportVideo = document.createElement("video");
+  exportVideo.src = item.url;
+  exportVideo.muted = true;
+  exportVideo.playsInline = true;
+  exportVideo.preload = "auto";
+
+  setStatus("Export প্রস্তুত হচ্ছে...");
+
+  await new Promise((resolve,reject)=>{
+    exportVideo.onloadedmetadata = resolve;
+    exportVideo.onerror = reject;
   }).catch(()=>{
-   if(recorder.state!=="inactive")recorder.stop();
-   alert("ভিডিও চালু করা যাচ্ছে না।");
+    setStatus("ভিডিও লোড করা যায়নি।");
   });
 
-  const checkEnd=()=>{
-   if(video.currentTime>=clip.sourceOut||video.ended){
-    video.pause();
-    if(recorder.state!=="inactive")recorder.stop();
-    video.removeEventListener("timeupdate",checkEnd);
-   }
+  if(!exportVideo.duration) return;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 1280;
+  canvas.height = 720;
+
+  const ctx = canvas.getContext("2d");
+  const stream = canvas.captureStream(30);
+
+  let recorder;
+  try{
+    recorder = new MediaRecorder(stream,{mimeType:"video/webm"});
+  }catch(e){
+    try{
+      recorder = new MediaRecorder(stream);
+    }catch(err){
+      setStatus("এই ব্রাউজারে WebM Export সমর্থিত নয়।");
+      return;
+    }
+  }
+
+  const chunks = [];
+
+  recorder.ondataavailable = e=>{
+    if(e.data && e.data.size) chunks.push(e.data);
   };
 
-  video.addEventListener("timeupdate",checkEnd);
- }
+  recorder.onstop = ()=>{
+    const blob = new Blob(chunks,{type:"video/webm"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "rifora-export.webm";
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus("Export সম্পন্ন হয়েছে।");
+  };
 
- if(video.readyState>=1){
-  startExport();
- }else{
-  video.addEventListener("loadedmetadata",startExport,{once:true});
- }
+  exportVideo.currentTime = clip.sourceIn;
+  await new Promise(resolve=>{
+    exportVideo.onseeked = resolve;
+  });
+
+  const brightness = $("brightness").value;
+  const contrast = $("contrast").value;
+  const saturation = $("saturation").value;
+
+  function drawFrame(){
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.filter =
+      `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
+
+    const vw = exportVideo.videoWidth;
+    const vh = exportVideo.videoHeight;
+
+    if(vw && vh){
+      const scale = Math.min(canvas.width/vw,canvas.height/vh);
+      const w = vw*scale;
+      const h = vh*scale;
+      ctx.drawImage(exportVideo,(canvas.width-w)/2,(canvas.height-h)/2,w,h);
+    }
+
+    ctx.filter = "none";
+
+    const activeText = textClips.find(tc=>
+      currentGlobalTime >= tc.start &&
+      currentGlobalTime <= tc.start+tc.duration
+    );
+
+    if(activeText){
+      ctx.font = "bold 44px Arial";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "white";
+      ctx.shadowColor = "black";
+      ctx.shadowBlur = 6;
+      ctx.fillText(activeText.text,canvas.width/2,canvas.height-65);
+      ctx.shadowBlur = 0;
+    }
+  }
+
+  const exportStart = performance.now();
+  const exportDuration = (clip.sourceOut-clip.sourceIn)*1000;
+  let stopped = false;
+
+  function frameLoop(){
+    if(stopped) return;
+    drawFrame();
+
+    if(exportVideo.currentTime >= clip.sourceOut || exportVideo.ended){
+      stopped = true;
+      recorder.stop();
+      exportVideo.pause();
+      return;
+    }
+
+    requestAnimationFrame(frameLoop);
+  }
+
+  currentGlobalTime = clipStart(index);
+  recorder.start();
+  exportVideo.play().catch(()=>{
+    recorder.stop();
+    setStatus("Export-এর জন্য ভিডিও চালু করা যায়নি।");
+  });
+
+  frameLoop();
+
+  const stopTimer = setInterval(()=>{
+    if(stopped){
+      clearInterval(stopTimer);
+      return;
+    }
+    if(performance.now()-exportStart > exportDuration+5000){
+      stopped = true;
+      exportVideo.pause();
+      recorder.stop();
+      clearInterval(stopTimer);
+    }
+  },500);
+
+  setStatus("ভিডিও Export হচ্ছে। অপেক্ষা করুন...");
 }
 
-/* INITIALIZE */
+window.addEventListener("beforeunload",()=>{
+  mediaItems.forEach(item=>{
+    try{URL.revokeObjectURL(item.url)}catch(e){}
+  });
+});
+
 renderMedia();
 renderTimeline();
-applyText();
+updateTimeDisplay();
+updateFilters();
+changeVolume();
 </script>
 
 </body>
