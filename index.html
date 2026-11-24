@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Rifora Studio - Learn, create and grow with your own creative workspace.">
+<meta name="description" content="Rifora Studio - Learn, create and grow with creative tools, professional photo editing and QR & Barcode services.">
+<meta name="theme-color" content="#111b3d">
 <title>Rifora Studio | Learn • Create • Grow</title>
 
 <style>
@@ -49,6 +50,10 @@ nav {
     font-size: 14px;
 }
 
+.nav-links a:hover {
+    color: #f6c85f;
+}
+
 .hero {
     max-width: 850px;
     margin: 75px auto;
@@ -80,6 +85,10 @@ nav {
     text-decoration: none;
     font-weight: bold;
     border-radius: 9px;
+}
+
+.hero-button:hover {
+    background: #ffcf69;
 }
 
 main {
@@ -147,6 +156,10 @@ main {
     font-size: 14px;
 }
 
+.tool-card a:hover {
+    color: #1769aa;
+}
+
 .learning {
     margin-top: 65px;
     padding: 40px 25px;
@@ -170,6 +183,10 @@ footer {
     text-align: center;
     background: #111b3d;
     color: white;
+}
+
+footer .logo span {
+    color: #f6c85f;
 }
 
 footer p {
@@ -200,6 +217,7 @@ footer p {
 <header>
     <nav>
         <div class="logo">Rifora <span>Studio</span></div>
+
         <div class="nav-links">
             <a href="#home">Home</a>
             <a href="#tools">Creative Tools</a>
@@ -209,18 +227,23 @@ footer p {
 
     <section class="hero" id="home">
         <h1>Welcome to <span>Rifora Studio</span></h1>
+
         <p>
             Your Creative Learning & Design Platform.
-            Learn Graphic Design, Edit Photos, Create Logos
-            and Explore Video Editing.
+            Learn Graphic Design, Edit Photos, Create Logos,
+            Generate QR Codes and Barcodes.
         </p>
-        <a class="hero-button" href="#tools">Explore Creative Tools</a>
+
+        <a class="hero-button" href="#tools">
+            Explore Creative Tools
+        </a>
     </section>
 </header>
 
 <main>
 
     <section id="tools">
+
         <div class="section-title">
             <h2>Explore Creative Tools</h2>
             <p>Learn new skills and create your own designs.</p>
@@ -228,45 +251,84 @@ footer p {
 
         <div class="tools-grid">
 
+            <!-- PHOTO EDITOR -->
             <div class="tool-card">
                 <div class="tool-icon">📸</div>
-                <h3>Photo Editing</h3>
-                <p>Edit photos, crop images, adjust colors and create beautiful designs.</p>
-                <a href="#learn">Explore Photo Editing →</a>
+                <h3>Professional Photo Editor</h3>
+                <p>
+                    Edit photos, crop images, adjust colors,
+                    work with layers and create beautiful designs.
+                </p>
+                <a href="photo-editor.html">
+                    Open Photo Editor →
+                </a>
             </div>
 
+            <!-- QR AND BARCODE STUDIO -->
+            <div class="tool-card">
+                <div class="tool-icon">▦</div>
+                <h3>QR & Barcode Studio</h3>
+                <p>
+                    Generate QR codes and barcodes.
+                    Scan codes using your camera or image files.
+                </p>
+                <a href="qr-barcode-studio.html">
+                    Open QR & Barcode Studio →
+                </a>
+            </div>
+
+            <!-- VIDEO EDITING -->
             <div class="tool-card">
                 <div class="tool-icon">🎬</div>
                 <h3>Video Editing</h3>
-                <p>Learn video cutting, trimming, text, audio and transitions.</p>
+                <p>
+                    Learn video cutting, trimming, text,
+                    audio and transitions.
+                </p>
                 <a href="#learn">Explore Video Editing →</a>
             </div>
 
+            <!-- LOGO DESIGN -->
             <div class="tool-card">
                 <div class="tool-icon">🎨</div>
                 <h3>Logo Design</h3>
-                <p>Create original logos using text, shapes, colors and creative ideas.</p>
+                <p>
+                    Create original logos using text,
+                    shapes, colors and creative ideas.
+                </p>
                 <a href="#learn">Explore Logo Design →</a>
             </div>
 
+            <!-- GRAPHIC DESIGN -->
             <div class="tool-card">
                 <div class="tool-icon">🖌️</div>
                 <h3>Graphic Design</h3>
-                <p>Create posters, banners, social media posts and thumbnails.</p>
+                <p>
+                    Create posters, banners, social media
+                    posts and thumbnails.
+                </p>
                 <a href="#learn">Explore Graphic Design →</a>
             </div>
 
+            <!-- LEARN DESIGN -->
             <div class="tool-card">
                 <div class="tool-icon">📚</div>
                 <h3>Learn Design</h3>
-                <p>Start learning from beginner lessons and practical exercises.</p>
+                <p>
+                    Start learning from beginner lessons
+                    and practical exercises.
+                </p>
                 <a href="#learn">Start Learning →</a>
             </div>
 
+            <!-- MY PROJECTS -->
             <div class="tool-card">
                 <div class="tool-icon">💼</div>
                 <h3>My Projects</h3>
-                <p>Your future workspace for saving and managing your designs.</p>
+                <p>
+                    Your future workspace for saving
+                    and managing your designs.
+                </p>
                 <a href="#learn">Explore Projects →</a>
             </div>
 
@@ -275,6 +337,7 @@ footer p {
 
     <section class="learning" id="learn">
         <h2>Learn • Create • Grow</h2>
+
         <p>
             Start with simple creative projects.
             Practice every day, improve your skills
@@ -286,6 +349,7 @@ footer p {
 
 <footer>
     <div class="logo">Rifora <span>Studio</span></div>
+
     <p>
         Learn • Create • Grow<br>
         Independent Creative Software Project<br>
